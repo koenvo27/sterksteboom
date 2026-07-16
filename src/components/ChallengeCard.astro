@@ -5,21 +5,38 @@ interface Props {
   date: Date;
   location: string;
   status?: string;
+  dateLabel?: string;
   href: string;
 }
 
-const { title, summary, date, location, status, href } = Astro.props;
+const { title, summary, date, location, status, dateLabel, href } = Astro.props;
 
 const day = date.getDate();
 const month = date.toLocaleDateString("nl-BE", { month: "short" }).toUpperCase();
 const year = date.getFullYear();
+// Bij een dateLabel (bv. "Mei 2027") tonen we enkel maand + jaar in het vakje,
+// zodat een meerdaags of nog niet exact bepaald evenement geen valse
+// één-dag-indruk geeft.
+const monthOnly = Boolean(dateLabel);
 ---
 
-<a href={href} class="group flex flex-col sm:flex-row gap-5 rounded-card border border-beige-200 bg-white p-6 hover:border-goud-500 transition-colors">
+<a
+  href={href}
+  class="group flex flex-col sm:flex-row gap-5 rounded-card border border-beige-200 bg-white p-6 hover:border-goud-500 transition-colors"
+>
   <div class="shrink-0 w-20 text-center rounded-lg bg-antraciet-900 text-beige-50 py-3">
-    <div class="font-display text-2xl font-semibold leading-none">{day}</div>
-    <div class="text-xs tracking-wide mt-1">{month}</div>
-    <div class="text-xs text-beige-200">{year}</div>
+    {monthOnly ? (
+      <>
+        <div class="font-display text-xl font-semibold leading-none mt-1">{month}</div>
+        <div class="text-xs text-beige-200 mt-1.5">{year}</div>
+      </>
+    ) : (
+      <>
+        <div class="font-display text-2xl font-semibold leading-none">{day}</div>
+        <div class="text-xs tracking-wide mt-1">{month}</div>
+        <div class="text-xs text-beige-200">{year}</div>
+      </>
+    )}
   </div>
   <div class="flex-1">
     {status && (

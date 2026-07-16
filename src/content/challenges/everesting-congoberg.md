@@ -29,15 +29,16 @@ Dit is mijn eerste grote sportieve uitdaging voor De Sterkste Boom van Rendested
 
 ## Kom je langs?
 
-Je hoeft geen fietser te zijn om erbij te zijn. Elke aanmoediging langs het parcours geeft energie.
+Je hoeft geen fietser te zijn om erbij te zijn. Elke aanmoediging langs de klim geeft energie.
 
-- **Fiets mee** — fiets een paar beklimmingen mee en beleef het van dichtbij.
 - **Kom supporteren** — zorg jij mee voor de sfeer op de Congoberg?
-- **Bevoorrading** — er is doorlopende bevoorrading, halverwege op het vlakkere stuk.
+- **Steun van op afstand** — kan je er niet bij zijn? Een gift of een aanmoediging doet evenveel deugd.
+
+De precieze praktische afspraken — timing, veiligheid en hoe je eventueel kan meerijden — volgen zodra alles definitief is. Ik deel die informatie tijdig via [Facebook](https://www.facebook.com/profile.php?id=61592009188050).
 
 ## Steunen
 
-Elke euro brengt ons dichter bij de top. Doneren kan via de officiële actiepagina van Kom op tegen Kanker.
+Elke euro brengt ons dichter bij het doel. Doneren kan via de officiële actiepagina van Kom op tegen Kanker.
 
 ## Op weg naar de 1000 km
 

@@ -18,14 +18,14 @@ function isActive(href: string) {
 <header class="sticky top-0 z-50 bg-beige-50 border-b border-beige-200">
   <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <div class="flex h-16 sm:h-20 items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 font-display text-base sm:text-lg font-semibold text-antraciet-900 shrink-0">
-        <img src="/images/tree-mark.webp" alt="" width="40" height="40" class="shrink-0" />
+      <a href="/" class="flex min-w-0 items-center gap-2 sm:gap-3 font-display text-base sm:text-lg font-semibold text-antraciet-900">
+        <img src="/images/tree-mark.webp" alt="" width="40" height="40" class="h-8 w-8 shrink-0 sm:h-10 sm:w-10" />
         <span class="leading-tight">
-          De Sterkste Boom<br class="hidden sm:block" /> van Rendestede
+          De Sterkste Boom<br /> van Rendestede
         </span>
       </a>
 
-      <nav aria-label="Hoofdnavigatie" class="hidden xl:flex items-center gap-5 font-body text-sm">
+      <nav aria-label="Hoofdnavigatie" class="hidden lg:flex items-center gap-5 font-body text-sm">
         {mainNav.map((item) => (
           <a
             href={item.href}
@@ -42,7 +42,7 @@ function isActive(href: string) {
         ))}
       </nav>
 
-      <div class="hidden xl:block shrink-0">
+      <div class="hidden lg:block shrink-0">
         <DonationButton />
       </div>
 

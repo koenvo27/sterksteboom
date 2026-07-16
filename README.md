@@ -16,6 +16,7 @@ npm install
 npm run dev        # lokale ontwikkelserver op http://localhost:4321
 npm run build       # productiebuild naar ./dist
 npm run preview     # bekijk de productiebuild lokaal
+npm test            # unit- en inhoudelijke bewakingstesten
 ```
 
 ## Waar pas ik wat aan?
@@ -35,8 +36,9 @@ Kort overzicht:
 | Nieuwsberichten | `src/content/news/*.md` |
 | Uitdagingen (bv. Everesting) | `src/content/challenges/*.md` |
 | Acties en evenementen | `src/content/events/*.md` |
-| Afbeeldingen | `public/images/` |
-| Volledig verhaal (tekst) | `src/pages/ons-verhaal.astro` |
+| Afbeeldingen | `public/images/` en `src/assets/` |
+| Volledig verhaal (tekst) | `src/pages/het-verhaal.astro` |
+| De reis / tijdlijn | `src/data/journey.ts` |
 
 ## Projectstructuur
 
@@ -74,12 +76,45 @@ public/
   fondsenwervings-voortgangscirkel. Verwijst naar groei, tijd en
   doorzettingsvermogen.
 
+## Testen
+
+`npm test` draait de testen met de ingebouwde testrunner van Node
+(`node --test scripts/*.test.mjs`):
+
+- **`scripts/sync-fundraising.test.mjs`** — de logica die het opgehaalde bedrag
+  van de KOTK-pagina leest (bedrag parsen, fallback, timeout).
+- **`scripts/content-integrity.test.mjs`** — inhoudelijke afspraken die makkelijk
+  per ongeluk sneuvelen: het projecte-mailadres, de veilige 1000 km-formulering,
+  de fondsenwervingsdoelen (€5.500 startdoel / €10.000 ambitie), de compacte
+  navigatie, precies 4 momenten op de homepage-tijdlijn, de datumgebaseerde
+  tijdlijnstatus, geen placeholder-links (`href="#"`), en het weren van het
+  oude e-mailadres.
+
+De deploy-workflow draait deze testen **vóór** de build; faalt een test, dan
+wordt er niet gepubliceerd.
+
 ## Publiceren
 
 Zie **DEPLOYMENT.md** voor een concreet stappenplan. Deze repository bevat ook
 een GitHub Actions-workflow (`.github/workflows/deploy.yml`) die de site
 automatisch naar GitHub Pages publiceert op het domein
-`desterksteboomvanrendestede.be`.
+`desterksteboomvanrendestede.be`. De workflow draait eerst `npm test`, dan de
+build. Publiceren gebeurt vanaf de `main`-branch.
+
+## Foto's vervangen door echte beelden
+
+De illustratieve foto's in `src/assets/` (`hero-home.jpg`, `verhaal.jpg`,
+`op-weg.jpg`) mogen vervangen worden door echte foto's zodra die er zijn.
+Behoud de bestandsnamen, dan hoeft er niets aan de code te veranderen; Astro
+optimaliseert ze automatisch (WebP, meerdere formaten). Let bij het vervangen op:
+
+- **Alt-teksten**: pas de `alt`-beschrijving aan de echte foto aan (in
+  `src/components/Hero.astro`, `StoryIntro.astro` en `src/pages/het-verhaal.astro`).
+- **Verhoudingen**: de containers gebruiken vaste beeldverhoudingen (bv. 16/9,
+  4/3); kies foto's die daar goed in passen.
+- **Social share**: `public/images/social-share.jpg` is exact **1200×630 px**
+  (Open Graph). Behoud die afmetingen bij vervanging.
+- De poster van de Everesting staat in `public/images/affiche-everesting.jpg`.
 
 ## Belangrijk: donaties
 
@@ -89,10 +124,24 @@ actiepagina van Kom op tegen Kanker.
 
 ## Wat nog ontbreekt (bewust)
 
-Om geen verzonnen informatie te tonen, bevat de website op verschillende
-plaatsen `TODO`-commentaren in de Markdown-bronbestanden (vooral in
-`src/content/challenges/everesting-congoberg.md`). Vul deze aan zodra de
-praktische informatie bekend is.
+Om geen verzonnen informatie te tonen, blijven praktische details bewust vaag
+tot ze bevestigd zijn — vooral in `src/content/challenges/everesting-congoberg.md`
+("de precieze praktische afspraken volgen zodra alles definitief is"). Vul deze
+aan zodra de informatie officieel is.
+
+De events-collectie (`src/content/events/`) is nog leeg op één sjabloonbestand
+na (`_voorbeeld.md`, staat op `published: false` en verschijnt nergens). Dat
+bestand houdt de build waarschuwingsvrij zolang er nog geen echte publieke actie
+is. Kopieer het, geef het een eigen naam, vul echte gegevens in en zet
+`published: true` om een actie te tonen.
+
+## Verborgen pagina's
+
+Het **dagboek** (`/dagboek`) is voorlopig verborgen: het staat op `noindex`,
+wordt niet in de sitemap opgenomen en er zijn geen links naar toe in de
+navigatie. Verwijder het sitemapfilter in `astro.config.mjs` en het `noindex`
+in de dagboekpagina's om het weer zichtbaar te maken. Ook `/bedankt` (na het
+formulier) en de eigen **404-pagina** staan op `noindex`.
 
 ## Kwaliteit
 
@@ -100,5 +149,9 @@ praktische informatie bekend is.
   toegankelijke mobiele navigatie, `prefers-reduced-motion` gerespecteerd.
 - Geen tracking, geen advertentiecookies, geen cookiebanner nodig zolang dat
   zo blijft (zie `/cookies`).
-- SEO: unieke titels/descriptions, Open Graph, Twitter cards, JSON-LD
-  (Organization, Event, Article), sitemap.xml, robots.txt.
+- SEO: unieke titels/descriptions, Open Graph (met `og:image` 1200×630 +
+  afmetingen en alt), Twitter cards, JSON-LD (Organization + WebSite als
+  `@graph`, BreadcrumbList, Event, Article), sitemap.xml, robots.txt.
+- Dit is een **persoonlijk initiatief**, geen geregistreerde vzw/NGO. De
+  structured data gebruikt daarom `Organization` (niet `NGO`) met een duidelijke
+  omschrijving en de initiatiefnemer als `founder`.

@@ -28,6 +28,7 @@ const pageUrl = new URL(`/dagboek/${post.id}`, siteConfig.url).toString();
   title={post.data.seoTitle ?? post.data.title}
   description={post.data.seoDescription ?? post.data.summary}
   type="article"
+  noindex
 >
   <StructuredData
     kind="Article"

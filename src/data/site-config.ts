@@ -15,8 +15,8 @@ export const siteConfig = {
   // Definitief domein. Pas dit aan zodra het domein gekoppeld is.
   url: "https://desterksteboomvanrendestede.be",
 
-  // Contact
-  email: "koen_vanongeval@hotmail.com",
+  // Contact — bewust een apart projectadres.
+  email: "desterksteboomvanrendestede@outlook.com",
   facebookUrl: "https://www.facebook.com/profile.php?id=61592009188050",
 
   // Officiële actiepagina van Kom op tegen Kanker. Alle donaties lopen hierlangs.
@@ -33,7 +33,7 @@ export const siteConfig = {
   // Kan overschreven worden via de omgevingsvariabele PUBLIC_FORM_ENDPOINT.
   formEndpoint:
     import.meta.env.PUBLIC_FORM_ENDPOINT ||
-    "https://formsubmit.co/koen_vanongeval@hotmail.com",
+    "https://formsubmit.co/desterksteboomvanrendestede@outlook.com",
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.

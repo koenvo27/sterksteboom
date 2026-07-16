@@ -33,14 +33,35 @@ const props = Astro.props as Props;
 let json: Record<string, unknown> = {};
 
 if (props.kind === "Organization") {
+  // Dit is een persoonlijk initiatief, geen geregistreerde vzw/NGO. We gebruiken
+  // daarom het neutrale type "Organization" met een duidelijke beschrijving en
+  // initiatiefnemer, en koppelen er meteen de WebSite aan via een @graph.
   json = {
     "@context": "https://schema.org",
-    "@type": "NGO",
-    name: siteConfig.projectName,
-    url: siteConfig.url,
-    email: siteConfig.email,
-    sameAs: [siteConfig.facebookUrl],
-    description: siteConfig.tagline,
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteConfig.url}/#organization`,
+        name: siteConfig.projectName,
+        url: siteConfig.url,
+        email: siteConfig.email,
+        sameAs: [siteConfig.facebookUrl],
+        description: siteConfig.tagline,
+        founder: {
+          "@type": "Person",
+          name: siteConfig.initiatiefnemer,
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}/#website`,
+        url: siteConfig.url,
+        name: siteConfig.projectName,
+        description: siteConfig.tagline,
+        inLanguage: "nl-BE",
+        publisher: { "@id": `${siteConfig.url}/#organization` },
+      },
+    ],
   };
 } else if (props.kind === "Event") {
   json = {

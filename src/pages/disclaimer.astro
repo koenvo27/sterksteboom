@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { siteConfig } from "../data/site-config";
 ---
 
 <Layout title="Disclaimer" description="Disclaimer van De Sterkste Boom van Rendestede.">
@@ -39,7 +40,7 @@ import Breadcrumbs from "../components/Breadcrumbs.astro";
       <h2>Contact</h2>
       <p>
         Vragen over deze disclaimer? Mail naar
-        <a href="mailto:koen_vanongeval@hotmail.com" class="underline"> koen_vanongeval@hotmail.com</a>.
+        <a href={`mailto:${siteConfig.email}`} class="underline"> {siteConfig.email}</a>.
       </p>
     </div>
   </div>

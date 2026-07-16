@@ -3,6 +3,12 @@ name: Deploy naar GitHub Pages
 on:
   push:
     branches:
+      # main = primaire productiebranch. Maak main de default branch van de
+      # repo (Settings → Branches) zodat GitHub Pages hiervanaf deployt.
+      - main
+      # De oorspronkelijke werkbranch blijft voorlopig aanvullend ondersteund
+      # zodat de site blijft deployen tot main als default is ingesteld. Deze
+      # regel mag verwijderd worden zodra main de default branch is.
       - claude/sterksteboom-github-deploy-aw4yyb
   workflow_dispatch:
 
@@ -31,6 +37,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # Tests draaien vóór de build: een mislukte test stopt de job, dus een
+      # kapotte versie wordt nooit gepubliceerd.
+      - name: Tests
+        run: npm test
 
       - name: Build site
         run: npm run build

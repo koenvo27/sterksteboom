@@ -60,7 +60,7 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
       {challenge.data.title}
     </h1>
     <p class="mt-3 text-sm text-antraciet-500">
-      {formattedDate} · {challenge.data.location}
+      {challenge.data.dateLabel ?? formattedDate} · {challenge.data.location}
     </p>
     <p class="mt-5 text-lg text-antraciet-700">{challenge.data.summary}</p>
 

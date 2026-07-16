@@ -18,8 +18,8 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
     <Breadcrumbs items={[{ label: "De uitdagingen" }]} />
     <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">De uitdagingen</h1>
     <p class="mt-4 text-antraciet-700 max-w-2xl">
-      Elke uitdaging is een stap richting het grote doel: De 1000 km voor Kom op tegen Kanker in 2027.
-      Klim na klim, kilometer na kilometer, voor de sterkste boom van Rendestede.
+      Elke uitdaging is een stap richting het grote doel: in mei 2027 mee in De 1000 km
+      voor Kom op tegen Kanker. Van de eerste beklimming tot de laatste kilometer.
     </p>
 
     <div class="mt-10 grid gap-6">
@@ -33,6 +33,7 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
             date={challenge.data.date}
             location={challenge.data.location}
             status={challenge.data.status}
+            dateLabel={challenge.data.dateLabel}
             href={`/uitdagingen/${challenge.id}`}
           />
         ))

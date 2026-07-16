@@ -1,0 +1,37 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout
+  title="Pagina niet gevonden"
+  description="Deze pagina bestaat niet (meer). Keer terug naar de homepage of ontdek de reis naar De 1000 km voor Kom op tegen Kanker."
+  noindex
+>
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 py-20 sm:py-28 text-center">
+    <p class="font-accent text-3xl text-goud-700">Oei…</p>
+    <p class="mt-2 font-display text-6xl sm:text-7xl font-semibold text-goud-500">404</p>
+    <h1 class="mt-4 font-display text-3xl sm:text-4xl font-semibold text-antraciet-900">
+      Deze pagina konden we niet vinden
+    </h1>
+    <p class="mt-5 text-lg text-antraciet-700">
+      Misschien is de link verouderd of typte je iets verkeerd. Geen zorgen — je vindt hieronder
+      snel je weg terug.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <Button href="/" variant="secondary">Terug naar de homepage</Button>
+      <Button href="/op-weg-naar-de-1000-km" variant="ghost">Bekijk de reis</Button>
+    </div>
+    <nav class="mt-12 border-t border-beige-200 pt-8" aria-label="Populaire pagina's">
+      <p class="text-sm font-semibold uppercase tracking-wide text-antraciet-500">
+        Of ga meteen naar
+      </p>
+      <ul class="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-goud-700">
+        <li><a class="underline hover:text-goud-800" href="/het-verhaal">Het verhaal</a></li>
+        <li><a class="underline hover:text-goud-800" href="/uitdagingen">De uitdagingen</a></li>
+        <li><a class="underline hover:text-goud-800" href="/steunen">Steun het project</a></li>
+        <li><a class="underline hover:text-goud-800" href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</Layout>

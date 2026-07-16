@@ -49,6 +49,10 @@ const challenges = defineCollection({
     date: z.coerce.date(),
     location: z.string(),
     status: z.string().optional(),
+    // Optioneel: menselijke datumtekst die de exacte datum vervangt in de
+    // weergave (bv. "Mei 2027" voor een meerdaags evenement). De 'date' blijft
+    // wel voor sortering en tellers.
+    dateLabel: z.string().optional(),
     poster: z.string().optional(),
     featured: z.boolean().default(false),
     published: z.boolean().default(true),

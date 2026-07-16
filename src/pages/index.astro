@@ -40,10 +40,10 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
       </div>
     )}
     <div class="mt-12">
-      <Timeline />
+      <Timeline variant="highlights" />
     </div>
     <div class="mt-12 flex justify-center">
-      <Button href="/op-weg" variant="ghost">Bekijk de volledige reis</Button>
+      <Button href="/op-weg-naar-de-1000-km" variant="secondary">Bekijk de volledige reis</Button>
     </div>
   </section>
 
@@ -64,6 +64,7 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
             date={challenge.data.date}
             location={challenge.data.location}
             status={challenge.data.status}
+            dateLabel={challenge.data.dateLabel}
             href={`/uitdagingen/${challenge.id}`}
           />
         ))

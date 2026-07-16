@@ -1,4 +1,6 @@
 ---
+import { siteConfig } from "../data/site-config";
+
 interface Crumb {
   label: string;
   href?: string;
@@ -7,7 +9,23 @@ interface Props {
   items: Crumb[];
 }
 const { items } = Astro.props;
+
+// BreadcrumbList voor zoekmachines: Home + de doorgegeven kruimels.
+const trail = [{ label: "Home", href: "/" }, ...items];
+const breadcrumbJson = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: trail.map((crumb, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: crumb.label,
+    ...(crumb.href ? { item: new URL(crumb.href, siteConfig.url).toString() } : {}),
+  })),
+};
 ---
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbJson)} />
+
 
 <nav aria-label="Broodkruimel" class="text-sm text-antraciet-500 mb-8">
   <ol class="flex flex-wrap items-center gap-2">

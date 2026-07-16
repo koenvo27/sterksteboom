@@ -9,7 +9,7 @@ interface Props {
 const { navItems, donationUrl } = Astro.props;
 ---
 
-<div class="xl:hidden">
+<div class="lg:hidden">
   <button
     id="menu-toggle"
     type="button"
@@ -32,7 +32,7 @@ const { navItems, donationUrl } = Astro.props;
 
 <div
   id="mobile-menu"
-  class="xl:hidden hidden fixed inset-0 top-16 sm:top-20 z-40 bg-beige-50 overflow-y-auto"
+  class="lg:hidden hidden fixed inset-0 top-16 sm:top-20 z-40 bg-beige-50 overflow-y-auto"
 >
   <nav aria-label="Mobiele navigatie" class="flex flex-col p-6 gap-1">
     {navItems.map((item) => (

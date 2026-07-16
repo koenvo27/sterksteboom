@@ -1,7 +1,20 @@
 ---
 // De reis — verticale tijdlijn, gevoed door src/data/journey.ts.
 // Rustig en mobiel-first: één doorlopende "groeilijn" met stappen erlangs.
-import { journey } from "../data/journey";
+//
+// variant "full"       -> volledige tijdlijn met tagline + beschrijving.
+// variant "highlights" -> compacte homepage-versie: enkel de stappen met
+//                         homepage:true, zonder de lange beschrijving.
+import { journeyWithStatus } from "../data/journey";
+
+interface Props {
+  variant?: "full" | "highlights";
+}
+const { variant = "full" } = Astro.props;
+
+const all = journeyWithStatus();
+const steps = variant === "highlights" ? all.filter((s) => s.homepage) : all;
+const compact = variant === "highlights";
 ---
 
 <div class="relative mx-auto max-w-2xl">
@@ -12,8 +25,8 @@ import { journey } from "../data/journey";
   >
   </div>
 
-  <ol class="space-y-10 sm:space-y-12">
-    {journey.map((step) => (
+  <ol class="space-y-8 sm:space-y-12">
+    {steps.map((step) => (
       <li class="relative pl-16 sm:pl-20">
         <span
           class:list={[
@@ -30,13 +43,16 @@ import { journey } from "../data/journey";
         </span>
 
         <p class="text-xs font-semibold uppercase tracking-wide text-bos-600">
-          {step.label}{step.status === "current" ? " · nu" : ""}
+          {step.label}
+          {step.status === "current" && (
+            <span class="ml-1 rounded-full bg-goud-100 px-2 py-0.5 text-bos-600">nu</span>
+          )}
         </p>
         <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">{step.title}</h3>
-        {step.tagline && (
+        {!compact && step.tagline && (
           <p class="mt-1.5 font-medium text-antraciet-900">{step.tagline}</p>
         )}
-        {step.description && (
+        {!compact && step.description && (
           <p class="mt-1 text-antraciet-700 leading-relaxed">{step.description}</p>
         )}
       </li>
