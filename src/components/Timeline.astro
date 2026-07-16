@@ -7,17 +7,17 @@ import { journey } from "../data/journey";
 <div class="relative mx-auto max-w-2xl">
   <!-- Doorlopende groeilijn (het jaarring-/boommotief als tijdlijn). Decoratief. -->
   <div
-    class="absolute left-6 top-4 bottom-4 w-px bg-gradient-to-b from-beige-200 via-goud-300 to-beige-200"
+    class="absolute left-5 sm:left-6 top-4 bottom-4 w-px bg-gradient-to-b from-beige-200 via-goud-300 to-beige-200"
     aria-hidden="true"
   >
   </div>
 
   <ol class="space-y-10 sm:space-y-12">
     {journey.map((step) => (
-      <li class="relative pl-20">
+      <li class="relative pl-16 sm:pl-20">
         <span
           class:list={[
-            "absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full border text-xl",
+            "absolute left-0 top-0 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border text-lg sm:text-xl",
             step.status === "done"
               ? "bg-goud-100 border-goud-500"
               : step.status === "current"

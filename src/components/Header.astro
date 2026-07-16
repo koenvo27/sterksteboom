@@ -12,7 +12,10 @@ function isActive(href: string) {
 }
 ---
 
-<header class="sticky top-0 z-50 bg-beige-50/95 backdrop-blur border-b border-beige-200">
+<!-- Geen backdrop-blur hier: een backdrop-filter maakt de header het
+     referentiekader voor position:fixed, waardoor het mobiele menu-overlay
+     (dat in de header staat) op hoogte 0 zou uitkomen. -->
+<header class="sticky top-0 z-50 bg-beige-50 border-b border-beige-200">
   <div class="mx-auto max-w-6xl px-4 sm:px-6">
     <div class="flex h-16 sm:h-20 items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-3 font-display text-base sm:text-lg font-semibold text-antraciet-900 shrink-0">

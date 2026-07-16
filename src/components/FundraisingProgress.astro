@@ -3,6 +3,7 @@ import fundraising from "../data/fundraising.json";
 import DonationButton from "./DonationButton.astro";
 
 const { raised, goal, lastUpdated, showProgress } = fundraising;
+const stretchGoal = "stretchGoal" in fundraising ? fundraising.stretchGoal : null;
 const percentage = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
 const formattedDate = new Date(lastUpdated).toLocaleDateString("nl-BE", {
   day: "numeric",
@@ -53,7 +54,8 @@ const eur = new Intl.NumberFormat("nl-BE", {
       <h2 class="font-display text-2xl sm:text-3xl font-semibold text-antraciet-900">Fondsenwerving</h2>
       <p class="mt-2 text-antraciet-700">
         Opgehaald: <strong class="text-antraciet-900">{eur.format(raised)}</strong>
-        {" "}van de <strong class="text-antraciet-900">{eur.format(goal)}</strong> doelstelling.
+        {" "}van de <strong class="text-antraciet-900">{eur.format(goal)}</strong> doelstelling
+        {" — "}<span class="whitespace-nowrap">✔ nodig voor deelname</span>.
       </p>
       {showProgress && (
         <div
@@ -68,6 +70,19 @@ const eur = new Intl.NumberFormat("nl-BE", {
         </div>
       )}
       <p class="mt-3 text-sm text-antraciet-500">Laatst bijgewerkt op {formattedDate}.</p>
+
+      {stretchGoal && stretchGoal > goal && (
+        <div class="mt-6 border-t border-beige-200 pt-5">
+          <p class="text-sm font-semibold uppercase tracking-wide text-antraciet-700">
+            Maar we stoppen niet.
+          </p>
+          <p class="mt-1 text-antraciet-700">
+            Ons echte doel? <span class="font-accent text-2xl text-goud-700">💛 {eur.format(stretchGoal)}</span>
+            {" "}voor Kom op tegen Kanker.
+          </p>
+        </div>
+      )}
+
       <div class="mt-6">
         <DonationButton />
       </div>

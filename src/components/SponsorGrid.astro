@@ -1,6 +1,5 @@
 ---
 import sponsors from "../data/sponsors.json";
-import EmptyState from "./EmptyState.astro";
 
 interface Sponsor {
   name: string;
@@ -17,11 +16,34 @@ const list = (sponsors as Sponsor[]).slice().sort((a, b) => (a.order ?? 99) - (b
 ---
 
 {list.length === 0 ? (
-  <EmptyState
-    message="Binnenkort verschijnen hier de bedrijven en organisaties die mee hun schouders onder dit project zetten."
-    ctaLabel="Bouw mee aan dit verhaal"
-    ctaHref="/steunen"
-  />
+  <div class="relative overflow-hidden rounded-card border border-beige-200 bg-beige-100/60 px-6 py-14 text-center">
+    <img
+      src="/images/tree-mark.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -left-10 -bottom-16 w-56 opacity-[0.07]"
+    />
+    <img
+      src="/images/tree-mark.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-10 -top-16 w-56 rotate-180 opacity-[0.07]"
+    />
+    <p class="relative font-display text-2xl font-semibold text-antraciet-900">
+      Binnenkort onze steunpilaren
+    </p>
+    <p class="relative mt-2 font-accent text-2xl text-goud-700">💛 Samen maken we het verschil.</p>
+    <p class="relative mx-auto mt-3 max-w-md text-antraciet-700">
+      Hier verschijnen de mensen, bedrijven en organisaties die mee hun schouders onder dit
+      verhaal zetten.
+    </p>
+    <a
+      href="/steunen"
+      class="relative mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-antraciet-900 px-6 py-3 text-sm font-semibold text-beige-50"
+    >
+      Bouw mee aan dit verhaal
+    </a>
+  </div>
 ) : (
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
     {list.map((sponsor) => (
