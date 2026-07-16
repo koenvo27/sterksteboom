@@ -33,8 +33,11 @@ import { journey } from "../data/journey";
           {step.label}{step.status === "current" ? " · nu" : ""}
         </p>
         <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">{step.title}</h3>
+        {step.tagline && (
+          <p class="mt-1.5 font-medium text-antraciet-900">{step.tagline}</p>
+        )}
         {step.description && (
-          <p class="mt-1.5 text-antraciet-700 leading-relaxed">{step.description}</p>
+          <p class="mt-1 text-antraciet-700 leading-relaxed">{step.description}</p>
         )}
       </li>
     ))}

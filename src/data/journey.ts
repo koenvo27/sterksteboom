@@ -18,58 +18,89 @@ export interface JourneyStep {
   date?: string;
   icon: string;
   title: string;
+  tagline?: string;
   description?: string;
   status: "done" | "current" | "upcoming";
 }
 
 export const journey: JourneyStep[] = [
   {
-    label: "Begin 2026",
-    icon: "🌱",
+    label: "4 februari 2026",
+    date: "2026-02-04",
+    icon: "💛",
     title: "Afscheid van papa",
+    tagline: "Mijn papa, Cyriel Van Ongeval, overlijdt aan een bijzonder agressieve vorm van kanker.",
     description:
-      "Begin 2026 verloor ik mijn papa Cyriel veel te snel aan een agressieve vorm van kanker. Voor velen was hij de sterkste boom van Rendestede.",
+      "Voor velen was hij de sterkste boom van Rendestede. Zijn kracht en doorzettingsvermogen vormen vanaf nu de inspiratie voor alles wat volgt.",
+    status: "done",
+  },
+  {
+    label: "1 juni 2026",
+    date: "2026-06-01",
+    icon: "🌱",
+    title: "De Sterkste Boom van Rendestede ontstaat",
+    tagline: "Uit verdriet groeit een nieuw doel.",
+    description:
+      "Het project wordt geboren: een initiatief om via sportieve uitdagingen en acties geld in te zamelen voor Kom op tegen Kanker, ter nagedachtenis van papa.",
+    status: "done",
+  },
+  {
+    label: "19 juni 2026",
+    date: "2026-06-19",
+    icon: "🚴",
+    title: "Inschrijving voor De 1000 km",
+    tagline: "De officiële inschrijving voor De 1000 km voor Kom op tegen Kanker is een feit.",
+    description:
+      "Vanaf nu krijgt het project een duidelijk einddoel: in mei 2027 solo deelnemen aan De 1000 km.",
     status: "done",
   },
   {
     label: "Juli 2026",
-    date: "2026-07-15",
-    icon: "🚴",
-    title: "Het project start",
+    date: "2026-07-01",
+    icon: "🤝",
+    title: "De eerste partners sluiten aan",
+    tagline: "Lokale handelaars, bedrijven, familie en vrienden geloven in het verhaal.",
     description:
-      "De Sterkste Boom van Rendestede gaat van start: in beweging komen in plaats van stil te blijven staan.",
-    status: "current",
+      "De eerste samenwerkingen zorgen ervoor dat het project steeds verder kan groeien.",
+    status: "done",
   },
   {
-    label: "2026",
-    icon: "🤝",
-    title: "Partners sluiten aan",
+    label: "Juli 2026",
+    date: "2026-07-16",
+    icon: "🌐",
+    title: "Website en sociale media online",
+    tagline: "Het verhaal krijgt een thuis.",
     description:
-      "Mensen, bedrijven en organisaties worden steunpilaren en dragen het verhaal mee.",
-    status: "upcoming",
+      "De website desterksteboomvanrendestede.be en de Facebookpagina gaan online. Vanaf nu kan iedereen het verhaal volgen, acties ontdekken en het project steunen.",
+    status: "current",
   },
   {
     label: "12 september 2026",
     date: "2026-09-12",
     icon: "⛰️",
-    title: "Everesting op de Congoberg",
+    title: "Everesting Congoberg",
+    tagline: "De eerste grote sportieve uitdaging.",
     description:
-      "De hoogte van de Mount Everest bijeen fietsen op de Congoberg — de eerste grote sportieve uitdaging.",
+      "8.848 hoogtemeters op de Congoberg in het Pajottenland, volledig ten voordele van Kom op tegen Kanker.",
     status: "upcoming",
   },
   {
-    label: "Najaar 2026",
+    label: "Januari 2027",
     icon: "🧇",
-    title: "Wafelenbak",
-    description: "Een warme, lokale actie ten voordele van Kom op tegen Kanker.",
+    title: "Wafelenbak voor Kom op tegen Kanker",
+    tagline: "Details worden nog bekendgemaakt.",
+    description:
+      "Samen met familie, vrienden en vrijwilligers organiseren we een wafelenbak om extra fondsen in te zamelen.",
     status: "upcoming",
   },
   {
-    label: "2027",
-    icon: "🚴",
+    label: "6 mei 2027",
+    date: "2027-05-06",
+    icon: "🏁",
     title: "De 1000 km voor Kom op tegen Kanker",
+    tagline: "Het doel waar alles naartoe heeft gewerkt.",
     description:
-      "Het einddoel: solo deelnemen aan De 1000 km voor Kom op tegen Kanker.",
+      "Een solo-deelname aan De 1000 km voor Kom op tegen Kanker, gedragen door iedereen die onderweg mee het verschil maakte.",
     status: "upcoming",
   },
 ];

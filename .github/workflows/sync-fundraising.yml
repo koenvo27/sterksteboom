@@ -1,0 +1,47 @@
+name: Sync fondsenwerving (KOTK)
+
+on:
+  schedule:
+    # Elk uur. Pas de frequentie hier aan indien gewenst, bv.:
+    #   "*/15 * * * *"  = elk kwartier (let op: GitHub plant cron 'best effort',
+    #                     sub-uurlijks is niet gegarandeerd exact en gebruikt
+    #                     meer Actions-minuten)
+    #   "0 6 * * *"     = één keer per dag om 06:00 UTC
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+# Nodig om het bijgewerkte bedrag terug te committen.
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-fundraising
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Bedrag ophalen van Kom op tegen Kanker
+        run: node scripts/sync-fundraising.mjs
+
+      - name: Committen indien gewijzigd
+        run: |
+          if git diff --quiet -- src/data/fundraising.json; then
+            echo "Geen wijziging aan fundraising.json — niets te committen."
+          else
+            git config user.name "sterkste-boom-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/fundraising.json
+            git commit -m "chore: sync fondsenwerving vanaf Kom op tegen Kanker"
+            git push
+            echo "Bijgewerkt bedrag gepusht — de deploy-workflow publiceert de nieuwe versie."
+          fi

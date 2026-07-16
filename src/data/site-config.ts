@@ -36,7 +36,7 @@ export const siteConfig = {
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {
     everesting: "2026-09-12" as string | null,
-    duizendKm: null as string | null, // TODO: datum invullen zodra bekend
+    duizendKm: "2027-05-06" as string | null,
   },
 };
 

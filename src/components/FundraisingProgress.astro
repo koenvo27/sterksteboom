@@ -18,7 +18,14 @@ const eur = new Intl.NumberFormat("nl-BE", {
 ---
 
 <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
-  <div class="rounded-card bg-beige-100 border border-beige-200 p-6 sm:p-10 grid gap-8 md:grid-cols-[auto_1fr] items-center">
+  <div class="relative overflow-hidden rounded-card bg-beige-100 border border-beige-200 p-6 sm:p-10">
+    <img
+      src="/images/tree-mark.webp"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-12 -bottom-20 w-72 opacity-[0.06]"
+    />
+    <div class="relative grid gap-8 md:grid-cols-[auto_1fr] items-center">
     <!-- Jaarring-voortgangscirkel: hetzelfde motief als de hero, nu als data -->
     <div class="relative w-40 h-40 sm:w-48 sm:h-48 mx-auto">
       <svg viewBox="0 0 200 200" class="w-full h-full -rotate-90">
@@ -52,6 +59,7 @@ const eur = new Intl.NumberFormat("nl-BE", {
       <div class="mt-6">
         <DonationButton />
       </div>
+    </div>
     </div>
   </div>
 </section>
