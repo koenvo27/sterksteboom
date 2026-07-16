@@ -8,9 +8,12 @@ on:
     - cron: "0 */6 * * *"
   workflow_dispatch:
 
-# Nodig om het bijgewerkte bedrag terug te committen.
+# contents: write  -> om het bijgewerkte bedrag terug te committen
+# actions: write   -> om daarna de deploy-workflow te starten (pushes met
+#                     GITHUB_TOKEN triggeren zelf geen workflows)
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: sync-fundraising
@@ -48,5 +51,10 @@ jobs:
             git add src/data/fundraising.json
             git commit -m "chore: sync fondsenwerving vanaf Kom op tegen Kanker"
             git push
-            echo "Bijgewerkt bedrag gepusht — de deploy-workflow publiceert de nieuwe versie."
+            echo "Bijgewerkt bedrag gepusht — deploy-workflow wordt gestart."
+            # Pushes met GITHUB_TOKEN triggeren zelf geen workflows; start de
+            # deploy daarom expliciet (workflow_dispatch is daarop de uitzondering).
+            gh workflow run deploy.yml --ref "$GITHUB_REF_NAME"
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}
