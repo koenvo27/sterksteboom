@@ -8,7 +8,13 @@ import tailwindcss from "@tailwindcss/vite";
 // Pages (zie public/CNAME).
 export default defineConfig({
   site: "https://desterksteboomvanrendestede.be",
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // Het dagboek is voorlopig verborgen: geen links op de site en niet
+      // in de sitemap. Verwijder dit filter om het weer op te nemen.
+      filter: (page) => !page.includes("/dagboek") && !page.includes("/bedankt"),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

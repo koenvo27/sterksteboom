@@ -26,11 +26,14 @@ export const siteConfig = {
   // Initiatiefnemer
   initiatiefnemer: "Koen Van Ongeval",
 
-  // Formulierendpoint (bv. Formspree). Leeg = formulieren worden verborgen
-  // en vervangen door een duidelijke mailknop. Zie CONTENT-BEHEREN.md.
-  // Kan hier rechtstreeks ingevuld worden, of via de omgevingsvariabele
-  // PUBLIC_FORM_ENDPOINT (zie .env.example). De omgevingsvariabele heeft voorrang.
-  formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT || "", // TODO: Formspree-endpoint invullen, bv. "https://formspree.io/f/xxxxxxx"
+  // Formulierendpoint. Leeg = formulieren worden verborgen en vervangen
+  // door een duidelijke mailknop. Standaard: FormSubmit (geen account nodig;
+  // de eerste inzending stuurt eenmalig een activatiemail naar het e-mailadres
+  // hierboven — bevestig die en het formulier werkt).
+  // Kan overschreven worden via de omgevingsvariabele PUBLIC_FORM_ENDPOINT.
+  formEndpoint:
+    import.meta.env.PUBLIC_FORM_ENDPOINT ||
+    "https://formsubmit.co/koen_vanongeval@hotmail.com",
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.

@@ -50,4 +50,4 @@ Bedrijven en organisaties die dit project mee willen dragen, zijn van harte welk
 
 ## Updates
 
-Volg de voorbereiding via het [dagboek](/dagboek) en op [Facebook](https://www.facebook.com/profile.php?id=61592009188050).
+Volg de voorbereiding op [Facebook](https://www.facebook.com/profile.php?id=61592009188050).

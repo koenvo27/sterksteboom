@@ -6,7 +6,6 @@ import Timeline from "../components/Timeline.astro";
 import Countdown from "../components/Countdown.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import ChallengeCard from "../components/ChallengeCard.astro";
-import NewsCard from "../components/NewsCard.astro";
 import FundraisingProgress from "../components/FundraisingProgress.astro";
 import PartnerCallout from "../components/PartnerCallout.astro";
 import ContactCTA from "../components/ContactCTA.astro";
@@ -19,10 +18,6 @@ import { siteConfig } from "../data/site-config";
 const challenges = (await getCollection("challenges", ({ data }) => data.published)).sort(
   (a, b) => a.data.date.getTime() - b.data.date.getTime(),
 );
-
-const news = (await getCollection("news", ({ data }) => data.published))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
 ---
 
 <Layout title={siteConfig.projectName} description={siteConfig.tagline}>
@@ -82,34 +77,6 @@ const news = (await getCollection("news", ({ data }) => data.published))
   </section>
 
   <FundraisingProgress />
-
-  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <SectionHeader
-        eyebrow="Blijf op de hoogte"
-        title="Uit het dagboek"
-        description="Persoonlijke updates over de voorbereiding, de trainingen en de momenten onderweg."
-      />
-      <Button href="/dagboek" variant="ghost" class="shrink-0">Naar het dagboek</Button>
-    </div>
-    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {news.length === 0 ? (
-        <div class="sm:col-span-2 lg:col-span-3">
-          <EmptyState message="Binnenkort verschijnt hier de eerste dagboekpost." />
-        </div>
-      ) : (
-        news.map((post) => (
-          <NewsCard
-            title={post.data.title}
-            summary={post.data.summary}
-            date={post.data.date}
-            category={post.data.category}
-            href={`/dagboek/${post.id}`}
-          />
-        ))
-      )}
-    </div>
-  </section>
 
   <div class="mx-auto max-w-5xl px-4 sm:px-6 pt-4 pb-2">
     <img

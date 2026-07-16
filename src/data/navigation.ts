@@ -15,7 +15,8 @@ export const mainNav: NavItem[] = [
   { label: "Op weg naar de 1000 km", href: "/op-weg" },
   { label: "Onze steunpilaren", href: "/partners" },
   { label: "Steunen", href: "/steunen" },
-  { label: "Dagboek", href: "/dagboek" },
+  // Dagboek staat voorlopig verborgen. Terug tonen = deze regel toevoegen:
+  // { label: "Dagboek", href: "/dagboek" },
   { label: "Contact", href: "/contact" },
 ];
 

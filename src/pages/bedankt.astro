@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout
+  title="Bedankt voor je bericht"
+  description="Je bericht is goed verzonden."
+  noindex
+>
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 py-20 sm:py-28 text-center">
+    <p class="font-accent text-3xl text-goud-700">💛</p>
+    <h1 class="mt-2 font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">
+      Bedankt voor je bericht
+    </h1>
+    <p class="mt-5 text-lg text-antraciet-700">
+      Je bericht is goed aangekomen. Ik lees alles persoonlijk en antwoord zo snel mogelijk.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <Button href="/" variant="secondary">Terug naar de homepage</Button>
+      <Button href="/op-weg" variant="ghost">Bekijk de reis</Button>
+    </div>
+  </div>
+</Layout>
