@@ -35,6 +35,30 @@ function extract(html) {
   const text = html.replace(/\s+/g, " ");
   const candidates = { raised: null, goal: null, notes: [] };
 
+  // 0) Ingebedde JSON-state (SPA's stoppen begindata vaak in de HTML).
+  const jsonRaised = text.match(
+    /"(?:collected(?:Amount)?|raised(?:Amount)?|amountRaised|amountCollected|totalDonated|currentAmount|donationTotal|totaal|opgehaald)"\s*:\s*"?([\d]+(?:[.,]\d+)?)/i,
+  );
+  const jsonGoal = text.match(
+    /"(?:goal(?:Amount)?|target(?:Amount)?|amountGoal|objective|streefbedrag)"\s*:\s*"?([\d]+(?:[.,]\d+)?)/i,
+  );
+  if (jsonRaised) {
+    candidates.raised = parseEuro(jsonRaised[1]);
+    candidates.notes.push(`JSON opgehaald: ${jsonRaised[0]}`);
+  }
+  if (jsonGoal) {
+    candidates.goal = parseEuro(jsonGoal[1]);
+    candidates.notes.push(`JSON doel: ${jsonGoal[0]}`);
+  }
+
+  // Diagnostiek: helpt bepalen hoe de pagina de data aanlevert.
+  candidates.notes.push(`HTML-lengte: ${html.length}`);
+  candidates.notes.push(
+    `SPA-markers: ${/__NUXT__|__NEXT_DATA__|window\.__|ng-version|data-reactroot|id="app"|id="__nuxt"/i.test(html)}`,
+  );
+  const ctx = text.match(/.{0,50}(streefbedrag|opgehaald|ingezameld|collected|raised|goal|target).{0,50}/i);
+  candidates.notes.push(`context-fragment: ${ctx ? ctx[0].trim() : "geen keyword gevonden"}`);
+
   // 1) "€ X van € Y"  of  "€ X / € Y"  (opgehaald van doel)
   const vanMatch = text.match(
     /€\s*([\d.,]+)\s*(?:van|\/)\s*€?\s*([\d.,]+)/i,
