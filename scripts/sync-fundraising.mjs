@@ -115,15 +115,23 @@ async function main() {
   const routes = [
     { name: "rechtstreeks", url: SOURCE_URL, headers: {} },
     {
-      name: "render-proxy",
+      name: "render-proxy (html)",
       url: `https://r.jina.ai/${SOURCE_URL}`,
       headers: { "X-Return-Format": "html" },
-      timeout: 45_000,
+      timeout: 60_000,
+    },
+    {
+      name: "render-proxy (tekst)",
+      url: `https://r.jina.ai/${SOURCE_URL}`,
+      headers: {},
+      timeout: 60_000,
     },
   ];
 
-  let html = null;
+  // Probeer route na route; stop bij de eerste waaruit een bedrag te halen valt.
+  let result = null;
   for (const route of routes) {
+    let html = null;
     for (let i = 1; i <= 2; i++) {
       try {
         const res = await fetchWithTimeout(route.url, route.timeout ?? TIMEOUT_MS, fetch, route.headers);
@@ -138,16 +146,23 @@ async function main() {
       }
       if (i < 2) await new Promise((r) => setTimeout(r, 3000));
     }
-    if (html != null) break;
-  }
-  if (html == null) {
-    console.warn("Bedrag blijft ongewijzigd (geen geldige respons via beide routes).");
-    return;
+    if (html == null) continue;
+
+    const attempt = extractAmount(html);
+    if (attempt.ok) {
+      result = attempt;
+      break;
+    }
+    // Diagnostiek: laat zien wat deze route terugkreeg, zodat parsing
+    // bijgestuurd kan worden zonder te gokken.
+    const peek = html.replace(/\s+/g, " ").slice(0, 300);
+    console.warn(
+      `WAARSCHUWING: ${route.name} gaf inhoud (${html.length} tekens) maar ${attempt.reason}. Begin: ${peek}`,
+    );
   }
 
-  const result = extractAmount(html);
-  if (!result.ok) {
-    console.warn(`WAARSCHUWING: parsing mislukt — ${result.reason}. Bedrag blijft ongewijzigd.`);
+  if (result == null) {
+    console.warn("Bedrag blijft ongewijzigd (geen route leverde een herkenbaar bedrag).");
     return;
   }
 
