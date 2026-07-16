@@ -28,7 +28,7 @@ export const journey: JourneyStep[] = [
     icon: "🌱",
     title: "Afscheid van papa",
     description:
-      "Begin 2026 verloor ik mijn papa veel te snel aan een agressieve vorm van kanker. Voor velen was hij de sterkste boom van Rendestede.",
+      "Begin 2026 verloor ik mijn papa Cyriel veel te snel aan een agressieve vorm van kanker. Voor velen was hij de sterkste boom van Rendestede.",
     status: "done",
   },
   {

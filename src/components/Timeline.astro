@@ -1,0 +1,42 @@
+---
+// De reis — verticale tijdlijn, gevoed door src/data/journey.ts.
+// Rustig en mobiel-first: één doorlopende "groeilijn" met stappen erlangs.
+import { journey } from "../data/journey";
+---
+
+<div class="relative mx-auto max-w-2xl">
+  <!-- Doorlopende groeilijn (het jaarring-/boommotief als tijdlijn). Decoratief. -->
+  <div
+    class="absolute left-6 top-4 bottom-4 w-px bg-gradient-to-b from-beige-200 via-goud-300 to-beige-200"
+    aria-hidden="true"
+  >
+  </div>
+
+  <ol class="space-y-10 sm:space-y-12">
+    {journey.map((step) => (
+      <li class="relative pl-20">
+        <span
+          class:list={[
+            "absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full border text-xl",
+            step.status === "done"
+              ? "bg-goud-100 border-goud-500"
+              : step.status === "current"
+                ? "bg-beige-50 border-goud-500 ring-4 ring-goud-100"
+                : "bg-beige-50 border-beige-200",
+          ]}
+          aria-hidden="true"
+        >
+          {step.icon}
+        </span>
+
+        <p class="text-xs font-semibold uppercase tracking-wide text-bos-600">
+          {step.label}{step.status === "current" ? " · nu" : ""}
+        </p>
+        <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">{step.title}</h3>
+        {step.description && (
+          <p class="mt-1.5 text-antraciet-700 leading-relaxed">{step.description}</p>
+        )}
+      </li>
+    ))}
+  </ol>
+</div>

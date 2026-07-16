@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import StoryIntro from "../components/StoryIntro.astro";
+import Timeline from "../components/Timeline.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import ChallengeCard from "../components/ChallengeCard.astro";
 import NewsCard from "../components/NewsCard.astro";
@@ -29,6 +30,18 @@ const news = (await getCollection("news", ({ data }) => data.published))
   <Hero />
 
   <StoryIntro />
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
+    <SectionHeader
+      eyebrow="De reis"
+      title="Op weg naar de 1000 km"
+      description="Van een afscheid naar een startlijn. Dit is de weg die we stap voor stap afleggen — samen."
+      align="center"
+    />
+    <div class="mt-14">
+      <Timeline />
+    </div>
+  </section>
 
   <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
     <SectionHeader

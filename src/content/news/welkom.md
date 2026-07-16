@@ -17,7 +17,7 @@ Dit is De Sterkste Boom van Rendestede.
 Sommige verhalen beginnen uit passie.
 Dit verhaal begint uit gemis.
 
-Begin dit jaar verloor ik mijn papa veel te snel aan een agressieve vorm van kanker.
+Begin 2026 verloor ik mijn papa Cyriel veel te snel aan een agressieve vorm van kanker.
 
 Voor velen was hij de sterkste boom van Rendestede. Daarom draagt dit project ook die naam.
 
