@@ -77,10 +77,14 @@ export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch) 
   try {
     return await fetchImpl(url, {
       signal: controller.signal,
+      redirect: "follow",
       headers: {
+        // Browserechte headers: sommige sites geven bots een 404/403.
         "User-Agent":
-          "Mozilla/5.0 (compatible; SterksteBoomBot/1.0; +https://desterksteboomvanrendestede.be)",
-        "Accept-Language": "nl-BE,nl;q=0.9",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "nl-BE,nl;q=0.9,en;q=0.8",
       },
     });
   } finally {
@@ -92,19 +96,25 @@ async function main() {
   const current = JSON.parse(readFileSync(FILE, "utf8"));
   console.log(`Huidig: opgehaald €${current.raised}, doel €${current.goal}`);
 
-  let html;
-  try {
-    const res = await fetchWithTimeout(SOURCE_URL);
-    console.log(`HTTP ${res.status} — ${SOURCE_URL}`);
-    if (!res.ok) {
-      console.warn(`WAARSCHUWING: HTTP ${res.status}. Bedrag blijft ongewijzigd.`);
-      return;
+  console.log(`Ophalen: ${SOURCE_URL}`);
+  let html = null;
+  const attempts = 2;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const res = await fetchWithTimeout(SOURCE_URL);
+      console.log(`Poging ${i}/${attempts}: HTTP ${res.status}`);
+      if (res.ok) {
+        html = await res.text();
+        break;
+      }
+      console.warn(`WAARSCHUWING: HTTP ${res.status}.`);
+    } catch (err) {
+      console.warn(`WAARSCHUWING: ophalen mislukt (${err.name}: ${err.message}).`);
     }
-    html = await res.text();
-  } catch (err) {
-    console.warn(
-      `WAARSCHUWING: ophalen mislukt (${err.name}: ${err.message}). Bedrag blijft ongewijzigd.`,
-    );
+    if (i < attempts) await new Promise((r) => setTimeout(r, 3000));
+  }
+  if (html == null) {
+    console.warn("Bedrag blijft ongewijzigd (geen geldige respons).");
     return;
   }
 
