@@ -46,8 +46,8 @@ De Everesting is een tussenstap. Het einddoel is deelname aan **De 1000 km voor 
 
 ## Sponsor worden
 
-Bedrijven en organisaties die dit project mee willen dragen, zijn van harte welkom. Meer info op de pagina [Bouw mee aan dit verhaal](/word-partner).
+Bedrijven en organisaties die dit project mee willen dragen, zijn van harte welkom. Meer info op de pagina [Bouw mee aan dit verhaal](/steunen).
 
 ## Updates
 
-Volg de voorbereiding via het [dagboek](/nieuws) en op [Facebook](https://www.facebook.com/profile.php?id=61592009188050).
+Volg de voorbereiding via het [dagboek](/dagboek) en op [Facebook](https://www.facebook.com/profile.php?id=61592009188050).

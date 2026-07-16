@@ -22,13 +22,13 @@ function isActive(href: string) {
         </span>
       </a>
 
-      <nav aria-label="Hoofdnavigatie" class="hidden lg:flex items-center gap-6 font-body text-sm">
+      <nav aria-label="Hoofdnavigatie" class="hidden xl:flex items-center gap-5 font-body text-sm">
         {mainNav.map((item) => (
           <a
             href={item.href}
             aria-current={isActive(item.href) ? "page" : undefined}
             class:list={[
-              "py-2 border-b-2 transition-colors",
+              "py-2 border-b-2 transition-colors whitespace-nowrap",
               isActive(item.href)
                 ? "border-goud-500 text-antraciet-900 font-semibold"
                 : "border-transparent text-antraciet-700 hover:text-antraciet-900 hover:border-goud-300",
@@ -39,7 +39,7 @@ function isActive(href: string) {
         ))}
       </nav>
 
-      <div class="hidden lg:block shrink-0">
+      <div class="hidden xl:block shrink-0">
         <DonationButton />
       </div>
 

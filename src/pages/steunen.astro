@@ -1,0 +1,82 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import ContactForm from "../components/ContactForm.astro";
+import DonationButton from "../components/DonationButton.astro";
+
+const manieren = [
+  {
+    titel: "Financiële steun",
+    tekst:
+      "Een bijdrage die integraal richting het goede doel gaat. Elke euro helpt om het streefbedrag voor Kom op tegen Kanker te bereiken.",
+  },
+  {
+    titel: "Materiële of logistieke steun",
+    tekst:
+      "Denk aan bevoorrading, materiaal, drukwerk of hulp bij de organisatie van een actie of evenement.",
+  },
+  {
+    titel: "Zichtbaarheid en netwerk",
+    tekst:
+      "Help het project bekend maken via je eigen kanalen en netwerk, zodat meer mensen mee in beweging komen.",
+  },
+];
+---
+
+<Layout
+  title="Steunen"
+  description="Steun De Sterkste Boom van Rendestede: doe een gift via Kom op tegen Kanker of bouw als steunpilaar mee aan dit verhaal."
+>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Steunen" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Steunen</h1>
+    <p class="mt-4 text-antraciet-700">
+      Elke euro brengt ons dichter bij de top. Je kan dit verhaal op twee manieren steunen:
+      met een gift, of door als steunpilaar mee te bouwen.
+    </p>
+
+    <!-- Doneren -->
+    <div class="mt-10 rounded-card bg-goud-50 border border-goud-300 p-8 text-center">
+      <h2 class="font-display text-2xl font-semibold text-antraciet-900">Doe een gift</h2>
+      <p class="mt-2 mx-auto max-w-xl text-antraciet-700">
+        Alle giften verlopen veilig via de officiële actiepagina van Kom op tegen Kanker.
+        Deze website verwerkt zelf geen betalingen.
+      </p>
+      <div class="mt-6 flex justify-center">
+        <DonationButton label="Doneer via Kom op tegen Kanker" />
+      </div>
+    </div>
+
+    <!-- Bouw mee -->
+    <div class="mt-16">
+      <SectionHeader
+        eyebrow="Voor bedrijven en organisaties"
+        title="Bouw mee aan dit verhaal"
+        description="Word steunpilaar van De Sterkste Boom van Rendestede. Dat kan op verschillende manieren."
+      />
+      <div class="mt-8 grid gap-6 sm:grid-cols-3">
+        {manieren.map((manier) => (
+          <div class="rounded-card border border-beige-200 bg-white p-6">
+            <h3 class="font-display text-lg font-semibold text-antraciet-900">{manier.titel}</h3>
+            <p class="mt-2 text-sm text-antraciet-700">{manier.tekst}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-16">
+      <SectionHeader
+        eyebrow="Interesse?"
+        title="Laat het ons weten"
+        description="Stuur een bericht met je vraag of voorstel. Ik neem persoonlijk contact met je op om de mogelijkheden te bespreken."
+      />
+      <div class="mt-8">
+        <ContactForm
+          subject="Ik wil steunpilaar worden van De Sterkste Boom van Rendestede"
+          categories={["Financiële steun", "Materiële of logistieke steun", "Zichtbaarheid en netwerk", "Iets anders"]}
+        />
+      </div>
+    </div>
+  </div>
+</Layout>

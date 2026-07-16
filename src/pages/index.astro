@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import StoryIntro from "../components/StoryIntro.astro";
 import Timeline from "../components/Timeline.astro";
+import Countdown from "../components/Countdown.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import ChallengeCard from "../components/ChallengeCard.astro";
 import NewsCard from "../components/NewsCard.astro";
@@ -38,8 +39,16 @@ const news = (await getCollection("news", ({ data }) => data.published))
       description="Van een afscheid naar een startlijn. Dit is de weg die we stap voor stap afleggen — samen."
       align="center"
     />
-    <div class="mt-14">
+    {siteConfig.keyDates.everesting && (
+      <div class="mt-8 flex justify-center">
+        <Countdown date={siteConfig.keyDates.everesting} label="de Everesting" />
+      </div>
+    )}
+    <div class="mt-12">
       <Timeline />
+    </div>
+    <div class="mt-12 flex justify-center">
+      <Button href="/op-weg" variant="ghost">Bekijk de volledige reis</Button>
     </div>
   </section>
 
@@ -78,15 +87,15 @@ const news = (await getCollection("news", ({ data }) => data.published))
     <div class="flex flex-wrap items-end justify-between gap-4">
       <SectionHeader
         eyebrow="Blijf op de hoogte"
-        title="Laatste nieuws"
-        description="Updates over de voorbereiding, trainingen, acties en resultaten."
+        title="Uit het dagboek"
+        description="Persoonlijke updates over de voorbereiding, de trainingen en de momenten onderweg."
       />
-      <Button href="/nieuws" variant="ghost" class="shrink-0">Alle nieuws</Button>
+      <Button href="/dagboek" variant="ghost" class="shrink-0">Naar het dagboek</Button>
     </div>
     <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {news.length === 0 ? (
         <div class="sm:col-span-2 lg:col-span-3">
-          <EmptyState message="Binnenkort verschijnt hier het eerste nieuwsbericht." />
+          <EmptyState message="Binnenkort verschijnt hier de eerste dagboekpost." />
         </div>
       ) : (
         news.map((post) => (
@@ -95,7 +104,7 @@ const news = (await getCollection("news", ({ data }) => data.published))
             summary={post.data.summary}
             date={post.data.date}
             category={post.data.category}
-            href={`/nieuws/${post.id}`}
+            href={`/dagboek/${post.id}`}
           />
         ))
       )}

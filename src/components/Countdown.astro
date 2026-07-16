@@ -1,0 +1,31 @@
+---
+// Rustige, live aftelteller (client-side). Voedt zich met een ISO-datum.
+interface Props {
+  date: string;
+  label: string;
+  align?: "left" | "center";
+}
+const { date, label, align = "left" } = Astro.props;
+---
+
+<div
+  class:list={[
+    "countdown inline-flex items-baseline gap-2.5 rounded-full border border-goud-300 bg-goud-50 px-5 py-2.5",
+    align === "center" ? "mx-auto" : "",
+  ]}
+  data-date={date}
+>
+  <span class="cd-days font-display text-2xl font-semibold leading-none text-antraciet-900">–</span>
+  <span class="text-sm text-antraciet-700">dagen tot {label}</span>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".countdown").forEach((el) => {
+    const iso = el.dataset.date;
+    if (!iso) return;
+    const target = new Date(`${iso}T00:00:00`).getTime();
+    const days = Math.max(0, Math.ceil((target - Date.now()) / 86_400_000));
+    const out = el.querySelector(".cd-days");
+    if (out) out.textContent = String(days);
+  });
+</script>

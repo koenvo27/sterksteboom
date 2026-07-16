@@ -1,0 +1,92 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import Timeline from "../components/Timeline.astro";
+import Countdown from "../components/Countdown.astro";
+import EventCard from "../components/EventCard.astro";
+import EmptyState from "../components/EmptyState.astro";
+import { getCollection } from "astro:content";
+import { siteConfig } from "../data/site-config";
+
+const allEvents = await getCollection("events", ({ data }) => data.published);
+const upcoming = allEvents
+  .filter((e) => e.data.status === "Aankomend")
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const past = allEvents
+  .filter((e) => e.data.status === "Afgelopen")
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Layout
+  title="Op weg naar de 1000 km"
+  description="De reis van De Sterkste Boom van Rendestede: van een afscheid, over de Everesting, naar De 1000 km voor Kom op tegen Kanker in 2027."
+>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Op weg naar de 1000 km" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">
+      Op weg naar de 1000 km
+    </h1>
+    <p class="mt-4 max-w-2xl text-antraciet-700">
+      Van een afscheid naar een startlijn. Elke stap, elke uitdaging en elke actie brengt ons
+      dichter bij het grote doel: De 1000 km voor Kom op tegen Kanker in 2027.
+    </p>
+
+    {siteConfig.keyDates.everesting && (
+      <div class="mt-8">
+        <Countdown date={siteConfig.keyDates.everesting} label="de Everesting" />
+      </div>
+    )}
+
+    <div class="mt-14">
+      <Timeline />
+    </div>
+
+    <section class="mt-20">
+      <h2 class="mb-6 font-display text-2xl font-semibold text-antraciet-900">
+        Acties en evenementen
+      </h2>
+      <p class="mb-8 max-w-2xl text-antraciet-700">
+        Naast de sportieve uitdagingen zijn er ook kleinere acties en evenementen. Kom langs,
+        doe mee of steun van op afstand.
+      </p>
+
+      <h3 class="mb-4 font-display text-lg font-semibold text-antraciet-900">Aankomend</h3>
+      {upcoming.length === 0 ? (
+        <EmptyState message="Er zijn momenteel geen publieke acties gepland. Kom later zeker nog eens terug." />
+      ) : (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {upcoming.map((event) => (
+            <EventCard
+              title={event.data.title}
+              type={event.data.type}
+              summary={event.data.summary}
+              date={event.data.date}
+              location={event.data.location}
+              status={event.data.status}
+              externalUrl={event.data.externalUrl}
+            />
+          ))}
+        </div>
+      )}
+
+      {past.length > 0 && (
+        <div class="mt-14">
+          <h3 class="mb-4 font-display text-lg font-semibold text-antraciet-900">Afgelopen</h3>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {past.map((event) => (
+              <EventCard
+                title={event.data.title}
+                type={event.data.type}
+                summary={event.data.summary}
+                date={event.data.date}
+                location={event.data.location}
+                status={event.data.status}
+                externalUrl={event.data.externalUrl}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  </div>
+</Layout>

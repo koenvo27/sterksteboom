@@ -4,6 +4,7 @@ import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import ShareButtons from "../../components/ShareButtons.astro";
 import DonationButton from "../../components/DonationButton.astro";
 import StructuredData from "../../components/StructuredData.astro";
+import Countdown from "../../components/Countdown.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import { siteConfig } from "../../data/site-config";
 
@@ -27,6 +28,8 @@ const formattedDate = challenge.data.date.toLocaleDateString("nl-BE", {
   month: "long",
   year: "numeric",
 });
+const isUpcoming = challenge.data.date.getTime() > Date.now();
+const isoDate = challenge.data.date.toISOString().slice(0, 10);
 ---
 
 <Layout
@@ -58,6 +61,12 @@ const formattedDate = challenge.data.date.toLocaleDateString("nl-BE", {
       {formattedDate} · {challenge.data.location}
     </p>
     <p class="mt-5 text-lg text-antraciet-700">{challenge.data.summary}</p>
+
+    {isUpcoming && (
+      <div class="mt-6">
+        <Countdown date={isoDate} label={challenge.data.title} />
+      </div>
+    )}
 
     {challenge.data.poster && (
       <img

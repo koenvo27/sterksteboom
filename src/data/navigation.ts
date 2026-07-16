@@ -10,12 +10,12 @@ export interface NavItem {
 
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Ons verhaal", href: "/ons-verhaal" },
-  { label: "Uitdagingen", href: "/uitdagingen" },
-  { label: "Acties", href: "/acties" },
-  { label: "Nieuws", href: "/nieuws" },
-  { label: "Partners", href: "/partners" },
-  { label: "Word partner", href: "/word-partner" },
+  { label: "Het verhaal", href: "/het-verhaal" },
+  { label: "De uitdagingen", href: "/uitdagingen" },
+  { label: "Op weg naar de 1000 km", href: "/op-weg" },
+  { label: "Onze steunpilaren", href: "/partners" },
+  { label: "Steunen", href: "/steunen" },
+  { label: "Dagboek", href: "/dagboek" },
   { label: "Contact", href: "/contact" },
 ];
 

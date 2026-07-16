@@ -19,8 +19,8 @@ const list = (sponsors as Sponsor[]).slice().sort((a, b) => (a.order ?? 99) - (b
 {list.length === 0 ? (
   <EmptyState
     message="Binnenkort verschijnen hier de bedrijven en organisaties die mee hun schouders onder dit project zetten."
-    ctaLabel="Word partner"
-    ctaHref="/word-partner"
+    ctaLabel="Bouw mee aan dit verhaal"
+    ctaHref="/steunen"
   />
 ) : (
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">

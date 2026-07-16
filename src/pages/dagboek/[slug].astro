@@ -21,7 +21,7 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const pageUrl = new URL(`/nieuws/${post.id}`, siteConfig.url).toString();
+const pageUrl = new URL(`/dagboek/${post.id}`, siteConfig.url).toString();
 ---
 
 <Layout
@@ -40,7 +40,7 @@ const pageUrl = new URL(`/nieuws/${post.id}`, siteConfig.url).toString();
   />
 
   <article class="mx-auto max-w-2xl px-4 sm:px-6 py-14 sm:py-20">
-    <Breadcrumbs items={[{ label: "Nieuws", href: "/nieuws" }, { label: post.data.title }]} />
+    <Breadcrumbs items={[{ label: "Dagboek", href: "/dagboek" }, { label: post.data.title }]} />
 
     <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-2">
       {post.data.category}

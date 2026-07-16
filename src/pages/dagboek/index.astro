@@ -12,20 +12,21 @@ const categories = ["Alle", "Algemeen", "Training", "Uitdagingen", "Acties", "Sp
 ---
 
 <Layout
-  title="Nieuws"
-  description="Nieuws, updates en verhalen van De Sterkste Boom van Rendestede."
+  title="Dagboek"
+  description="Het reisdagboek van De Sterkste Boom van Rendestede: updates, verhalen en momenten onderweg."
 >
   <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 sm:py-20">
-    <Breadcrumbs items={[{ label: "Nieuws" }]} />
-    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Nieuws</h1>
+    <Breadcrumbs items={[{ label: "Dagboek" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Dagboek</h1>
     <p class="mt-4 text-antraciet-700 max-w-2xl">
-      Updates over de voorbereiding, trainingen, acties en resultaten.
+      Persoonlijke updates onderweg: de voorbereiding, de trainingen, de acties en alles
+      wat we samen meemaken op weg naar de 1000 km.
     </p>
 
     <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter op categorie">
       {categories.map((cat) => (
         <a
-          href={cat === "Alle" ? "/nieuws" : `/nieuws?categorie=${encodeURIComponent(cat)}`}
+          href={cat === "Alle" ? "/dagboek" : `/dagboek?categorie=${encodeURIComponent(cat)}`}
           class="rounded-full border border-beige-200 px-4 py-2 text-sm text-antraciet-700 hover:border-goud-500 min-h-11 inline-flex items-center"
           data-category={cat}
         >
@@ -37,7 +38,7 @@ const categories = ["Alle", "Algemeen", "Training", "Uitdagingen", "Acties", "Sp
     <div id="news-grid" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {news.length === 0 ? (
         <div class="sm:col-span-2 lg:col-span-3">
-          <EmptyState message="Binnenkort verschijnt hier het eerste nieuwsbericht." />
+          <EmptyState message="Binnenkort verschijnt hier de eerste dagboekpost." />
         </div>
       ) : (
         news.map((post) => (
@@ -47,7 +48,7 @@ const categories = ["Alle", "Algemeen", "Training", "Uitdagingen", "Acties", "Sp
               summary={post.data.summary}
               date={post.data.date}
               category={post.data.category}
-              href={`/nieuws/${post.id}`}
+              href={`/dagboek/${post.id}`}
             />
           </div>
         ))
