@@ -5,6 +5,7 @@ summary: "Op zaterdag 12 september 2026 fiets ik op de Congoberg de hoogte van d
 date: 2026-09-12
 location: "Congoberg, Vollezele (Pajottenland)"
 status: "Aangekondigd"
+poster: "/images/affiche-everesting.jpg"
 featured: true
 published: true
 seoTitle: "Everesting op de Congoberg - 12 september 2026"

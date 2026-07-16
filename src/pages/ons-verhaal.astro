@@ -1,8 +1,10 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import DonationButton from "../components/DonationButton.astro";
 import Button from "../components/Button.astro";
+import verhaalHero from "../assets/op-weg.jpg";
 ---
 
 <Layout
@@ -17,9 +19,14 @@ import Button from "../components/Button.astro";
       Dit is De Sterkste Boom van Rendestede
     </h1>
 
-    <div class="mt-8 aspect-[16/9] rounded-card bg-bos-100 border border-beige-200 flex items-center justify-center text-bos-600">
-      <span class="text-sm">TODO: foto toevoegen</span>
-    </div>
+    <Image
+      src={verhaalHero}
+      alt="Koen op de fiets richting een grote eik bij zonsondergang"
+      class="mt-8 aspect-[16/9] w-full rounded-card border border-beige-200 object-cover"
+      widths={[640, 1024, 1400]}
+      sizes="(min-width: 768px) 48rem, 100vw"
+      loading="eager"
+    />
 
     <div class="mt-10 prose-content space-y-6 text-antraciet-800 leading-relaxed text-lg">
       <p>

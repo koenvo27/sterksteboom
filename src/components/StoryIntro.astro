@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import verhaalImg from "../assets/verhaal.jpg";
 import Button from "./Button.astro";
 ---
 
@@ -22,9 +24,13 @@ import Button from "./Button.astro";
   </div>
 
   <div class="order-1 lg:order-2">
-    <!-- Placeholder voor foto van Koen op de fiets of van zijn papa. -->
-    <div class="aspect-[4/3] rounded-card bg-bos-100 border border-beige-200 flex items-center justify-center text-bos-600">
-      <span class="text-sm">TODO: foto toevoegen (bv. Koen op de fiets)</span>
-    </div>
+    <Image
+      src={verhaalImg}
+      alt="Een bank onder een grote eik in het avondlicht, uitkijkend over het landschap"
+      class="aspect-[4/3] w-full rounded-card border border-beige-200 object-cover"
+      widths={[480, 768, 1200]}
+      sizes="(min-width: 1024px) 40vw, 100vw"
+      loading="lazy"
+    />
   </div>
 </section>

@@ -1,35 +1,47 @@
 ---
+import { Image } from "astro:assets";
+import heroImg from "../assets/hero-home.jpg";
 import DonationButton from "./DonationButton.astro";
 import Button from "./Button.astro";
 ---
 
-<section class="relative overflow-hidden bg-antraciet-900 text-beige-50">
-  <!-- Jaarringen-motief: het signatuurelement van deze site, verwijst naar
-       groei, tijd en 'gedragen worden'. Puur decoratief, dus aria-hidden. -->
-  <svg
+<section class="relative isolate overflow-hidden bg-antraciet-900 text-beige-50">
+  <!-- Grote hero-afbeelding: fietser onderweg naar de eik bij gouden uur. -->
+  <Image
+    src={heroImg}
+    alt="Een fietser onderweg naar een grote eik in het Vlaamse landschap bij gouden uur"
+    class="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+    widths={[640, 1024, 1600]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <!-- Zachte donkere verloop onderaan voor leesbaarheid van de tekst. -->
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-t from-antraciet-900 via-antraciet-900/60 to-antraciet-900/15"
     aria-hidden="true"
-    class="absolute -right-24 -top-24 w-[520px] h-[520px] opacity-20 sm:opacity-25"
-    viewBox="0 0 400 400"
   >
-    <circle cx="200" cy="200" r="180" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
-    <circle cx="200" cy="200" r="150" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
-    <circle cx="200" cy="200" r="118" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
-    <circle cx="200" cy="200" r="84" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
-    <circle cx="200" cy="200" r="48" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
-  </svg>
+  </div>
 
-  <div class="relative mx-auto max-w-6xl px-4 sm:px-6 pt-14 pb-16 sm:pt-20 sm:pb-24">
-    <p class="font-accent text-2xl sm:text-3xl text-goud-300 fade-in-up">van Rendestede</p>
-    <h1 class="mt-2 font-display text-4xl sm:text-6xl font-semibold leading-[1.05] max-w-3xl fade-in-up">
+  <div
+    class="relative mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-32 sm:px-6 sm:pb-24 sm:pt-44"
+  >
+    <p class="font-accent text-2xl text-goud-300 sm:text-3xl">van Rendestede</p>
+    <h1 class="mt-2 max-w-3xl font-display text-4xl font-semibold leading-[1.05] sm:text-6xl">
       De Sterkste Boom<br /> van Rendestede
     </h1>
-    <p class="mt-6 max-w-xl text-lg sm:text-xl text-beige-200 fade-in-up">
-      Sommige bomen blijven overeind, wat er ook komt. Ik fiets verder — voor mijn papa Cyriel, en voor iedereen die blijft vechten.
+    <p class="mt-6 max-w-xl text-lg text-beige-100 sm:text-xl">
+      Sommige bomen blijven overeind, wat er ook komt. Ik fiets verder — voor mijn papa
+      Cyriel, en voor iedereen die blijft vechten.
     </p>
 
-    <div class="mt-8 flex flex-wrap gap-4 fade-in-up">
+    <div class="mt-8 flex flex-wrap gap-4">
       <DonationButton />
-      <Button href="/ons-verhaal" variant="ghost" class="border-beige-100 text-beige-50 hover:bg-antraciet-700">
+      <Button
+        href="/ons-verhaal"
+        variant="ghost"
+        class="border-beige-100 text-beige-50 hover:bg-antraciet-700"
+      >
         Ontdek ons verhaal
       </Button>
     </div>

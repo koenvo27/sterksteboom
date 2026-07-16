@@ -59,6 +59,15 @@ const formattedDate = challenge.data.date.toLocaleDateString("nl-BE", {
     </p>
     <p class="mt-5 text-lg text-antraciet-700">{challenge.data.summary}</p>
 
+    {challenge.data.poster && (
+      <img
+        src={challenge.data.poster}
+        alt={`Affiche: ${challenge.data.title}`}
+        class="mt-8 w-full rounded-card border border-beige-200 shadow-sm"
+        loading="lazy"
+      />
+    )}
+
     <div class="mt-10 prose-content max-w-none text-antraciet-800 leading-relaxed
                 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-antraciet-900 [&_h2]:mt-10 [&_h2]:mb-3
                 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_li]:marker:text-goud-500
