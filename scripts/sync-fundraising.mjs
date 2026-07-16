@@ -1,150 +1,147 @@
 // ============================================================
-// SYNC FONDSENWERVING — leest het opgehaalde bedrag (en indien mogelijk
-// het streefbedrag) van de officiële Kom op tegen Kanker-actiepagina en
-// werkt src/data/fundraising.json bij.
+// SYNC FONDSENWERVING — leest het opgehaalde bedrag van de officiële
+// Kom op tegen Kanker-actiepagina (server-side) en werkt
+// src/data/fundraising.json bij.
 //
-// Veilig ontworpen: als er geen bedrag betrouwbaar herkend wordt, blijft
-// het bestaande (handmatige) bedrag staan. Zo toont de site nooit een
-// verzonnen of leeg bedrag.
+// Bron van waarheid: de KOTK-teampagina. Het bedrag staat server-side in
+// de HTML, in de selector `.team-page__funds .amount` (bv. "€ 2.830,00").
+//
+// Robuust ontworpen (zie eisen):
+//  - uitsluitend server-side ophalen (geen browser-fetch);
+//  - HTML parsen met Cheerio;
+//  - bij netwerkfout / timeout / gewijzigde HTML / ontbrekende selector /
+//    ongeldige waarde: het laatst opgeslagen (geldige) bedrag blijft staan;
+//  - een geldig bedrag wordt nooit met 0 overschreven door een fout;
+//  - duidelijke waarschuwing bij mislukte parsing;
+//  - handmatige fallbackwaarde blijft in fundraising.json staan.
 //
 // Draait op GitHub Actions (zie .github/workflows/sync-fundraising.yml),
-// waar uitgaand internet wél beschikbaar is. Lokaal testen kan ook:
-//   node scripts/sync-fundraising.mjs
+// waar uitgaand internet beschikbaar is. Lokaal: node scripts/sync-fundraising.mjs
 // ============================================================
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import * as cheerio from "cheerio";
 
-const FILE = fileURLToPath(new URL("../src/data/fundraising.json", import.meta.url));
-const URL_ =
+export const SOURCE_URL =
   process.env.KOTK_URL ||
   "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe";
 
-/** "€ 1.234,56" of "1.234" (BE-formaat: punt = duizendtal, komma = decimaal) -> number */
-function parseEuro(raw) {
-  if (!raw) return null;
-  const cleaned = String(raw)
-    .replace(/[^\d.,]/g, "")
-    .replace(/\.(?=\d{3}(\D|$))/g, "") // duizendtalpunten weg
-    .replace(",", ".");
-  const n = Number.parseFloat(cleaned);
-  return Number.isFinite(n) ? Math.round(n) : null;
+const FILE = fileURLToPath(new URL("../src/data/fundraising.json", import.meta.url));
+const SELECTOR = ".team-page__funds .amount";
+const TIMEOUT_MS = 15_000;
+
+/**
+ * Zet een BE-euro-tekst om naar een getal.
+ *   "€ 2.830,00"  -> 2830
+ *   "€ 0,00"      -> 0
+ *   "€ 12.345,67" -> 12345.67
+ * Punt = duizendtalscheiding, komma = decimaalteken.
+ * Geeft null terug wanneer er geen geldig bedrag in zit.
+ */
+export function parseEuro(raw) {
+  if (raw == null) return null;
+  const text = String(raw).replace(/ /g, " ");
+  const match = text.match(/-?\d[\d.]*(?:,\d+)?/);
+  if (!match) return null;
+  const normalized = match[0].replace(/\./g, "").replace(",", ".");
+  const value = Number.parseFloat(normalized);
+  return Number.isFinite(value) ? value : null;
 }
 
-function extract(html) {
-  const text = html.replace(/\s+/g, " ");
-  const candidates = { raised: null, goal: null, notes: [] };
-
-  // 0) Ingebedde JSON-state (SPA's stoppen begindata vaak in de HTML).
-  const jsonRaised = text.match(
-    /"(?:collected(?:Amount)?|raised(?:Amount)?|amountRaised|amountCollected|totalDonated|currentAmount|donationTotal|totaal|opgehaald)"\s*:\s*"?([\d]+(?:[.,]\d+)?)/i,
-  );
-  const jsonGoal = text.match(
-    /"(?:goal(?:Amount)?|target(?:Amount)?|amountGoal|objective|streefbedrag)"\s*:\s*"?([\d]+(?:[.,]\d+)?)/i,
-  );
-  if (jsonRaised) {
-    candidates.raised = parseEuro(jsonRaised[1]);
-    candidates.notes.push(`JSON opgehaald: ${jsonRaised[0]}`);
+/**
+ * Haalt het opgehaalde bedrag uit de HTML via de selector.
+ * Geeft { ok, value, text } of { ok:false, reason }.
+ */
+export function extractAmount(html) {
+  if (!html || typeof html !== "string") {
+    return { ok: false, reason: "lege of ongeldige respons" };
   }
-  if (jsonGoal) {
-    candidates.goal = parseEuro(jsonGoal[1]);
-    candidates.notes.push(`JSON doel: ${jsonGoal[0]}`);
+  const $ = cheerio.load(html);
+  const el = $(SELECTOR).first();
+  if (el.length === 0) {
+    return { ok: false, reason: `selector "${SELECTOR}" niet gevonden` };
   }
-
-  // Diagnostiek: helpt bepalen hoe de pagina de data aanlevert.
-  candidates.notes.push(`HTML-lengte: ${html.length}`);
-  candidates.notes.push(
-    `SPA-markers: ${/__NUXT__|__NEXT_DATA__|window\.__|ng-version|data-reactroot|id="app"|id="__nuxt"/i.test(html)}`,
-  );
-  const ctx = text.match(/.{0,50}(streefbedrag|opgehaald|ingezameld|collected|raised|goal|target).{0,50}/i);
-  candidates.notes.push(`context-fragment: ${ctx ? ctx[0].trim() : "geen keyword gevonden"}`);
-
-  // 1) "€ X van € Y"  of  "€ X / € Y"  (opgehaald van doel)
-  const vanMatch = text.match(
-    /€\s*([\d.,]+)\s*(?:van|\/)\s*€?\s*([\d.,]+)/i,
-  );
-  if (vanMatch) {
-    candidates.raised = parseEuro(vanMatch[1]);
-    candidates.goal = parseEuro(vanMatch[2]);
-    candidates.notes.push(`patroon "X van Y": ${vanMatch[0]}`);
+  const text = el.text().trim();
+  const value = parseEuro(text);
+  if (value == null || value < 0) {
+    return { ok: false, reason: `ongeldige waarde: "${text}"`, text };
   }
-
-  // 2) bedrag vlak bij "opgehaald" / "ingezameld"
-  if (candidates.raised == null) {
-    const m =
-      text.match(/€\s*([\d.,]+)[^€]{0,40}?(?:opgehaald|ingezameld)/i) ||
-      text.match(/(?:opgehaald|ingezameld)[^€]{0,40}?€\s*([\d.,]+)/i);
-    if (m) {
-      candidates.raised = parseEuro(m[1]);
-      candidates.notes.push(`patroon "opgehaald": ${m[0]}`);
-    }
-  }
-
-  // 3) streefbedrag / doel
-  if (candidates.goal == null) {
-    const m =
-      text.match(/(?:streefbedrag|doel|target)[^€]{0,40}?€\s*([\d.,]+)/i) ||
-      text.match(/€\s*([\d.,]+)[^€]{0,30}?(?:streefbedrag|doel)/i);
-    if (m) {
-      candidates.goal = parseEuro(m[1]);
-      candidates.notes.push(`patroon "streefbedrag": ${m[0]}`);
-    }
-  }
-
-  // Log alle euro-bedragen die op de pagina staan (helpt bij afstellen).
-  const all = [...text.matchAll(/€\s*[\d.,]+/g)].map((x) => x[0]).slice(0, 20);
-  candidates.notes.push(`alle euro-bedragen (max 20): ${all.join(" | ") || "geen"}`);
-
-  return candidates;
+  return { ok: true, value, text };
 }
 
-async function main() {
-  const current = JSON.parse(readFileSync(FILE, "utf8"));
-  console.log(`Huidig: opgehaald €${current.raised}, doel €${current.goal}`);
-  console.log(`Ophalen: ${URL_}`);
-
-  let html = "";
+/** fetch met harde timeout via AbortController (server-side). */
+export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
   try {
-    const res = await fetch(URL_, {
+    return await fetchImpl(url, {
+      signal: controller.signal,
       headers: {
         "User-Agent":
           "Mozilla/5.0 (compatible; SterksteBoomBot/1.0; +https://desterksteboomvanrendestede.be)",
         "Accept-Language": "nl-BE,nl;q=0.9",
       },
     });
-    console.log(`HTTP ${res.status}`);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function main() {
+  const current = JSON.parse(readFileSync(FILE, "utf8"));
+  console.log(`Huidig: opgehaald €${current.raised}, doel €${current.goal}`);
+
+  let html;
+  try {
+    const res = await fetchWithTimeout(SOURCE_URL);
+    console.log(`HTTP ${res.status} — ${SOURCE_URL}`);
+    if (!res.ok) {
+      console.warn(`WAARSCHUWING: HTTP ${res.status}. Bedrag blijft ongewijzigd.`);
+      return;
+    }
     html = await res.text();
   } catch (err) {
-    console.log(`Ophalen mislukt: ${err.message}. Bedrag blijft ongewijzigd.`);
-    return;
-  }
-
-  const found = extract(html);
-  found.notes.forEach((n) => console.log(" -", n));
-
-  let changed = false;
-  // Alleen bijwerken wanneer we een plausibel, positief bedrag herkennen.
-  if (found.raised != null && found.raised >= 0 && found.raised !== current.raised) {
-    console.log(`Opgehaald: €${current.raised} -> €${found.raised}`);
-    current.raised = found.raised;
-    changed = true;
-  }
-  if (found.goal != null && found.goal > 0 && found.goal !== current.goal) {
-    console.log(`Doel: €${current.goal} -> €${found.goal}`);
-    current.goal = found.goal;
-    changed = true;
-  }
-
-  if (!changed) {
-    console.log(
-      "Geen betrouwbare wijziging gevonden — bestaand bedrag blijft behouden.",
+    console.warn(
+      `WAARSCHUWING: ophalen mislukt (${err.name}: ${err.message}). Bedrag blijft ongewijzigd.`,
     );
     return;
   }
 
-  current.lastUpdated = new Date().toISOString().slice(0, 10);
+  const result = extractAmount(html);
+  if (!result.ok) {
+    console.warn(`WAARSCHUWING: parsing mislukt — ${result.reason}. Bedrag blijft ongewijzigd.`);
+    return;
+  }
+
+  console.log(`Herkend bedrag: "${result.text}" -> ${result.value}`);
+
+  // Veiligheid: een geldig, positief bedrag nooit laten terugvallen naar 0.
+  if (result.value === 0 && current.raised > 0) {
+    console.warn(
+      "WAARSCHUWING: bron gaf €0 terwijl er al een positief bedrag stond — genegeerd (mogelijke fout).",
+    );
+    return;
+  }
+
+  if (result.value === current.raised) {
+    console.log("Bedrag ongewijzigd — niets bijgewerkt.");
+    return;
+  }
+
+  const now = new Date();
+  current.raised = result.value;
+  current.lastUpdated = now.toISOString().slice(0, 10);
+  current.fetchedAt = now.toISOString();
+  current.sourceUrl = SOURCE_URL;
+  current.status = "ok";
+  current.sourceText = result.text;
+
   writeFileSync(FILE, JSON.stringify(current, null, 2) + "\n");
-  console.log("fundraising.json bijgewerkt.");
+  console.log(`fundraising.json bijgewerkt: opgehaald -> €${current.raised}`);
 }
 
-await main();
+// Alleen uitvoeren wanneer rechtstreeks aangeroepen (niet bij import in tests).
+if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
+  await main();
+}

@@ -2,12 +2,10 @@ name: Sync fondsenwerving (KOTK)
 
 on:
   schedule:
-    # Elk uur. Pas de frequentie hier aan indien gewenst, bv.:
-    #   "*/15 * * * *"  = elk kwartier (let op: GitHub plant cron 'best effort',
-    #                     sub-uurlijks is niet gegarandeerd exact en gebruikt
-    #                     meer Actions-minuten)
-    #   "0 6 * * *"     = één keer per dag om 06:00 UTC
-    - cron: "0 * * * *"
+    # Elke 6 uur (sluit aan bij de cache-eis van minstens 6 uur).
+    # Pas de frequentie hier aan indien gewenst, bv. "0 * * * *" = elk uur,
+    # "0 6 * * *" = één keer per dag om 06:00 UTC.
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 # Nodig om het bijgewerkte bedrag terug te committen.
@@ -29,6 +27,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Tests (parsing)
+        run: npm test
 
       - name: Bedrag ophalen van Kom op tegen Kanker
         run: node scripts/sync-fundraising.mjs

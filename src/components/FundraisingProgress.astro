@@ -55,7 +55,19 @@ const eur = new Intl.NumberFormat("nl-BE", {
         Opgehaald: <strong class="text-antraciet-900">{eur.format(raised)}</strong>
         {" "}van de <strong class="text-antraciet-900">{eur.format(goal)}</strong> doelstelling.
       </p>
-      <p class="mt-1 text-sm text-antraciet-500">Laatst bijgewerkt op {formattedDate}.</p>
+      {showProgress && (
+        <div
+          class="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-beige-200"
+          role="progressbar"
+          aria-valuenow={percentage}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label={`Voortgang fondsenwerving: ${percentage}% van het doel`}
+        >
+          <div class="h-full rounded-full bg-goud-500" style={`width:${percentage}%`}></div>
+        </div>
+      )}
+      <p class="mt-3 text-sm text-antraciet-500">Laatst bijgewerkt op {formattedDate}.</p>
       <div class="mt-6">
         <DonationButton />
       </div>

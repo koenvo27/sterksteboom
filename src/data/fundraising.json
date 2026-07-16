@@ -1,8 +1,12 @@
 {
-  "_comment": "Pas hieronder alleen 'raised', 'goal' en 'lastUpdated' aan. Laat de veldnamen ongewijzigd. Toon nooit een verzonnen bedrag.",
+  "_comment": "'raised' en 'lastUpdated' worden automatisch bijgewerkt door scripts/sync-fundraising.mjs vanaf de KOTK-pagina. 'goal' is een handmatige fallbackwaarde. Toon nooit een verzonnen bedrag.",
   "raised": 0,
   "goal": 10000,
-  "lastUpdated": "2026-07-15",
+  "lastUpdated": "2026-07-16",
   "showProgress": true,
+  "fetchedAt": null,
+  "status": "manual",
+  "sourceText": null,
+  "sourceUrl": "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe",
   "donationUrl": "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe"
 }
