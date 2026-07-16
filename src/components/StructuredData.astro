@@ -1,0 +1,81 @@
+---
+import { siteConfig } from "../data/site-config";
+
+interface OrganizationProps {
+  kind: "Organization";
+}
+
+interface EventProps {
+  kind: "Event";
+  name: string;
+  description: string;
+  startDate: string;
+  endDate?: string;
+  location: string;
+  url: string;
+}
+
+interface ArticleProps {
+  kind: "Article";
+  headline: string;
+  description: string;
+  datePublished: string;
+  dateModified?: string;
+  author: string;
+  image?: string;
+  url: string;
+}
+
+type Props = OrganizationProps | EventProps | ArticleProps;
+
+const props = Astro.props as Props;
+
+let json: Record<string, unknown> = {};
+
+if (props.kind === "Organization") {
+  json = {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    name: siteConfig.projectName,
+    url: siteConfig.url,
+    email: siteConfig.email,
+    sameAs: [siteConfig.facebookUrl],
+    description: siteConfig.tagline,
+  };
+} else if (props.kind === "Event") {
+  json = {
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    name: props.name,
+    description: props.description,
+    startDate: props.startDate,
+    ...(props.endDate ? { endDate: props.endDate } : {}),
+    location: {
+      "@type": "Place",
+      name: props.location,
+    },
+    url: props.url,
+    organizer: {
+      "@type": "Person",
+      name: siteConfig.initiatiefnemer,
+    },
+  };
+} else if (props.kind === "Article") {
+  json = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: props.headline,
+    description: props.description,
+    datePublished: props.datePublished,
+    dateModified: props.dateModified ?? props.datePublished,
+    author: {
+      "@type": "Person",
+      name: props.author,
+    },
+    ...(props.image ? { image: props.image } : {}),
+    url: props.url,
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(json)} />

@@ -1,0 +1,8 @@
+{
+  "_comment": "Pas hieronder alleen 'raised', 'goal' en 'lastUpdated' aan. Laat de veldnamen ongewijzigd. Toon nooit een verzonnen bedrag.",
+  "raised": 0,
+  "goal": 5500,
+  "lastUpdated": "2026-07-15",
+  "showProgress": true,
+  "donationUrl": "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe"
+}

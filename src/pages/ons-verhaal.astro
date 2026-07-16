@@ -1,0 +1,79 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import DonationButton from "../components/DonationButton.astro";
+import Button from "../components/Button.astro";
+---
+
+<Layout
+  title="Ons verhaal"
+  description="Het verhaal achter De Sterkste Boom van Rendestede: waarom Koen fietst voor Kom op tegen Kanker."
+>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Ons verhaal" }]} />
+
+    <p class="font-accent text-2xl text-bos-600">van Rendestede</p>
+    <h1 class="mt-1 font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">
+      Dit is De Sterkste Boom van Rendestede
+    </h1>
+
+    <div class="mt-8 aspect-[16/9] rounded-card bg-bos-100 border border-beige-200 flex items-center justify-center text-bos-600">
+      <span class="text-sm">TODO: foto toevoegen</span>
+    </div>
+
+    <div class="mt-10 prose-content space-y-6 text-antraciet-800 leading-relaxed text-lg">
+      <p>
+        Sommige verhalen beginnen uit passie. Dit verhaal begint uit gemis.
+      </p>
+      <p>
+        Begin 2026 verloor ik mijn papa veel te snel aan een agressieve vorm van kanker.
+      </p>
+      <p>
+        Voor velen was hij de sterkste boom van Rendestede. Iemand waarop je kon bouwen,
+        iemand die er stond wanneer anderen hem nodig hadden en iemand die ondanks alles
+        bleef doorgaan.
+      </p>
+      <p>
+        Daarom draagt dit project zijn naam.
+      </p>
+
+      <blockquote class="border-l-4 border-goud-500 pl-6 py-2 font-accent text-2xl text-antraciet-900">
+        "De sterkste boom van Rendestede."
+      </blockquote>
+
+      <p>
+        Ik wil zijn kracht en doorzettingsvermogen laten voortleven. Niet door stil te
+        blijven staan, maar door in beweging te komen.
+      </p>
+      <p>
+        Daarom fiets ik.
+      </p>
+      <p>
+        Met sportieve uitdagingen, acties en evenementen zamelen we geld in voor Kom op
+        tegen Kanker. Niet alleen ter nagedachtenis van mijn papa, maar ook voor iedereen
+        die vandaag tegen kanker vecht, iemand verloren heeft of iemand wil steunen.
+      </p>
+    </div>
+
+    <section class="mt-14 rounded-card border border-beige-200 bg-beige-100 p-8">
+      <h2 class="font-display text-2xl font-semibold text-antraciet-900">De weg naar de 1000 km</h2>
+      <p class="mt-3 text-antraciet-700">
+        De Everesting op de Congoberg op 12 september 2026 is de eerste grote uitdaging.
+        Het langetermijndoel is deelname aan De 1000 km voor Kom op tegen Kanker in 2027.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-4">
+        <Button href="/uitdagingen/everesting-congoberg" variant="secondary">Everesting op de Congoberg</Button>
+        <Button href="/uitdagingen/1000km-2027" variant="ghost">De 1000 km in 2027</Button>
+      </div>
+    </section>
+
+    <div class="mt-14 text-center">
+      <p class="font-accent text-2xl text-bos-600">
+        💛 Samen houden we de sterkste boom van Rendestede levend.
+      </p>
+      <div class="mt-6 flex justify-center">
+        <DonationButton />
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import NewsCard from "../../components/NewsCard.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import { getCollection } from "astro:content";
+
+const allNews = await getCollection("news", ({ data }) => data.published);
+const news = allNews.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const categories = ["Alle", "Algemeen", "Training", "Uitdagingen", "Acties", "Sponsors", "Achter de schermen", "Resultaten"];
+---
+
+<Layout
+  title="Nieuws"
+  description="Nieuws, updates en verhalen van De Sterkste Boom van Rendestede."
+>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Nieuws" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Nieuws</h1>
+    <p class="mt-4 text-antraciet-700 max-w-2xl">
+      Updates over de voorbereiding, trainingen, acties en resultaten.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter op categorie">
+      {categories.map((cat) => (
+        <a
+          href={cat === "Alle" ? "/nieuws" : `/nieuws?categorie=${encodeURIComponent(cat)}`}
+          class="rounded-full border border-beige-200 px-4 py-2 text-sm text-antraciet-700 hover:border-goud-500 min-h-11 inline-flex items-center"
+          data-category={cat}
+        >
+          {cat}
+        </a>
+      ))}
+    </div>
+
+    <div id="news-grid" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {news.length === 0 ? (
+        <div class="sm:col-span-2 lg:col-span-3">
+          <EmptyState message="Binnenkort verschijnt hier het eerste nieuwsbericht." />
+        </div>
+      ) : (
+        news.map((post) => (
+          <div class="news-item" data-category={post.data.category}>
+            <NewsCard
+              title={post.data.title}
+              summary={post.data.summary}
+              date={post.data.date}
+              category={post.data.category}
+              href={`/nieuws/${post.id}`}
+            />
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+
+  <script>
+    // Lichte, toegankelijke client-side filtering op basis van de querystring.
+    const params = new URLSearchParams(window.location.search);
+    const active = params.get("categorie");
+    if (active && active !== "Alle") {
+      document.querySelectorAll<HTMLElement>(".news-item").forEach((item) => {
+        if (item.dataset.category !== active) {
+          item.style.display = "none";
+        }
+      });
+    }
+  </script>
+</Layout>

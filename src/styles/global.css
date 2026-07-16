@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+/*
+  ONTWERP: "De Sterkste Boom van Rendestede"
+  Signatuurmotief: jaarringen van een boom, gebruikt als groei- en
+  voortgangsvisualisatie (fondsenwerving, hoogteprofiel Everesting).
+  Kleuren bewust NIET het gangbare AI-crème/terracotta duo: warm goud,
+  antraciet en een gedempt bosgroen geven een sportieve, hoopvolle toon
+  die aansluit bij Kom op tegen Kanker zonder het te kopiëren.
+*/
+
+@theme {
+  /* Primair: warm goud, geïnspireerd op Kom op tegen Kanker */
+  --color-goud-50: #fdf8ec;
+  --color-goud-100: #faedc9;
+  --color-goud-300: #eec46b;
+  --color-goud-500: #e0a52e;
+  --color-goud-600: #c68a1e;
+  --color-goud-700: #9c6c17;
+
+  /* Secundair: antraciet / bijna zwart */
+  --color-antraciet-900: #1c211f;
+  --color-antraciet-800: #262c29;
+  --color-antraciet-700: #333b37;
+  --color-antraciet-500: #5b665f;
+
+  /* Gebroken wit / warm beige */
+  --color-beige-50: #fbf8f2;
+  --color-beige-100: #f3ecdd;
+  --color-beige-200: #e9dfc7;
+
+  /* Zachte natuurtint (bos/blad) */
+  --color-bos-500: #5f7256;
+  --color-bos-600: #4a5a43;
+  --color-bos-100: #e2e8d9;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Caveat", cursive;
+
+  --radius-card: 1rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background-color: var(--color-beige-50);
+  color: var(--color-antraciet-900);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+/* Skip-to-content link: enkel zichtbaar bij focus */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  background: var(--color-antraciet-900);
+  color: var(--color-beige-50);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Zichtbare, consistente focusstaat overal */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--color-goud-600);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.ring-divider {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up { animation: none; }
+}

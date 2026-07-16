@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import StoryIntro from "../components/StoryIntro.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import ChallengeCard from "../components/ChallengeCard.astro";
+import NewsCard from "../components/NewsCard.astro";
+import FundraisingProgress from "../components/FundraisingProgress.astro";
+import PartnerCallout from "../components/PartnerCallout.astro";
+import ContactCTA from "../components/ContactCTA.astro";
+import EmptyState from "../components/EmptyState.astro";
+import Button from "../components/Button.astro";
+import StructuredData from "../components/StructuredData.astro";
+import { getCollection } from "astro:content";
+import { siteConfig } from "../data/site-config";
+
+const challenges = (await getCollection("challenges", ({ data }) => data.published)).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
+
+const news = (await getCollection("news", ({ data }) => data.published))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+
+<Layout title={siteConfig.projectName} description={siteConfig.tagline}>
+  <StructuredData kind="Organization" />
+
+  <Hero />
+
+  <StoryIntro />
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
+    <SectionHeader
+      eyebrow="Sportieve uitdagingen"
+      title="De uitdagingen"
+      description="Elke uitdaging is een stap richting het grote doel: De 1000 km voor Kom op tegen Kanker in 2027."
+    />
+    <div class="mt-10 grid gap-6">
+      {challenges.length === 0 ? (
+        <EmptyState message="Binnenkort verschijnen hier de eerste uitdagingen." />
+      ) : (
+        challenges.map((challenge) => (
+          <ChallengeCard
+            title={challenge.data.title}
+            summary={challenge.data.summary}
+            date={challenge.data.date}
+            location={challenge.data.location}
+            status={challenge.data.status}
+            href={`/uitdagingen/${challenge.id}`}
+          />
+        ))
+      )}
+    </div>
+    {challenges.length > 0 && (
+      <div class="mt-8">
+        <Button href="/uitdagingen" variant="ghost">Bekijk alle uitdagingen</Button>
+      </div>
+    )}
+  </section>
+
+  <FundraisingProgress />
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeader
+        eyebrow="Blijf op de hoogte"
+        title="Laatste nieuws"
+        description="Updates over de voorbereiding, trainingen, acties en resultaten."
+      />
+      <Button href="/nieuws" variant="ghost" class="shrink-0">Alle nieuws</Button>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {news.length === 0 ? (
+        <div class="sm:col-span-2 lg:col-span-3">
+          <EmptyState message="Binnenkort verschijnt hier het eerste nieuwsbericht." />
+        </div>
+      ) : (
+        news.map((post) => (
+          <NewsCard
+            title={post.data.title}
+            summary={post.data.summary}
+            date={post.data.date}
+            category={post.data.category}
+            href={`/nieuws/${post.id}`}
+          />
+        ))
+      )}
+    </div>
+  </section>
+
+  <PartnerCallout />
+
+  <ContactCTA />
+</Layout>

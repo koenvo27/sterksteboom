@@ -1,0 +1,75 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { siteConfig } from "../data/site-config";
+---
+
+<Layout
+  title="Privacyverklaring"
+  description="Hoe De Sterkste Boom van Rendestede omgaat met je persoonsgegevens."
+>
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Privacyverklaring" }]} />
+    <h1 class="font-display text-4xl font-semibold text-antraciet-900">Privacyverklaring</h1>
+    <div class="mt-8 space-y-6 text-antraciet-700 leading-relaxed
+                [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-antraciet-900 [&_h2]:mt-8 [&_h2]:mb-2
+                [&_a]:underline [&_a]:text-goud-700">
+
+      <p>
+        {siteConfig.projectName} is een persoonlijk initiatief van {siteConfig.initiatiefnemer}
+        ten voordele van Kom op tegen Kanker. We gaan zorgvuldig om met je persoonsgegevens en
+        verwerken enkel wat nodig is. Deze verklaring legt uit welke gegevens we verzamelen en waarom.
+      </p>
+
+      <h2>Wie is verantwoordelijk?</h2>
+      <p>
+        Verantwoordelijke voor de verwerking is {siteConfig.initiatiefnemer}. Voor vragen over je
+        gegevens kan je mailen naar
+        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
+      </p>
+
+      <h2>Welke gegevens verwerken we?</h2>
+      <p>
+        Wanneer je ons via het contactformulier of per e-mail een bericht stuurt, verwerken we de
+        gegevens die je zelf meegeeft (zoals je naam, e-mailadres en de inhoud van je bericht).
+        We gebruiken die uitsluitend om je vraag te beantwoorden of je voorstel te bespreken.
+      </p>
+
+      <h2>Donaties</h2>
+      <p>
+        Deze website verwerkt zelf geen betalingen en vraagt zelf geen betaalgegevens. Alle donaties
+        verlopen via de officiële actiepagina van Kom op tegen Kanker. Op die pagina is het
+        privacybeleid van Kom op tegen Kanker van toepassing.
+      </p>
+
+      <h2>Externe diensten</h2>
+      <p>
+        Deze website wordt gehost via GitHub Pages en maakt gebruik van lettertypes van Google Fonts.
+        Bij het laden van de pagina kan je IP-adres door deze dienstverleners verwerkt worden om de
+        website correct te tonen. Voor het contactformulier kan een externe dienst (bijvoorbeeld
+        Formspree) gebruikt worden om je bericht af te leveren.
+      </p>
+
+      <h2>Bewaartermijn</h2>
+      <p>
+        Berichten die je ons stuurt, bewaren we niet langer dan nodig is om je vraag af te handelen.
+        Daarna worden ze verwijderd.
+      </p>
+
+      <h2>Je rechten</h2>
+      <p>
+        Je hebt het recht om je gegevens in te kijken, te laten verbeteren of te laten verwijderen.
+        Stuur daarvoor een e-mail naar
+        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>. Ben je niet tevreden over hoe
+        we met je gegevens omgaan, dan kan je een klacht indienen bij de Gegevensbeschermingsautoriteit
+        (<a href="https://www.gegevensbeschermingsautoriteit.be" target="_blank" rel="noopener noreferrer">gegevensbeschermingsautoriteit.be</a>).
+      </p>
+
+      <h2>Wijzigingen</h2>
+      <p>
+        Deze privacyverklaring kan worden aangepast wanneer het project of de gebruikte diensten
+        wijzigen. De meest recente versie staat altijd op deze pagina.
+      </p>
+    </div>
+  </div>
+</Layout>

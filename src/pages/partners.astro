@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import SponsorGrid from "../components/SponsorGrid.astro";
+import PartnerCallout from "../components/PartnerCallout.astro";
+---
+
+<Layout
+  title="Partners"
+  description="De bedrijven en organisaties die mee hun schouders zetten onder De Sterkste Boom van Rendestede."
+>
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Partners" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Partners</h1>
+    <p class="mt-4 text-antraciet-700 max-w-2xl">
+      Dit project wordt mee gedragen door bedrijven en organisaties die geloven in de kracht
+      van samen. Zonder hen zouden de uitdagingen en acties niet mogelijk zijn. Bedankt aan
+      iedereen die mee zijn schouders zet onder De Sterkste Boom van Rendestede.
+    </p>
+
+    <div class="mt-12">
+      <SponsorGrid />
+    </div>
+  </div>
+
+  <PartnerCallout />
+</Layout>

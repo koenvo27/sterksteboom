@@ -1,0 +1,37 @@
+---
+import DonationButton from "./DonationButton.astro";
+import Button from "./Button.astro";
+---
+
+<section class="relative overflow-hidden bg-antraciet-900 text-beige-50">
+  <!-- Jaarringen-motief: het signatuurelement van deze site, verwijst naar
+       groei, tijd en 'gedragen worden'. Puur decoratief, dus aria-hidden. -->
+  <svg
+    aria-hidden="true"
+    class="absolute -right-24 -top-24 w-[520px] h-[520px] opacity-20 sm:opacity-25"
+    viewBox="0 0 400 400"
+  >
+    <circle cx="200" cy="200" r="180" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="150" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="118" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="84" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
+    <circle cx="200" cy="200" r="48" fill="none" stroke="#e0a52e" stroke-width="1.5"/>
+  </svg>
+
+  <div class="relative mx-auto max-w-6xl px-4 sm:px-6 pt-14 pb-16 sm:pt-20 sm:pb-24">
+    <p class="font-accent text-2xl sm:text-3xl text-goud-300 fade-in-up">van Rendestede</p>
+    <h1 class="mt-2 font-display text-4xl sm:text-6xl font-semibold leading-[1.05] max-w-3xl fade-in-up">
+      De Sterkste Boom<br /> van Rendestede
+    </h1>
+    <p class="mt-6 max-w-xl text-lg sm:text-xl text-beige-200 fade-in-up">
+      Sportieve uitdagingen voor Kom op tegen Kanker, ter nagedachtenis van mijn papa: de sterkste boom van Rendestede.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-4 fade-in-up">
+      <DonationButton />
+      <Button href="/ons-verhaal" variant="ghost" class="border-beige-100 text-beige-50 hover:bg-antraciet-700">
+        Ontdek ons verhaal
+      </Button>
+    </div>
+  </div>
+</section>

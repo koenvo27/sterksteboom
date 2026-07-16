@@ -1,0 +1,82 @@
+---
+import type { NavItem } from "../data/navigation";
+
+interface Props {
+  navItems: NavItem[];
+  donationUrl: string;
+}
+
+const { navItems, donationUrl } = Astro.props;
+---
+
+<div class="lg:hidden">
+  <button
+    id="menu-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="mobile-menu"
+    class="inline-flex items-center justify-center w-11 h-11 rounded-lg border border-antraciet-700 text-antraciet-900"
+  >
+    <span class="sr-only">Menu openen</span>
+    <svg id="icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+    <svg id="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden">
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+    </svg>
+  </button>
+</div>
+
+<div
+  id="mobile-menu"
+  class="lg:hidden hidden fixed inset-0 top-16 z-40 bg-beige-50 overflow-y-auto"
+>
+  <nav aria-label="Mobiele navigatie" class="flex flex-col p-6 gap-1">
+    {navItems.map((item) => (
+      <a
+        href={item.href}
+        class="py-3 text-lg font-display text-antraciet-900 border-b border-beige-200"
+      >
+        {item.label}
+      </a>
+    ))}
+    <a
+      href={donationUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-6 inline-flex items-center justify-center rounded-full bg-goud-500 text-antraciet-900 font-semibold px-6 py-3 min-h-11"
+    >
+      Steun het project ↗
+    </a>
+  </nav>
+</div>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("icon-open");
+  const iconClose = document.getElementById("icon-close");
+
+  toggle?.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    menu?.classList.toggle("hidden");
+    iconOpen?.classList.toggle("hidden");
+    iconClose?.classList.toggle("hidden");
+    document.body.style.overflow = expanded ? "" : "hidden";
+  });
+
+  // Sluit menu bij navigatie
+  menu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      menu.classList.add("hidden");
+      toggle?.setAttribute("aria-expanded", "false");
+      iconOpen?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+      document.body.style.overflow = "";
+    });
+  });
+</script>

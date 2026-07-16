@@ -1,0 +1,51 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { siteConfig } from "../data/site-config";
+---
+
+<Layout
+  title="Cookiebeleid"
+  description="Hoe De Sterkste Boom van Rendestede omgaat met cookies."
+>
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Cookiebeleid" }]} />
+    <h1 class="font-display text-4xl font-semibold text-antraciet-900">Cookiebeleid</h1>
+    <div class="mt-8 space-y-6 text-antraciet-700 leading-relaxed
+                [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-antraciet-900 [&_h2]:mt-8 [&_h2]:mb-2
+                [&_a]:underline [&_a]:text-goud-700">
+
+      <p>
+        {siteConfig.projectName} wil zo weinig mogelijk gegevens verzamelen. Deze website plaatst
+        zelf geen tracking- of advertentiecookies en gebruikt geen analysediensten die je gedrag volgen.
+      </p>
+
+      <h2>Functionele cookies</h2>
+      <p>
+        Voor de basiswerking van de website zijn geen cookies nodig. Als er in de toekomst een strikt
+        noodzakelijke of functionele cookie bijkomt, wordt dat hier vermeld.
+      </p>
+
+      <h2>Externe inhoud</h2>
+      <p>
+        De website laadt lettertypes van Google Fonts en wordt gehost via GitHub Pages. Deze diensten
+        kunnen technische gegevens (zoals je IP-adres) verwerken om de inhoud correct af te leveren.
+        Wanneer je op een externe link klikt — bijvoorbeeld naar de actiepagina van Kom op tegen Kanker,
+        Facebook of een deelknop — geldt het cookie- en privacybeleid van die betreffende website.
+      </p>
+
+      <h2>Cookies beheren</h2>
+      <p>
+        Je kan cookies altijd zelf beheren of verwijderen via de instellingen van je browser. Meer
+        informatie vind je in de helppagina's van je browser.
+      </p>
+
+      <h2>Vragen</h2>
+      <p>
+        Vragen over dit cookiebeleid? Mail naar
+        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>. Zie ook onze
+        <a href="/privacy">privacyverklaring</a>.
+      </p>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,68 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ShareButtons from "../../components/ShareButtons.astro";
+import DonationButton from "../../components/DonationButton.astro";
+import StructuredData from "../../components/StructuredData.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { siteConfig } from "../../data/site-config";
+
+export async function getStaticPaths() {
+  const news = await getCollection("news", ({ data }) => data.published);
+  return news.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<"news">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const pageUrl = new URL(`/nieuws/${post.id}`, siteConfig.url).toString();
+---
+
+<Layout
+  title={post.data.seoTitle ?? post.data.title}
+  description={post.data.seoDescription ?? post.data.summary}
+  type="article"
+>
+  <StructuredData
+    kind="Article"
+    headline={post.data.title}
+    description={post.data.summary}
+    datePublished={post.data.date.toISOString()}
+    dateModified={post.data.updatedDate?.toISOString()}
+    author={post.data.author}
+    url={pageUrl}
+  />
+
+  <article class="mx-auto max-w-2xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Nieuws", href: "/nieuws" }, { label: post.data.title }]} />
+
+    <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-2">
+      {post.data.category}
+    </span>
+    <h1 class="font-display text-3xl sm:text-4xl font-semibold text-antraciet-900">{post.data.title}</h1>
+    <p class="mt-3 text-sm text-antraciet-500">
+      {post.data.date.toLocaleDateString("nl-BE", { day: "numeric", month: "long", year: "numeric" })}
+      {" "}· {post.data.author}
+    </p>
+
+    <div class="mt-10 prose-content max-w-none text-antraciet-800 leading-relaxed
+                [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-antraciet-900 [&_h2]:mt-10 [&_h2]:mb-3
+                [&_p]:mb-4">
+      <Content />
+    </div>
+
+    <div class="mt-12 border-t border-beige-200 pt-8">
+      <ShareButtons url={pageUrl} title={post.data.title} />
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <DonationButton />
+    </div>
+  </article>
+</Layout>

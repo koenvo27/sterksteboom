@@ -1,0 +1,66 @@
+---
+import { siteConfig } from "../data/site-config";
+import Button from "./Button.astro";
+
+interface Props {
+  categories?: string[];
+  subject: string;
+}
+
+const { categories, subject } = Astro.props;
+const hasEndpoint = siteConfig.formEndpoint.trim().length > 0;
+const mailHref = `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}`;
+---
+
+{hasEndpoint ? (
+  <form
+    action={siteConfig.formEndpoint}
+    method="POST"
+    class="grid gap-5 max-w-xl"
+  >
+    <div>
+      <label for="name" class="block text-sm font-semibold text-antraciet-900 mb-1">Naam</label>
+      <input id="name" name="name" type="text" required
+        class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
+    </div>
+    <div>
+      <label for="email" class="block text-sm font-semibold text-antraciet-900 mb-1">E-mailadres</label>
+      <input id="email" name="email" type="email" required
+        class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
+    </div>
+    {categories && (
+      <div>
+        <label for="category" class="block text-sm font-semibold text-antraciet-900 mb-1">Onderwerp</label>
+        <select id="category" name="category" required class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white">
+          {categories.map((cat) => <option value={cat}>{cat}</option>)}
+        </select>
+      </div>
+    )}
+    <div>
+      <label for="message" class="block text-sm font-semibold text-antraciet-900 mb-1">Bericht</label>
+      <textarea id="message" name="message" rows="5" required
+        class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white"></textarea>
+    </div>
+    <div class="flex items-start gap-3">
+      <input id="privacy" name="privacy" type="checkbox" required class="mt-1" />
+      <label for="privacy" class="text-sm text-antraciet-700">
+        Ik ga akkoord dat mijn gegevens gebruikt worden om mijn vraag te beantwoorden. Zie de <a href="/privacy" class="underline">privacyverklaring</a>.
+      </label>
+    </div>
+    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-goud-500 text-antraciet-900 font-semibold px-6 py-3 min-h-11 w-fit">
+      Versturen
+    </button>
+    <p class="text-xs text-antraciet-500">
+      Na verzending ontvang je een bevestiging. Bij een fout blijft dit formulier zichtbaar zodat je opnieuw kan proberen.
+    </p>
+  </form>
+) : (
+  <div class="rounded-card border border-beige-200 bg-beige-100/60 p-6 max-w-xl">
+    <p class="text-antraciet-700">
+      Er is momenteel geen online formulier gekoppeld. Stuur gerust rechtstreeks een e-mail — die komt bij Koen terecht.
+    </p>
+    <div class="mt-5">
+      <Button href={mailHref} variant="secondary">Stuur een e-mail</Button>
+    </div>
+  </div>
+)}

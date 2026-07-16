@@ -1,0 +1,42 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ChallengeCard from "../../components/ChallengeCard.astro";
+import EmptyState from "../../components/EmptyState.astro";
+import { getCollection } from "astro:content";
+
+const challenges = (await getCollection("challenges", ({ data }) => data.published)).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+);
+---
+
+<Layout
+  title="Uitdagingen"
+  description="De sportieve uitdagingen van De Sterkste Boom van Rendestede, op weg naar De 1000 km voor Kom op tegen Kanker."
+>
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Uitdagingen" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Uitdagingen</h1>
+    <p class="mt-4 text-antraciet-700 max-w-2xl">
+      Elke uitdaging is een stap richting het grote doel: De 1000 km voor Kom op tegen Kanker in 2027.
+      Klim na klim, kilometer na kilometer, voor de sterkste boom van Rendestede.
+    </p>
+
+    <div class="mt-10 grid gap-6">
+      {challenges.length === 0 ? (
+        <EmptyState message="Binnenkort verschijnen hier de eerste uitdagingen." />
+      ) : (
+        challenges.map((challenge) => (
+          <ChallengeCard
+            title={challenge.data.title}
+            summary={challenge.data.summary}
+            date={challenge.data.date}
+            location={challenge.data.location}
+            status={challenge.data.status}
+            href={`/uitdagingen/${challenge.id}`}
+          />
+        ))
+      )}
+    </div>
+  </div>
+</Layout>

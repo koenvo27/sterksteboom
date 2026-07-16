@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  date: Date;
+  location: string;
+  status: string;
+  href: string;
+}
+
+const { title, summary, date, location, status, href } = Astro.props;
+
+const day = date.getDate();
+const month = date.toLocaleDateString("nl-BE", { month: "short" }).toUpperCase();
+const year = date.getFullYear();
+---
+
+<a href={href} class="group flex flex-col sm:flex-row gap-5 rounded-card border border-beige-200 bg-white p-6 hover:border-goud-500 transition-colors">
+  <div class="shrink-0 w-20 text-center rounded-lg bg-antraciet-900 text-beige-50 py-3">
+    <div class="font-display text-2xl font-semibold leading-none">{day}</div>
+    <div class="text-xs tracking-wide mt-1">{month}</div>
+    <div class="text-xs text-beige-200">{year}</div>
+  </div>
+  <div class="flex-1">
+    <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-1">{status}</span>
+    <h3 class="font-display text-xl font-semibold text-antraciet-900 group-hover:text-goud-700">{title}</h3>
+    <p class="mt-1 text-sm text-antraciet-500">{location}</p>
+    <p class="mt-2 text-antraciet-700 text-sm">{summary}</p>
+  </div>
+</a>

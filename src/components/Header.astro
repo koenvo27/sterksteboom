@@ -1,0 +1,49 @@
+---
+import { mainNav } from "../data/navigation";
+import { siteConfig } from "../data/site-config";
+import DonationButton from "./DonationButton.astro";
+import MobileNavigation from "./MobileNavigation.astro";
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  if (href === "/") return currentPath === "/";
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="sticky top-0 z-50 bg-beige-50/95 backdrop-blur border-b border-beige-200">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="flex h-16 sm:h-20 items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 font-display text-base sm:text-lg font-semibold text-antraciet-900 shrink-0">
+        <img src="/favicon.svg" alt="" width="36" height="36" class="rounded-md" />
+        <span class="leading-tight">
+          De Sterkste Boom<br class="hidden sm:block" /> van Rendestede
+        </span>
+      </a>
+
+      <nav aria-label="Hoofdnavigatie" class="hidden lg:flex items-center gap-6 font-body text-sm">
+        {mainNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class:list={[
+              "py-2 border-b-2 transition-colors",
+              isActive(item.href)
+                ? "border-goud-500 text-antraciet-900 font-semibold"
+                : "border-transparent text-antraciet-700 hover:text-antraciet-900 hover:border-goud-300",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="hidden lg:block shrink-0">
+        <DonationButton />
+      </div>
+
+      <MobileNavigation navItems={mainNav} donationUrl={siteConfig.donationUrl} />
+    </div>
+  </div>
+</header>

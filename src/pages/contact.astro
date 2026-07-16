@@ -1,0 +1,43 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import ContactForm from "../components/ContactForm.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import { siteConfig } from "../data/site-config";
+---
+
+<Layout
+  title="Contact"
+  description="Neem contact op met De Sterkste Boom van Rendestede."
+>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Contact" }]} />
+    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Contact</h1>
+    <p class="mt-4 text-antraciet-700 max-w-2xl">
+      Heb je een vraag, een idee of wil je op een andere manier helpen? Stuur gerust een bericht.
+      Ik antwoord graag persoonlijk.
+    </p>
+
+    <div class="mt-10 grid gap-10 md:grid-cols-[1fr_auto]">
+      <div>
+        <ContactForm
+          subject="Bericht via de website van De Sterkste Boom van Rendestede"
+          categories={["Algemene vraag", "Uitdagingen en acties", "Partner worden", "Pers", "Iets anders"]}
+        />
+      </div>
+
+      <aside class="md:w-56 shrink-0 space-y-6">
+        <div>
+          <h2 class="font-display text-sm uppercase tracking-wide text-bos-600 mb-2">E-mail</h2>
+          <a href={`mailto:${siteConfig.email}`} class="text-antraciet-800 hover:text-goud-700 break-all">
+            {siteConfig.email}
+          </a>
+        </div>
+        <div>
+          <h2 class="font-display text-sm uppercase tracking-wide text-bos-600 mb-2">Volg mee</h2>
+          <SocialLinks />
+        </div>
+      </aside>
+    </div>
+  </div>
+</Layout>

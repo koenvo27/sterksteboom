@@ -1,0 +1,27 @@
+---
+import { siteConfig } from "../data/site-config";
+import Button from "./Button.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Vragen of interesse?",
+  description = "Stuur gerust een bericht, ik antwoord graag persoonlijk.",
+} = Astro.props;
+---
+
+<section class="mx-auto max-w-6xl px-4 sm:px-6 py-16">
+  <div class="rounded-card bg-bos-600 text-beige-50 p-8 sm:p-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+    <div>
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold">{title}</h2>
+      <p class="mt-2 text-beige-100 max-w-md">{description}</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <Button href={`mailto:${siteConfig.email}`} variant="primary">E-mail sturen</Button>
+      <Button href="/contact" variant="ghost" class="border-beige-100 text-beige-50 hover:bg-antraciet-700">Contactpagina</Button>
+    </div>
+  </div>
+</section>
