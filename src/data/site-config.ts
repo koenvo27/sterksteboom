@@ -31,6 +31,13 @@ export const siteConfig = {
   // Kan hier rechtstreeks ingevuld worden, of via de omgevingsvariabele
   // PUBLIC_FORM_ENDPOINT (zie .env.example). De omgevingsvariabele heeft voorrang.
   formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT || "", // TODO: Formspree-endpoint invullen, bv. "https://formspree.io/f/xxxxxxx"
+
+  // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
+  // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
+  keyDates: {
+    everesting: "2026-09-12" as string | null,
+    duizendKm: null as string | null, // TODO: datum invullen zodra bekend
+  },
 };
 
 export type SiteConfig = typeof siteConfig;

@@ -2,6 +2,12 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SEO from "../components/SEO.astro";
+
+// Self-hosted lettertypes (variabel) — geen externe request naar Google Fonts.
+// Fraunces (titels), Inter (lopende tekst), Caveat (handgeschreven accent).
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/caveat";
 import "../styles/global.css";
 
 interface Props {
@@ -21,16 +27,9 @@ const { title, description, image, type } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#1c211f" />
     <meta name="generator" content={Astro.generator} />
     <SEO title={title} description={description} image={image} type={type} />
-
-    <!-- Fonts: Fraunces (display), Inter (body), Caveat (accent) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Caveat:wght@600&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <a href="#main" class="skip-link">Ga naar inhoud</a>

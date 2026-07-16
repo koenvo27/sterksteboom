@@ -34,9 +34,9 @@
   --color-bos-600: #4a5a43;
   --color-bos-100: #e2e8d9;
 
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-accent: "Caveat", cursive;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Caveat Variable", cursive;
 
   --radius-card: 1rem;
 }
