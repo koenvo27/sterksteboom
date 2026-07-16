@@ -51,9 +51,11 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
       items={[{ label: "Uitdagingen", href: "/uitdagingen" }, { label: challenge.data.title }]}
     />
 
-    <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-2">
-      {challenge.data.status}
-    </span>
+    {challenge.data.status && (
+      <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-2">
+        {challenge.data.status}
+      </span>
+    )}
     <h1 class="font-display text-3xl sm:text-4xl font-semibold text-antraciet-900">
       {challenge.data.title}
     </h1>

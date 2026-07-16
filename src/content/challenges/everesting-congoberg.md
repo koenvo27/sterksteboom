@@ -4,7 +4,6 @@ slug: "everesting-congoberg"
 summary: "Op zaterdag 12 september 2026 fiets ik op de Congoberg de hoogte van de Mount Everest bijeen: 8848 hoogtemeters. Eén klim, zo vaak als nodig. Voor Cyriel, en voor iedereen die blijft vechten."
 date: 2026-09-12
 location: "Congoberg, Vollezele (Pajottenland)"
-status: "Aangekondigd"
 poster: "/images/affiche-everesting.jpg"
 featured: true
 published: true
@@ -20,7 +19,7 @@ Voor Kom op tegen Kanker. Ter nagedachtenis van mijn papa, **Cyriel**. En voor i
 
 ## Waarom ik dit doe
 
-Deze Everesting is de eerste grote sportieve uitdaging van De Sterkste Boom van Rendestede. Ze staat symbool voor doorzettingsvermogen: net als mijn papa blijf je bij een Everesting gewoon doorgaan, klim na klim, tot het einde. Opgeven is geen optie.
+Dit is mijn eerste grote sportieve uitdaging voor De Sterkste Boom van Rendestede. Ze staat symbool voor doorzettingsvermogen: net als mijn papa blijf je bij een Everesting gewoon doorgaan, klim na klim, tot het einde. Opgeven is geen optie.
 
 ## Datum en locatie
 
@@ -32,7 +31,7 @@ Deze Everesting is de eerste grote sportieve uitdaging van De Sterkste Boom van 
 
 Je hoeft geen fietser te zijn om erbij te zijn. Elke aanmoediging langs het parcours geeft energie.
 
-- **Fiets mee** — rijd een ronde mee en beleef het van dichtbij.
+- **Fiets mee** — fiets een paar beklimmingen mee en beleef het van dichtbij.
 - **Kom supporteren** — zorg jij mee voor de sfeer op de Congoberg?
 - **Bevoorrading** — er is doorlopende bevoorrading, halverwege op het vlakkere stuk.
 

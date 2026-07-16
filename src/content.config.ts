@@ -48,7 +48,7 @@ const challenges = defineCollection({
     summary: z.string(),
     date: z.coerce.date(),
     location: z.string(),
-    status: z.string(),
+    status: z.string().optional(),
     poster: z.string().optional(),
     featured: z.boolean().default(false),
     published: z.boolean().default(true),

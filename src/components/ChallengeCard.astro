@@ -4,7 +4,7 @@ interface Props {
   summary: string;
   date: Date;
   location: string;
-  status: string;
+  status?: string;
   href: string;
 }
 
@@ -22,7 +22,9 @@ const year = date.getFullYear();
     <div class="text-xs text-beige-200">{year}</div>
   </div>
   <div class="flex-1">
-    <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-1">{status}</span>
+    {status && (
+      <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-1">{status}</span>
+    )}
     <h3 class="font-display text-xl font-semibold text-antraciet-900 group-hover:text-goud-700">{title}</h3>
     <p class="mt-1 text-sm text-antraciet-500">{location}</p>
     <p class="mt-2 text-antraciet-700 text-sm">{summary}</p>
