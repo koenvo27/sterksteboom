@@ -60,6 +60,18 @@ export function extractAmount(html) {
   const $ = cheerio.load(html);
   const el = $(SELECTOR).first();
   if (el.length === 0) {
+    // Reserve: zoek een eurobedrag vlak bij het woord "ingezameld" in de
+    // platte tekst (werkt ook wanneer een proxy de opmaak wijzigt).
+    const flat = $.text().replace(/\s+/g, " ");
+    const near =
+      flat.match(/(€\s*[\d.,]+)\s*ingezameld/i) ||
+      flat.match(/ingezameld[^€]{0,30}(€\s*[\d.,]+)/i);
+    if (near) {
+      const value = parseEuro(near[1]);
+      if (value != null && value >= 0) {
+        return { ok: true, value, text: near[1].trim(), via: "tekst-fallback" };
+      }
+    }
     return { ok: false, reason: `selector "${SELECTOR}" niet gevonden` };
   }
   const text = el.text().trim();
@@ -71,7 +83,7 @@ export function extractAmount(html) {
 }
 
 /** fetch met harde timeout via AbortController (server-side). */
-export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch) {
+export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch, extraHeaders = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
   try {
@@ -79,6 +91,7 @@ export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch) 
       signal: controller.signal,
       redirect: "follow",
       headers: {
+        ...extraHeaders,
         // Browserechte headers: sommige sites geven bots een 404/403.
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
@@ -96,25 +109,39 @@ async function main() {
   const current = JSON.parse(readFileSync(FILE, "utf8"));
   console.log(`Huidig: opgehaald €${current.raised}, doel €${current.goal}`);
 
-  console.log(`Ophalen: ${SOURCE_URL}`);
+  // Route 1: rechtstreeks. Route 2 (reserve): via de Jina Reader-proxy, die
+  // de pagina met een echte browser ophaalt — nodig wanneer de KOTK-firewall
+  // datacenter-IP's (zoals GitHub Actions) blokkeert.
+  const routes = [
+    { name: "rechtstreeks", url: SOURCE_URL, headers: {} },
+    {
+      name: "render-proxy",
+      url: `https://r.jina.ai/${SOURCE_URL}`,
+      headers: { "X-Return-Format": "html" },
+      timeout: 45_000,
+    },
+  ];
+
   let html = null;
-  const attempts = 2;
-  for (let i = 1; i <= attempts; i++) {
-    try {
-      const res = await fetchWithTimeout(SOURCE_URL);
-      console.log(`Poging ${i}/${attempts}: HTTP ${res.status}`);
-      if (res.ok) {
-        html = await res.text();
-        break;
+  for (const route of routes) {
+    for (let i = 1; i <= 2; i++) {
+      try {
+        const res = await fetchWithTimeout(route.url, route.timeout ?? TIMEOUT_MS, fetch, route.headers);
+        console.log(`${route.name} — poging ${i}/2: HTTP ${res.status}`);
+        if (res.ok) {
+          html = await res.text();
+          break;
+        }
+        console.warn(`WAARSCHUWING: HTTP ${res.status}.`);
+      } catch (err) {
+        console.warn(`WAARSCHUWING: ophalen mislukt (${err.name}: ${err.message}).`);
       }
-      console.warn(`WAARSCHUWING: HTTP ${res.status}.`);
-    } catch (err) {
-      console.warn(`WAARSCHUWING: ophalen mislukt (${err.name}: ${err.message}).`);
+      if (i < 2) await new Promise((r) => setTimeout(r, 3000));
     }
-    if (i < attempts) await new Promise((r) => setTimeout(r, 3000));
+    if (html != null) break;
   }
   if (html == null) {
-    console.warn("Bedrag blijft ongewijzigd (geen geldige respons).");
+    console.warn("Bedrag blijft ongewijzigd (geen geldige respons via beide routes).");
     return;
   }
 

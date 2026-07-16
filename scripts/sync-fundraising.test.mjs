@@ -59,6 +59,13 @@ test("extractAmount: selector aanwezig maar geen bedrag -> niet ok", () => {
   assert.equal(extractAmount(html).ok, false);
 });
 
+test("extractAmount: tekst-fallback bij 'ingezameld' zonder selector", () => {
+  const html = `<main><p>&euro; 2.830,00 ingezameld door dit team</p></main>`;
+  const r = extractAmount(html);
+  assert.equal(r.ok, true);
+  assert.equal(r.value, 2830);
+});
+
 test("fetchWithTimeout: breekt af na timeout", async () => {
   // Nep-fetch die nooit antwoordt, maar de abort-signal respecteert.
   const nooitKlaar = (_url, { signal }) =>
