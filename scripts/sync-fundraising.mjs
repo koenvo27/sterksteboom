@@ -105,6 +105,59 @@ export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch, 
   }
 }
 
+/**
+ * Haalt de pagina op met een ECHTE headless browser (Playwright/Chromium):
+ * volwaardige TLS-vingerafdruk + JavaScript-uitvoering. Dit is de beste kans
+ * tegen botdetectie die een kale fetch of scraper-proxy een 404 geeft.
+ * Geeft de HTML terug, of null wanneer Playwright niet beschikbaar is
+ * (bv. lokaal / in de unit-tests) of de navigatie faalt.
+ */
+export async function fetchViaBrowser(url, timeoutMs = 45_000) {
+  let chromium;
+  try {
+    ({ chromium } = await import("playwright"));
+  } catch {
+    console.log("Playwright niet geïnstalleerd — browserroute overgeslagen.");
+    return null;
+  }
+  const browser = await chromium.launch({ headless: true });
+  try {
+    const context = await browser.newContext({
+      userAgent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+      locale: "nl-BE",
+      viewport: { width: 1366, height: 900 },
+    });
+    const page = await context.newPage();
+    const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: timeoutMs });
+    console.log(`browser (Playwright) — HTTP ${resp ? resp.status() : "?"}`);
+    // Geef de pagina even tijd om het bedrag te renderen; val terug op de HTML.
+    await page.waitForSelector(SELECTOR, { timeout: 10_000 }).catch(() => {});
+    return await page.content();
+  } finally {
+    await browser.close();
+  }
+}
+
+/** Browserroute: haal op via Playwright en probeer het bedrag te herkennen. */
+async function tryBrowserRoute(url) {
+  let html = null;
+  try {
+    html = await fetchViaBrowser(url);
+  } catch (err) {
+    console.warn(`WAARSCHUWING: browser (Playwright) mislukt (${err.name}: ${err.message}).`);
+    return null;
+  }
+  if (!html) return null;
+  const attempt = extractAmount(html);
+  if (attempt.ok) return attempt;
+  const peek = html.replace(/\s+/g, " ").slice(0, 300);
+  console.warn(
+    `WAARSCHUWING: browser (Playwright) gaf inhoud (${html.length} tekens) maar ${attempt.reason}. Begin: ${peek}`,
+  );
+  return null;
+}
+
 /** Schrijft een handmatig opgegeven bedrag weg (reserveweg wanneer KOTK
  *  geautomatiseerde toegang blokkeert). Geactiveerd via KOTK_MANUAL_AMOUNT. */
 function applyManualAmount(current, raw) {
@@ -159,9 +212,12 @@ async function main() {
     },
   ];
 
-  // Probeer route na route; stop bij de eerste waaruit een bedrag te halen valt.
-  let result = null;
-  for (const route of routes) {
+  // Route 0: échte browser (Playwright) — beste kans tegen botdetectie.
+  let result = await tryBrowserRoute(SOURCE_URL);
+  if (result) console.log("browser (Playwright): bedrag herkend.");
+
+  // Reserveroutes (kale fetch / proxy): enkel wanneer de browser niets opleverde.
+  for (const route of result ? [] : routes) {
     let html = null;
     for (let i = 1; i <= 2; i++) {
       try {
