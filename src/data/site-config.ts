@@ -45,12 +45,13 @@ export const siteConfig = {
     import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAD3tfjzlcviaqbEv",
 
   // Endpoint van de Cloudflare Worker die de inzending server-side verifieert
-  // (Turnstile Siteverify) en pas daarna doorstuurt. Zolang dit LEEG is, blijft
-  // het formulier rechtstreeks via FormSubmit werken (mét FormSubmit's eigen
-  // captcha) en verschijnt de Turnstile-widget nog niet. Zet deze waarde (of de
-  // omgevingsvariabele PUBLIC_FORM_WORKER_URL) op de live Worker-URL zodra die
-  // gedeployed en getest is; dan schakelt de frontend over op de Worker-route.
-  formWorkerUrl: import.meta.env.PUBLIC_FORM_WORKER_URL ?? "",
+  // (Turnstile Siteverify) en pas daarna doorstuurt naar FormSubmit. De frontend
+  // post uitsluitend naar deze Worker (nooit rechtstreeks naar FormSubmit). Kan
+  // overschreven worden via de omgevingsvariabele PUBLIC_FORM_WORKER_URL. Laat
+  // leeg ("") om het formulier tijdelijk te vervangen door een e-mailknop.
+  formWorkerUrl:
+    import.meta.env.PUBLIC_FORM_WORKER_URL ??
+    "https://sterksteboom-contact.koenvo27.workers.dev",
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
