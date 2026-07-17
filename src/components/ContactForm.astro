@@ -20,20 +20,25 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
     method="POST"
     class="grid gap-5 max-w-xl"
   >
-    <!-- FormSubmit-instellingen: onderwerp, nette tabelweergave in de mail,
-         redirect naar de bedankpagina, en een honeypot tegen spam. -->
+    <!-- FormSubmit-instellingen: onderwerp, nette tabelweergave in de mail en
+         redirect naar de bedankpagina. FormSubmit's eigen captcha (reCAPTCHA)
+         blijft bewust actief (we zetten _captcha NIET op false). De honeypot en
+         een beperkte blacklist vangen bijkomende spam op. -->
     <input type="hidden" name="_subject" value={subject} />
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={bedanktUrl} />
+    <!-- Zeer beperkte blacklist: enkel ondubbelzinnige spamtermen die niet in
+         geldige (Nederlandstalige) berichten voorkomen. -->
+    <input type="hidden" name="_blacklist" value="viagra, casino" />
     <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
     <div>
       <label for="name" class="block text-sm font-semibold text-antraciet-900 mb-1">Naam</label>
-      <input id="name" name="name" type="text" required
+      <input id="name" name="name" type="text" required maxlength="100"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
     </div>
     <div>
       <label for="email" class="block text-sm font-semibold text-antraciet-900 mb-1">E-mailadres</label>
-      <input id="email" name="email" type="email" required
+      <input id="email" name="email" type="email" required maxlength="150"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
     </div>
     {categories && (
@@ -46,7 +51,7 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
     )}
     <div>
       <label for="message" class="block text-sm font-semibold text-antraciet-900 mb-1">Bericht</label>
-      <textarea id="message" name="message" rows="5" required
+      <textarea id="message" name="message" rows="5" required maxlength="5000"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white"></textarea>
     </div>
     <div class="flex items-start gap-3">
@@ -59,8 +64,8 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
       Versturen
     </button>
     <p class="text-xs text-antraciet-500">
-      Na verzending word je doorgestuurd naar een bevestigingspagina. Bij een fout blijft dit
-      formulier zichtbaar zodat je opnieuw kan proberen.
+      Na verzending volgt een korte spamcontrole en word je doorgestuurd naar een
+      bevestigingspagina. Bij een fout blijft dit formulier zichtbaar zodat je opnieuw kan proberen.
     </p>
   </form>
 ) : (

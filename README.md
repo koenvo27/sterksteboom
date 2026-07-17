@@ -116,6 +116,25 @@ optimaliseert ze automatisch (WebP, meerdere formaten). Let bij het vervangen op
   (Open Graph). Behoud die afmetingen bij vervanging.
 - De poster van de Everesting staat in `public/images/affiche-everesting.jpg`.
 
+## Spambeveiliging op het contactformulier
+
+Het contactformulier post rechtstreeks naar **FormSubmit** (geen tussenlaag).
+De spambeveiliging bestaat uit drie lagen:
+
+- **FormSubmit's eigen captcha (Google reCAPTCHA)** — bewust actief gelaten; we
+  zetten `_captcha` **niet** op `false`. Bij het verzenden toont FormSubmit een
+  korte captcha op zijn eigen pagina, en daarna volgt de redirect naar `/bedankt`
+  (`_next`).
+- **Honeypot** (`_honey`) — een verborgen veld dat echte bezoekers leeg laten en
+  veel bots invullen.
+- Een zeer beperkte **`_blacklist`** met ondubbelzinnige spamtermen (bewust smal
+  gehouden om geldige berichten niet te blokkeren).
+
+De formulierbezorging (en dus het ontvangende e-mailadres) wordt bepaald door
+`formEndpoint` in `src/data/site-config.ts` (standaard de FormSubmit-URL van het
+projectadres, overschrijfbaar via `PUBLIC_FORM_ENDPOINT`). Het ontvangende adres
+moet één keer bij FormSubmit bevestigd worden; daarna komt elke inzending toe.
+
 ## Belangrijk: donaties
 
 Deze website verwerkt zelf **geen** betalingen en vraagt zelf **geen**

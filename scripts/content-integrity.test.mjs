@@ -153,9 +153,34 @@ test("er bestaat een eigen 404-pagina met noindex", () => {
   assert.match(notFound, /noindex/);
 });
 
-test("contactformulier belooft geen bevestigingsmail", () => {
+test("contactformulier verstuurt rechtstreeks naar FormSubmit met honeypot", () => {
   const form = read("src/components/ContactForm.astro");
-  assert.match(form, /doorgestuurd naar een bevestigingspagina/);
+  // Directe FormSubmit-route + redirect naar de bedankpagina.
+  assert.match(form, /siteConfig\.formEndpoint/);
+  assert.match(form, /name="_next"/);
+  assert.match(form, /doorgestuurd naar een\s+bevestigingspagina/);
+  // Honeypot blijft aanwezig.
+  assert.match(form, /name="_honey"/);
+  // FormSubmit's eigen captcha blijft aan: _captcha=false mag NERGENS staan.
+  assert.doesNotMatch(form, /name="_captcha"/);
+});
+
+test("geen Turnstile- of Worker-resten in de frontend of config", () => {
+  const form = read("src/components/ContactForm.astro");
+  const cfg = read("src/data/site-config.ts");
+  for (const src of [form, cfg]) {
+    assert.doesNotMatch(src, /turnstile/i);
+    assert.doesNotMatch(src, /formWorkerUrl/);
+    assert.doesNotMatch(src, /cf-turnstile/);
+  }
+});
+
+test("privacy en cookies vermelden FormSubmit, niet Turnstile", () => {
+  const privacy = read("src/pages/privacy.astro");
+  const cookies = read("src/pages/cookies.astro");
+  assert.match(privacy, /FormSubmit/);
+  assert.doesNotMatch(privacy, /Turnstile/);
+  assert.doesNotMatch(cookies, /Turnstile/);
 });
 
 // Kleine, afhankelijkheidsvrije bestandswandelaar.

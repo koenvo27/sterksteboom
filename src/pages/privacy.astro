@@ -24,7 +24,7 @@ import { siteConfig } from "../data/site-config";
       <h2>Wie is verantwoordelijk?</h2>
       <p>
         Verantwoordelijke voor de verwerking is {siteConfig.initiatiefnemer}. Voor vragen over je
-        gegevens kan je mailen naar
+        gegevens kan je mailen naar{" "}
         <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
       </p>
 
@@ -44,10 +44,17 @@ import { siteConfig } from "../data/site-config";
 
       <h2>Externe diensten</h2>
       <p>
-        Deze website wordt gehost via GitHub Pages en maakt gebruik van lettertypes van Google Fonts.
-        Bij het laden van de pagina kan je IP-adres door deze dienstverleners verwerkt worden om de
-        website correct te tonen. Voor het contactformulier kan een externe dienst (bijvoorbeeld
-        Formspree) gebruikt worden om je bericht af te leveren.
+        Deze website wordt gehost via GitHub Pages. De lettertypes worden zelf mee geleverd met de
+        website (geen Google Fonts). Voor het contactformulier gebruiken we{" "}
+        <a href="https://formsubmit.co" target="_blank" rel="noopener noreferrer">FormSubmit</a>{" "}
+        om je bericht per e-mail af te leveren; daarop is het privacybeleid van FormSubmit van toepassing.
+      </p>
+      <p>
+        Om spam tegen te gaan kan FormSubmit bij het verzenden een captcha (Google reCAPTCHA) tonen.
+        Daarbij kunnen Google en FormSubmit technische gegevens (zoals je IP-adres) verwerken en
+        cookies plaatsen. Daarop gelden het privacybeleid van{" "}
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google</a>{" "}
+        en van FormSubmit.
       </p>
 
       <h2>Bewaartermijn</h2>
@@ -59,7 +66,7 @@ import { siteConfig } from "../data/site-config";
       <h2>Je rechten</h2>
       <p>
         Je hebt het recht om je gegevens in te kijken, te laten verbeteren of te laten verwijderen.
-        Stuur daarvoor een e-mail naar
+        Stuur daarvoor een e-mail naar{" "}
         <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>. Ben je niet tevreden over hoe
         we met je gegevens omgaan, dan kan je een klacht indienen bij de Gegevensbeschermingsautoriteit
         (<a href="https://www.gegevensbeschermingsautoriteit.be" target="_blank" rel="noopener noreferrer">gegevensbeschermingsautoriteit.be</a>).
