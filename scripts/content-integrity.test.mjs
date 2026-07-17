@@ -183,6 +183,20 @@ test("privacy en cookies vermelden FormSubmit, niet Turnstile", () => {
   assert.doesNotMatch(cookies, /Turnstile/);
 });
 
+test("Cloudflare Web Analytics is token-gestuurd en wordt vermeld", () => {
+  const layout = read("src/layouts/Layout.astro");
+  const cfg = read("src/data/site-config.ts");
+  // Beacon laadt enkel wanneer er een token is (geen token = geen script).
+  assert.match(layout, /analyticsToken\s*&&/);
+  assert.match(layout, /static\.cloudflareinsights\.com\/beacon\.min\.js/);
+  // Configureerbaar via config en env.
+  assert.match(cfg, /cloudflareAnalyticsToken/);
+  assert.match(cfg, /PUBLIC_CF_ANALYTICS_TOKEN/);
+  // Transparant vermeld op de privacy- en cookiepagina.
+  assert.match(read("src/pages/privacy.astro"), /Cloudflare Web Analytics/);
+  assert.match(read("src/pages/cookies.astro"), /Cloudflare Web Analytics/);
+});
+
 // Kleine, afhankelijkheidsvrije bestandswandelaar.
 function walk(dir) {
   const out = [];

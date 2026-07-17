@@ -135,6 +135,15 @@ De formulierbezorging (en dus het ontvangende e-mailadres) wordt bepaald door
 projectadres, overschrijfbaar via `PUBLIC_FORM_ENDPOINT`). Het ontvangende adres
 moet één keer bij FormSubmit bevestigd worden; daarna komt elke inzending toe.
 
+## Statistieken (Cloudflare Web Analytics)
+
+Bezoekersstatistieken lopen via **Cloudflare Web Analytics** — cookieloos en
+privacyvriendelijk (geen banner nodig). De beacon-token staat in
+`cloudflareAnalyticsToken` in `src/data/site-config.ts` (of via de
+omgevingsvariabele `PUBLIC_CF_ANALYTICS_TOKEN`). Is de token leeg, dan wordt er
+geen enkel analytics-script geladen. De cijfers bekijk je in het
+Cloudflare-dashboard onder **Analytics & Logs → Web Analytics**.
+
 ## Belangrijk: donaties
 
 Deze website verwerkt zelf **geen** betalingen en vraagt zelf **geen**

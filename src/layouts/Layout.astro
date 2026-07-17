@@ -2,6 +2,10 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SEO from "../components/SEO.astro";
+import { siteConfig } from "../data/site-config";
+
+// Cloudflare Web Analytics laadt enkel wanneer er een token ingesteld is.
+const analyticsToken = siteConfig.cloudflareAnalyticsToken?.trim() ?? "";
 
 // Self-hosted lettertypes (variabel) — geen externe request naar Google Fonts.
 // Fraunces (titels), Inter (lopende tekst), Caveat (handgeschreven accent).
@@ -40,5 +44,14 @@ const { title, description, image, type, noindex } = Astro.props;
       <slot />
     </main>
     <Footer />
+    {/* Cloudflare Web Analytics: cookieloos, geen persoonlijke profilering. */}
+    {analyticsToken && (
+      <script
+        is:inline
+        type="module"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: analyticsToken })}
+      ></script>
+    )}
   </body>
 </html>
