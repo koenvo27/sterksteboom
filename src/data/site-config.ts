@@ -35,6 +35,19 @@ export const siteConfig = {
     import.meta.env.PUBLIC_FORM_ENDPOINT ||
     "https://formsubmit.co/desterksteboomvanrendestede@outlook.com",
 
+  // Cloudflare Turnstile — spambeveiliging op het contactformulier.
+  // De widget is cookievrij en privacyvriendelijk (geen Google reCAPTCHA).
+  //
+  // ⚠️ VERVANG DE TESTSLEUTEL HIERONDER DOOR JE EIGEN SITE KEY.
+  // De standaardwaarde is Cloudflare's *testsleutel* die ALTIJD slaagt en dus
+  // GEEN echte bescherming biedt. Maak een widget aan op
+  // https://dash.cloudflare.com/?to=/:account/turnstile (voeg het domein
+  // desterksteboomvanrendestede.be toe) en zet hier je echte site key,
+  // of stel de omgevingsvariabele PUBLIC_TURNSTILE_SITE_KEY in.
+  // Laat leeg ("") om de captcha volledig uit te schakelen.
+  turnstileSiteKey:
+    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {

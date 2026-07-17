@@ -12,6 +12,29 @@ const hasEndpoint = siteConfig.formEndpoint.trim().length > 0;
 const mailHref = `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}`;
 // Absolute URL voor de redirect na verzenden (FormSubmit vereist absoluut).
 const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
+// Cloudflare Turnstile: enkel tonen als er een site key ingesteld is.
+const turnstileKey = siteConfig.turnstileSiteKey?.trim() ?? "";
+const hasTurnstile = turnstileKey.length > 0;
+
+// Submit-bewaking: blokkeer versturen tot Turnstile opgelost is. Als de widget
+// niet kon laden (bv. Cloudflare onbereikbaar), laten we versturen gewoon toe —
+// we sluiten echte bezoekers nooit buiten. In een string gezet zodat de accolades
+// niet als Astro-expressies gelezen worden.
+const turnstileGuard = `
+  document.addEventListener("submit", function (e) {
+    var form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    var widget = form.querySelector(".cf-turnstile");
+    if (!widget) return;
+    var field = form.querySelector('[name="cf-turnstile-response"]');
+    if (field && !field.value) {
+      e.preventDefault();
+      var err = document.getElementById("turnstile-error");
+      if (err) err.classList.remove("hidden");
+      widget.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+`;
 ---
 
 {hasEndpoint ? (
@@ -21,10 +44,13 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
     class="grid gap-5 max-w-xl"
   >
     <!-- FormSubmit-instellingen: onderwerp, nette tabelweergave in de mail,
-         redirect naar de bedankpagina, en een honeypot tegen spam. -->
+         redirect naar de bedankpagina, en een honeypot tegen spam.
+         _captcha=false: FormSubmit's eigen (Google reCAPTCHA) captcha staat uit;
+         we gebruiken Cloudflare Turnstile hieronder — cookievrij en zonder Google. -->
     <input type="hidden" name="_subject" value={subject} />
     <input type="hidden" name="_template" value="table" />
     <input type="hidden" name="_next" value={bedanktUrl} />
+    <input type="hidden" name="_captcha" value="false" />
     <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
     <div>
       <label for="name" class="block text-sm font-semibold text-antraciet-900 mb-1">Naam</label>
@@ -55,6 +81,17 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
         Ik ga akkoord dat mijn gegevens gebruikt worden om mijn vraag te beantwoorden. Zie de <a href="/privacy" class="underline">privacyverklaring</a>.
       </label>
     </div>
+    {hasTurnstile && (
+      <div>
+        <!-- Cloudflare Turnstile: cookievrije spamcontrole. De widget vult zelf
+             een verborgen veld 'cf-turnstile-response' in bij succes. -->
+        <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto" data-language="nl"></div>
+        <p id="turnstile-error" class="mt-2 hidden text-sm text-red-700" role="alert">
+          Bevestig even dat je geen robot bent voor je verstuurt.
+        </p>
+      </div>
+    )}
+
     <button type="submit" class="inline-flex items-center justify-center rounded-full bg-goud-500 text-antraciet-900 font-semibold px-6 py-3 min-h-11 w-fit">
       Versturen
     </button>
@@ -73,3 +110,8 @@ const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
     </div>
   </div>
 )}
+
+{hasEndpoint && hasTurnstile && (
+  <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+)}
+{hasEndpoint && hasTurnstile && <script is:inline set:html={turnstileGuard} />}

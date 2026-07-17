@@ -116,6 +116,35 @@ optimaliseert ze automatisch (WebP, meerdere formaten). Let bij het vervangen op
   (Open Graph). Behoud die afmetingen bij vervanging.
 - De poster van de Everesting staat in `public/images/affiche-everesting.jpg`.
 
+## Spambeveiliging op het contactformulier (Cloudflare Turnstile)
+
+Het contactformulier gebruikt **Cloudflare Turnstile** in plaats van FormSubmit's
+eigen (Google reCAPTCHA) captcha. Turnstile is cookievrij en privacyvriendelijk,
+wat past bij het cookiebeleid van de site.
+
+**Je eigen site key instellen (verplicht voor echte bescherming):**
+
+1. Maak een gratis widget aan op
+   [dash.cloudflare.com → Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile)
+   en voeg het domein `desterksteboomvanrendestede.be` toe.
+2. Zet je **site key** (begint meestal met `0x…`) in `src/data/site-config.ts`
+   bij `turnstileSiteKey`, of stel de omgevingsvariabele
+   `PUBLIC_TURNSTILE_SITE_KEY` in (bv. als GitHub Actions-secret/variable).
+3. Laat de waarde leeg (`""`) om de captcha volledig uit te schakelen.
+
+> ⚠️ De standaardwaarde in de config is Cloudflare's **testsleutel**
+> (`1x00000000000000000000AA`) die altijd slaagt en dus **geen echte
+> bescherming** biedt. Vervang die door je eigen site key.
+
+**Wat deze captcha wel en niet doet.** Omdat dit een statische site is met
+FormSubmit als backend, werkt Turnstile hier als een **client-side controle**:
+de widget moet opgelost zijn voor je kan versturen. Dat houdt de overgrote
+meerderheid van spambots tegen, maar de token wordt niet server-side
+geverifieerd — een vastberaden bot kan de POST rechtstreeks naar FormSubmit
+sturen. Voor **échte server-verificatie** is een kleine tussenlaag nodig
+(bijvoorbeeld een Cloudflare Worker die de token controleert en pas dan de
+mail doorstuurt). De honeypot (`_honey`) blijft daarnaast actief.
+
 ## Belangrijk: donaties
 
 Deze website verwerkt zelf **geen** betalingen en vraagt zelf **geen**

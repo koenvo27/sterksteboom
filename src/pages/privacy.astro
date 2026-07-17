@@ -44,10 +44,17 @@ import { siteConfig } from "../data/site-config";
 
       <h2>Externe diensten</h2>
       <p>
-        Deze website wordt gehost via GitHub Pages en maakt gebruik van lettertypes van Google Fonts.
-        Bij het laden van de pagina kan je IP-adres door deze dienstverleners verwerkt worden om de
-        website correct te tonen. Voor het contactformulier kan een externe dienst (bijvoorbeeld
-        Formspree) gebruikt worden om je bericht af te leveren.
+        Deze website wordt gehost via GitHub Pages. De lettertypes worden zelf mee geleverd met de
+        website (geen Google Fonts). Voor het contactformulier gebruiken we FormSubmit om je bericht
+        per e-mail af te leveren.
+      </p>
+      <p>
+        Om spam op het contactformulier tegen te gaan, gebruiken we Cloudflare Turnstile. Dat is een
+        privacyvriendelijk alternatief voor de klassieke captcha: het plaatst geen advertentie- of
+        trackingcookies. Bij het tonen van de captcha wordt een script van Cloudflare geladen en kan
+        je IP-adres en beperkte technische informatie door Cloudflare verwerkt worden om te
+        controleren of je een echte bezoeker bent. Meer info in het
+        <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">privacybeleid van Cloudflare</a>.
       </p>
 
       <h2>Bewaartermijn</h2>

@@ -158,6 +158,27 @@ test("contactformulier belooft geen bevestigingsmail", () => {
   assert.match(form, /doorgestuurd naar een bevestigingspagina/);
 });
 
+test("contactformulier: Cloudflare Turnstile-spambeveiliging aanwezig", () => {
+  const form = read("src/components/ContactForm.astro");
+  // Widget en configuratie via de site key uit site-config.
+  assert.match(form, /cf-turnstile/);
+  assert.match(form, /turnstileSiteKey|turnstileKey/);
+  // FormSubmit's eigen (Google reCAPTCHA) captcha staat uit, zodat er geen
+  // dubbele captcha of Google-cookies zijn.
+  assert.match(form, /name="_captcha"\s+value="false"/);
+});
+
+test("Turnstile: site key configureerbaar via env met veilige degradatie", () => {
+  const cfg = read("src/data/site-config.ts");
+  assert.match(cfg, /turnstileSiteKey/);
+  assert.match(cfg, /PUBLIC_TURNSTILE_SITE_KEY/);
+});
+
+test("privacy en cookies vermelden Cloudflare Turnstile", () => {
+  assert.match(read("src/pages/privacy.astro"), /Turnstile/);
+  assert.match(read("src/pages/cookies.astro"), /Turnstile/);
+});
+
 // Kleine, afhankelijkheidsvrije bestandswandelaar.
 function walk(dir) {
   const out = [];
