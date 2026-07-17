@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --test scripts/*.test.mjs worker/*.test.mjs",
+    "test": "node --test scripts/*.test.mjs",
     "sync:fundraising": "node scripts/sync-fundraising.mjs"
   },
   "dependencies": {

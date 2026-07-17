@@ -35,24 +35,6 @@ export const siteConfig = {
     import.meta.env.PUBLIC_FORM_ENDPOINT ||
     "https://formsubmit.co/desterksteboomvanrendestede@outlook.com",
 
-  // Cloudflare Turnstile — spambeveiliging op het contactformulier.
-  // De widget is cookievrij en privacyvriendelijk (geen Google reCAPTCHA).
-  // Dit is de PUBLIEKE site key (mag in de broncode staan). De bijhorende
-  // SECRET key hoort NOOIT hier of in de repo: die staat enkel als Cloudflare
-  // Worker secret (TURNSTILE_SECRET_KEY). Kan overschreven worden via de
-  // omgevingsvariabele PUBLIC_TURNSTILE_SITE_KEY. Leeg ("") = geen widget.
-  turnstileSiteKey:
-    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAD3tfjzlcviaqbEv",
-
-  // Endpoint van de Cloudflare Worker die de inzending server-side verifieert
-  // (Turnstile Siteverify) en pas daarna doorstuurt naar FormSubmit. De frontend
-  // post uitsluitend naar deze Worker (nooit rechtstreeks naar FormSubmit). Kan
-  // overschreven worden via de omgevingsvariabele PUBLIC_FORM_WORKER_URL. Laat
-  // leeg ("") om het formulier tijdelijk te vervangen door een e-mailknop.
-  formWorkerUrl:
-    import.meta.env.PUBLIC_FORM_WORKER_URL ??
-    "https://sterksteboom-contact.koenvo27.workers.dev",
-
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {

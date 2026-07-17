@@ -153,62 +153,34 @@ test("er bestaat een eigen 404-pagina met noindex", () => {
   assert.match(notFound, /noindex/);
 });
 
-test("contactformulier belooft geen bevestigingsmail", () => {
+test("contactformulier verstuurt rechtstreeks naar FormSubmit met honeypot", () => {
   const form = read("src/components/ContactForm.astro");
-  assert.match(form, /doorgestuurd naar een bevestigingspagina/);
+  // Directe FormSubmit-route + redirect naar de bedankpagina.
+  assert.match(form, /siteConfig\.formEndpoint/);
+  assert.match(form, /name="_next"/);
+  assert.match(form, /doorgestuurd naar een\s+bevestigingspagina/);
+  // Honeypot blijft aanwezig.
+  assert.match(form, /name="_honey"/);
+  // FormSubmit's eigen captcha blijft aan: _captcha=false mag NERGENS staan.
+  assert.doesNotMatch(form, /name="_captcha"/);
 });
 
-test("contactformulier: Turnstile-widget en Worker-route (gefaseerd)", () => {
+test("geen Turnstile- of Worker-resten in de frontend of config", () => {
   const form = read("src/components/ContactForm.astro");
-  // Widget met action, en verzenden via de Worker.
-  assert.match(form, /cf-turnstile/);
-  assert.match(form, /data-action="contact"/);
-  assert.match(form, /turnstileKey/);
-  // De Worker-route wordt pas actief als formWorkerUrl gezet is.
-  assert.match(form, /useWorker/);
-  assert.match(form, /formWorkerUrl|data-worker/);
-});
-
-test("Turnstile en Worker configureerbaar via env in site-config", () => {
   const cfg = read("src/data/site-config.ts");
-  assert.match(cfg, /turnstileSiteKey/);
-  assert.match(cfg, /PUBLIC_TURNSTILE_SITE_KEY/);
-  assert.match(cfg, /formWorkerUrl/);
-  assert.match(cfg, /PUBLIC_FORM_WORKER_URL/);
+  for (const src of [form, cfg]) {
+    assert.doesNotMatch(src, /turnstile/i);
+    assert.doesNotMatch(src, /formWorkerUrl/);
+    assert.doesNotMatch(src, /cf-turnstile/);
+  }
 });
 
-test("privacy en cookies vermelden Cloudflare Turnstile", () => {
-  assert.match(read("src/pages/privacy.astro"), /Turnstile/);
-  assert.match(read("src/pages/cookies.astro"), /Turnstile/);
-});
-
-test("Worker: verifieert Turnstile server-side en checkt success/hostname/action", () => {
-  const w = read("worker/src/index.js");
-  assert.match(w, /turnstile\/v0\/siteverify/);
-  assert.match(w, /verify\.success !== true/);
-  assert.match(w, /verify\.hostname/);
-  assert.match(w, /verify\.action/);
-  // Honeypot en veldvalidatie aanwezig.
-  assert.match(w, /_honey/);
-  assert.match(w, /isEmail/);
-  // Alleen POST en OPTIONS.
-  assert.match(w, /"OPTIONS"/);
-  assert.match(w, /"POST, OPTIONS"/);
-});
-
-test("Worker: secret key komt uitsluitend uit de omgeving (niet hardcoded)", () => {
-  const w = read("worker/src/index.js");
-  const toml = read("worker/wrangler.toml");
-  // De code gebruikt env.TURNSTILE_SECRET_KEY ...
-  assert.match(w, /env\.TURNSTILE_SECRET_KEY/);
-  // ... en de secret staat NIET als variabele in wrangler.toml.
-  assert.doesNotMatch(toml, /^\s*TURNSTILE_SECRET_KEY\s*=/m);
-});
-
-test("Worker: CORS beperkt tot de eigen domeinen", () => {
-  const w = read("worker/src/index.js");
-  assert.match(w, /desterksteboomvanrendestede\.be/);
-  assert.match(w, /Access-Control-Allow-Origin/);
+test("privacy en cookies vermelden FormSubmit, niet Turnstile", () => {
+  const privacy = read("src/pages/privacy.astro");
+  const cookies = read("src/pages/cookies.astro");
+  assert.match(privacy, /FormSubmit/);
+  assert.doesNotMatch(privacy, /Turnstile/);
+  assert.doesNotMatch(cookies, /Turnstile/);
 });
 
 // Kleine, afhankelijkheidsvrije bestandswandelaar.

@@ -116,33 +116,24 @@ optimaliseert ze automatisch (WebP, meerdere formaten). Let bij het vervangen op
   (Open Graph). Behoud die afmetingen bij vervanging.
 - De poster van de Everesting staat in `public/images/affiche-everesting.jpg`.
 
-## Spambeveiliging op het contactformulier (Cloudflare Turnstile + Worker)
+## Spambeveiliging op het contactformulier
 
-Het contactformulier gebruikt **Cloudflare Turnstile**, met **verplichte
-server-side verificatie** via een kleine **Cloudflare Worker** (map `worker/`).
-De frontend post naar de Worker; die verifieert de Turnstile-token via de
-Siteverify API, valideert de velden en stuurt de inzending pas daarna door.
-Turnstile is cookievrij, wat past bij het cookiebeleid van de site.
+Het contactformulier post rechtstreeks naar **FormSubmit** (geen tussenlaag).
+De spambeveiliging bestaat uit drie lagen:
 
-**Gefaseerde uitrol.** De omschakeling gebeurt via één instelling:
+- **FormSubmit's eigen captcha (Google reCAPTCHA)** — bewust actief gelaten; we
+  zetten `_captcha` **niet** op `false`. Bij het verzenden toont FormSubmit een
+  korte captcha op zijn eigen pagina, en daarna volgt de redirect naar `/bedankt`
+  (`_next`).
+- **Honeypot** (`_honey`) — een verborgen veld dat echte bezoekers leeg laten en
+  veel bots invullen.
+- Een zeer beperkte **`_blacklist`** met ondubbelzinnige spamtermen (bewust smal
+  gehouden om geldige berichten niet te blokkeren).
 
-- `turnstileSiteKey` in `src/data/site-config.ts` bevat de **publieke** site key
-  (of via `PUBLIC_TURNSTILE_SITE_KEY`).
-- `formWorkerUrl` (of `PUBLIC_FORM_WORKER_URL`) bevat de **Worker-URL**.
-  - **Leeg** → het formulier werkt rechtstreeks via FormSubmit, mét FormSubmit's
-    eigen captcha. De Turnstile-widget verschijnt dan nog niet. (Huidig live gedrag.)
-  - **Ingevuld** → de Turnstile-widget verschijnt en de frontend post naar de
-    Worker (server-side verificatie). De directe FormSubmit-route wordt dan niet
-    meer gebruikt.
-
-Zo blijft de bestaande bescherming actief tot de Worker gedeployed en getest is.
-
-> 🔒 De **secret key** hoort NOOIT in de repo of in client-side code. Die staat
-> uitsluitend als Worker-secret (`TURNSTILE_SECRET_KEY`). Zie **`worker/README.md`**
-> voor het volledige stappenplan (deployen, secret zetten, e-mailrouting,
-> Worker-URL in de config, end-to-end test).
-
-De honeypot (`_honey`) blijft in beide routes actief.
+De formulierbezorging (en dus het ontvangende e-mailadres) wordt bepaald door
+`formEndpoint` in `src/data/site-config.ts` (standaard de FormSubmit-URL van het
+projectadres, overschrijfbaar via `PUBLIC_FORM_ENDPOINT`). Het ontvangende adres
+moet één keer bij FormSubmit bevestigd worden; daarna komt elke inzending toe.
 
 ## Belangrijk: donaties
 
