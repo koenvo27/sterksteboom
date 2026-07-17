@@ -5,6 +5,11 @@ on:
     # Elk uur op het hele uur (UTC). GitHub kan geplande runs wat vertragen.
     - cron: "0 * * * *"
   workflow_dispatch:
+    inputs:
+      amount:
+        description: "Handmatig bedrag in euro (bv. 3125 of 3125,50). Leeg = automatisch ophalen van KOTK."
+        required: false
+        default: ""
 
 # contents: write  -> om het bijgewerkte bedrag terug te committen
 # actions: write   -> om daarna de deploy-workflow te starten (pushes met
@@ -38,6 +43,10 @@ jobs:
 
       - name: Bedrag ophalen van Kom op tegen Kanker
         run: node scripts/sync-fundraising.mjs
+        env:
+          # Leeg bij een geplande run (automatisch ophalen); ingevuld bij een
+          # handmatige run via de "Run workflow"-knop.
+          KOTK_MANUAL_AMOUNT: ${{ github.event.inputs.amount }}
 
       - name: Committen indien gewijzigd
         run: |
