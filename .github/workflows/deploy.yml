@@ -3,13 +3,8 @@ name: Deploy naar GitHub Pages
 on:
   push:
     branches:
-      # main = primaire productiebranch. Maak main de default branch van de
-      # repo (Settings → Branches) zodat GitHub Pages hiervanaf deployt.
+      # main = de productie-/default branch. GitHub Pages deployt hiervanaf.
       - main
-      # De oorspronkelijke werkbranch blijft voorlopig aanvullend ondersteund
-      # zodat de site blijft deployen tot main als default is ingesteld. Deze
-      # regel mag verwijderd worden zodra main de default branch is.
-      - claude/sterksteboom-github-deploy-aw4yyb
   workflow_dispatch:
 
 permissions:
