@@ -37,16 +37,20 @@ export const siteConfig = {
 
   // Cloudflare Turnstile — spambeveiliging op het contactformulier.
   // De widget is cookievrij en privacyvriendelijk (geen Google reCAPTCHA).
-  //
-  // ⚠️ VERVANG DE TESTSLEUTEL HIERONDER DOOR JE EIGEN SITE KEY.
-  // De standaardwaarde is Cloudflare's *testsleutel* die ALTIJD slaagt en dus
-  // GEEN echte bescherming biedt. Maak een widget aan op
-  // https://dash.cloudflare.com/?to=/:account/turnstile (voeg het domein
-  // desterksteboomvanrendestede.be toe) en zet hier je echte site key,
-  // of stel de omgevingsvariabele PUBLIC_TURNSTILE_SITE_KEY in.
-  // Laat leeg ("") om de captcha volledig uit te schakelen.
+  // Dit is de PUBLIEKE site key (mag in de broncode staan). De bijhorende
+  // SECRET key hoort NOOIT hier of in de repo: die staat enkel als Cloudflare
+  // Worker secret (TURNSTILE_SECRET_KEY). Kan overschreven worden via de
+  // omgevingsvariabele PUBLIC_TURNSTILE_SITE_KEY. Leeg ("") = geen widget.
   turnstileSiteKey:
-    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA",
+    import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAD3tfjzlcviaqbEv",
+
+  // Endpoint van de Cloudflare Worker die de inzending server-side verifieert
+  // (Turnstile Siteverify) en pas daarna doorstuurt. Zolang dit LEEG is, blijft
+  // het formulier rechtstreeks via FormSubmit werken (mét FormSubmit's eigen
+  // captcha) en verschijnt de Turnstile-widget nog niet. Zet deze waarde (of de
+  // omgevingsvariabele PUBLIC_FORM_WORKER_URL) op de live Worker-URL zodra die
+  // gedeployed en getest is; dan schakelt de frontend over op de Worker-route.
+  formWorkerUrl: import.meta.env.PUBLIC_FORM_WORKER_URL ?? "",
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.

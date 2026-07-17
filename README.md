@@ -116,34 +116,33 @@ optimaliseert ze automatisch (WebP, meerdere formaten). Let bij het vervangen op
   (Open Graph). Behoud die afmetingen bij vervanging.
 - De poster van de Everesting staat in `public/images/affiche-everesting.jpg`.
 
-## Spambeveiliging op het contactformulier (Cloudflare Turnstile)
+## Spambeveiliging op het contactformulier (Cloudflare Turnstile + Worker)
 
-Het contactformulier gebruikt **Cloudflare Turnstile** in plaats van FormSubmit's
-eigen (Google reCAPTCHA) captcha. Turnstile is cookievrij en privacyvriendelijk,
-wat past bij het cookiebeleid van de site.
+Het contactformulier gebruikt **Cloudflare Turnstile**, met **verplichte
+server-side verificatie** via een kleine **Cloudflare Worker** (map `worker/`).
+De frontend post naar de Worker; die verifieert de Turnstile-token via de
+Siteverify API, valideert de velden en stuurt de inzending pas daarna door.
+Turnstile is cookievrij, wat past bij het cookiebeleid van de site.
 
-**Je eigen site key instellen (verplicht voor echte bescherming):**
+**Gefaseerde uitrol.** De omschakeling gebeurt via één instelling:
 
-1. Maak een gratis widget aan op
-   [dash.cloudflare.com → Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile)
-   en voeg het domein `desterksteboomvanrendestede.be` toe.
-2. Zet je **site key** (begint meestal met `0x…`) in `src/data/site-config.ts`
-   bij `turnstileSiteKey`, of stel de omgevingsvariabele
-   `PUBLIC_TURNSTILE_SITE_KEY` in (bv. als GitHub Actions-secret/variable).
-3. Laat de waarde leeg (`""`) om de captcha volledig uit te schakelen.
+- `turnstileSiteKey` in `src/data/site-config.ts` bevat de **publieke** site key
+  (of via `PUBLIC_TURNSTILE_SITE_KEY`).
+- `formWorkerUrl` (of `PUBLIC_FORM_WORKER_URL`) bevat de **Worker-URL**.
+  - **Leeg** → het formulier werkt rechtstreeks via FormSubmit, mét FormSubmit's
+    eigen captcha. De Turnstile-widget verschijnt dan nog niet. (Huidig live gedrag.)
+  - **Ingevuld** → de Turnstile-widget verschijnt en de frontend post naar de
+    Worker (server-side verificatie). De directe FormSubmit-route wordt dan niet
+    meer gebruikt.
 
-> ⚠️ De standaardwaarde in de config is Cloudflare's **testsleutel**
-> (`1x00000000000000000000AA`) die altijd slaagt en dus **geen echte
-> bescherming** biedt. Vervang die door je eigen site key.
+Zo blijft de bestaande bescherming actief tot de Worker gedeployed en getest is.
 
-**Wat deze captcha wel en niet doet.** Omdat dit een statische site is met
-FormSubmit als backend, werkt Turnstile hier als een **client-side controle**:
-de widget moet opgelost zijn voor je kan versturen. Dat houdt de overgrote
-meerderheid van spambots tegen, maar de token wordt niet server-side
-geverifieerd — een vastberaden bot kan de POST rechtstreeks naar FormSubmit
-sturen. Voor **échte server-verificatie** is een kleine tussenlaag nodig
-(bijvoorbeeld een Cloudflare Worker die de token controleert en pas dan de
-mail doorstuurt). De honeypot (`_honey`) blijft daarnaast actief.
+> 🔒 De **secret key** hoort NOOIT in de repo of in client-side code. Die staat
+> uitsluitend als Worker-secret (`TURNSTILE_SECRET_KEY`). Zie **`worker/README.md`**
+> voor het volledige stappenplan (deployen, secret zetten, e-mailrouting,
+> Worker-URL in de config, end-to-end test).
+
+De honeypot (`_honey`) blijft in beide routes actief.
 
 ## Belangrijk: donaties
 

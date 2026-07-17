@@ -1,0 +1,29 @@
+# Cloudflare Worker voor het contactformulier.
+# Deploy:  npx wrangler deploy   (vanuit deze map)
+# Secret:  npx wrangler secret put TURNSTILE_SECRET_KEY
+
+name = "sterksteboom-contact"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Publieke, niet-geheime configuratie.
+[vars]
+# CORS: enkel deze origins mogen naar de Worker posten.
+ALLOWED_ORIGINS = "https://desterksteboomvanrendestede.be,https://www.desterksteboomvanrendestede.be"
+# Turnstile: geldige hostnames en de verwachte 'action' van het contactformulier.
+TURNSTILE_HOSTNAMES = "desterksteboomvanrendestede.be,www.desterksteboomvanrendestede.be"
+TURNSTILE_ACTION = "contact"
+# Bezorging: FormSubmit AJAX-endpoint (server-naar-server). Het e-mailadres is
+# publiek; de geheime Turnstile-sleutel staat NIET hier maar als Worker-secret.
+FORM_FORWARD_URL = "https://formsubmit.co/ajax/desterksteboomvanrendestede@outlook.com"
+
+# GEHEIM — NIET hier invullen. Instellen met:
+#   npx wrangler secret put TURNSTILE_SECRET_KEY
+# (De secret key hoort bij de Turnstile-widget in het Cloudflare-dashboard.)
+
+# Optioneel: duurzame rate limiting via een KV-namespace.
+# Maak een namespace en plak de id hieronder om best-effort te vervangen door KV:
+#   npx wrangler kv namespace create RATE_LIMIT
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<PLAK_HIER_DE_KV_ID>"

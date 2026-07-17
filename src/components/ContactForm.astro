@@ -8,58 +8,95 @@ interface Props {
 }
 
 const { categories, subject } = Astro.props;
-const hasEndpoint = siteConfig.formEndpoint.trim().length > 0;
 const mailHref = `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}`;
 // Absolute URL voor de redirect na verzenden (FormSubmit vereist absoluut).
 const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
-// Cloudflare Turnstile: enkel tonen als er een site key ingesteld is.
-const turnstileKey = siteConfig.turnstileSiteKey?.trim() ?? "";
-const hasTurnstile = turnstileKey.length > 0;
 
-// Submit-bewaking: blokkeer versturen tot Turnstile opgelost is. Als de widget
-// niet kon laden (bv. Cloudflare onbereikbaar), laten we versturen gewoon toe —
-// we sluiten echte bezoekers nooit buiten. In een string gezet zodat de accolades
-// niet als Astro-expressies gelezen worden.
-const turnstileGuard = `
-  document.addEventListener("submit", function (e) {
-    var form = e.target;
-    if (!(form instanceof HTMLFormElement)) return;
-    var widget = form.querySelector(".cf-turnstile");
-    if (!widget) return;
-    var field = form.querySelector('[name="cf-turnstile-response"]');
-    if (field && !field.value) {
-      e.preventDefault();
-      var err = document.getElementById("turnstile-error");
-      if (err) err.classList.remove("hidden");
-      widget.scrollIntoView({ behavior: "smooth", block: "center" });
+const formEndpoint = siteConfig.formEndpoint.trim();
+const workerUrl = siteConfig.formWorkerUrl?.trim() ?? "";
+const turnstileKey = siteConfig.turnstileSiteKey?.trim() ?? "";
+
+// GEFASEERDE UITROL:
+//  - useWorker = de Cloudflare Worker is geconfigureerd én er is een site key.
+//    Dan verstuurt de frontend via de Worker (server-side Turnstile-verificatie)
+//    en tonen we de Turnstile-widget.
+//  - Zolang de Worker niet ingesteld is, blijft het formulier rechtstreeks via
+//    FormSubmit werken, mét FormSubmit's eigen captcha. Live gedrag verandert
+//    dus pas wanneer formWorkerUrl gezet wordt.
+const useWorker = workerUrl.length > 0 && turnstileKey.length > 0;
+const showForm = useWorker || formEndpoint.length > 0;
+const action = useWorker ? workerUrl : formEndpoint;
+
+// Submit-script voor de Worker-route: verstuurt via fetch zodat we de token
+// server-side kunnen laten controleren en een nette bevestiging/foutmelding
+// tonen. In een string zodat de accolades niet als Astro-expressies gelezen worden.
+const workerScript = `
+(function () {
+  var form = document.querySelector('form[data-contact][data-worker]');
+  if (!form) return;
+  var workerUrl = form.getAttribute('data-worker');
+  var errEl = form.querySelector('[data-form-error]');
+  function showError(msg) { if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); } }
+  function hideError() { if (errEl) errEl.classList.add('hidden'); }
+  function tokenValue() { var f = form.querySelector('[name="cf-turnstile-response"]'); return f ? f.value : ''; }
+  function resetTurnstile() { if (window.turnstile && typeof window.turnstile.reset === 'function') { try { window.turnstile.reset(); } catch (e) {} } }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!tokenValue()) {
+      var w = form.querySelector('.cf-turnstile');
+      showError('Bevestig even dat je geen robot bent voor je verstuurt.');
+      if (w) w.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
+    hideError();
+    var btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.setAttribute('aria-busy', 'true'); }
+    fetch(workerUrl, { method: 'POST', body: new FormData(form) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (res.ok && res.body && res.body.success) { window.location.href = '/bedankt'; return; }
+        showError((res.body && res.body.message) || 'Er ging iets mis bij het verzenden. Probeer het straks opnieuw.');
+        if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
+        resetTurnstile();
+      })
+      .catch(function () {
+        showError('Versturen lukte niet. Controleer je internetverbinding en probeer opnieuw.');
+        if (btn) { btn.disabled = false; btn.removeAttribute('aria-busy'); }
+        resetTurnstile();
+      });
   });
+})();
 `;
 ---
 
-{hasEndpoint ? (
+{showForm ? (
   <form
-    action={siteConfig.formEndpoint}
+    action={action}
     method="POST"
     class="grid gap-5 max-w-xl"
+    data-contact
+    data-worker={useWorker ? workerUrl : undefined}
   >
-    <!-- FormSubmit-instellingen: onderwerp, nette tabelweergave in de mail,
-         redirect naar de bedankpagina, en een honeypot tegen spam.
-         _captcha=false: FormSubmit's eigen (Google reCAPTCHA) captcha staat uit;
-         we gebruiken Cloudflare Turnstile hieronder — cookievrij en zonder Google. -->
+    <!-- Onderwerp en honeypot gaan mee in beide routes. -->
     <input type="hidden" name="_subject" value={subject} />
-    <input type="hidden" name="_template" value="table" />
-    <input type="hidden" name="_next" value={bedanktUrl} />
-    <input type="hidden" name="_captcha" value="false" />
     <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
+    {!useWorker && (
+      <>
+        <!-- FormSubmit-instellingen (directe route): nette tabelweergave en
+             redirect naar de bedankpagina. FormSubmit's eigen captcha blijft
+             bewust aan zolang de Worker nog niet actief is. -->
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_next" value={bedanktUrl} />
+      </>
+    )}
     <div>
       <label for="name" class="block text-sm font-semibold text-antraciet-900 mb-1">Naam</label>
-      <input id="name" name="name" type="text" required
+      <input id="name" name="name" type="text" required maxlength="100"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
     </div>
     <div>
       <label for="email" class="block text-sm font-semibold text-antraciet-900 mb-1">E-mailadres</label>
-      <input id="email" name="email" type="email" required
+      <input id="email" name="email" type="email" required maxlength="150"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
     </div>
     {categories && (
@@ -72,7 +109,7 @@ const turnstileGuard = `
     )}
     <div>
       <label for="message" class="block text-sm font-semibold text-antraciet-900 mb-1">Bericht</label>
-      <textarea id="message" name="message" rows="5" required
+      <textarea id="message" name="message" rows="5" required maxlength="5000"
         class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white"></textarea>
     </div>
     <div class="flex items-start gap-3">
@@ -81,18 +118,19 @@ const turnstileGuard = `
         Ik ga akkoord dat mijn gegevens gebruikt worden om mijn vraag te beantwoorden. Zie de <a href="/privacy" class="underline">privacyverklaring</a>.
       </label>
     </div>
-    {hasTurnstile && (
+
+    {useWorker && (
       <div>
         <!-- Cloudflare Turnstile: cookievrije spamcontrole. De widget vult zelf
-             een verborgen veld 'cf-turnstile-response' in bij succes. -->
-        <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="auto" data-language="nl"></div>
-        <p id="turnstile-error" class="mt-2 hidden text-sm text-red-700" role="alert">
-          Bevestig even dat je geen robot bent voor je verstuurt.
-        </p>
+             een verborgen veld 'cf-turnstile-response' in; de Worker verifieert
+             die token server-side (Siteverify) vóór verwerking. -->
+        <div class="cf-turnstile" data-sitekey={turnstileKey} data-action="contact" data-theme="auto" data-language="nl"></div>
       </div>
     )}
 
-    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-goud-500 text-antraciet-900 font-semibold px-6 py-3 min-h-11 w-fit">
+    <p data-form-error class="hidden text-sm text-red-700" role="alert" aria-live="polite"></p>
+
+    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-goud-500 text-antraciet-900 font-semibold px-6 py-3 min-h-11 w-fit disabled:opacity-60 disabled:cursor-not-allowed">
       Versturen
     </button>
     <p class="text-xs text-antraciet-500">
@@ -111,7 +149,7 @@ const turnstileGuard = `
   </div>
 )}
 
-{hasEndpoint && hasTurnstile && (
+{useWorker && (
   <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
 )}
-{hasEndpoint && hasTurnstile && <script is:inline set:html={turnstileGuard} />}
+{useWorker && <script is:inline set:html={workerScript} />}

@@ -158,25 +158,57 @@ test("contactformulier belooft geen bevestigingsmail", () => {
   assert.match(form, /doorgestuurd naar een bevestigingspagina/);
 });
 
-test("contactformulier: Cloudflare Turnstile-spambeveiliging aanwezig", () => {
+test("contactformulier: Turnstile-widget en Worker-route (gefaseerd)", () => {
   const form = read("src/components/ContactForm.astro");
-  // Widget en configuratie via de site key uit site-config.
+  // Widget met action, en verzenden via de Worker.
   assert.match(form, /cf-turnstile/);
-  assert.match(form, /turnstileSiteKey|turnstileKey/);
-  // FormSubmit's eigen (Google reCAPTCHA) captcha staat uit, zodat er geen
-  // dubbele captcha of Google-cookies zijn.
-  assert.match(form, /name="_captcha"\s+value="false"/);
+  assert.match(form, /data-action="contact"/);
+  assert.match(form, /turnstileKey/);
+  // De Worker-route wordt pas actief als formWorkerUrl gezet is.
+  assert.match(form, /useWorker/);
+  assert.match(form, /formWorkerUrl|data-worker/);
 });
 
-test("Turnstile: site key configureerbaar via env met veilige degradatie", () => {
+test("Turnstile en Worker configureerbaar via env in site-config", () => {
   const cfg = read("src/data/site-config.ts");
   assert.match(cfg, /turnstileSiteKey/);
   assert.match(cfg, /PUBLIC_TURNSTILE_SITE_KEY/);
+  assert.match(cfg, /formWorkerUrl/);
+  assert.match(cfg, /PUBLIC_FORM_WORKER_URL/);
 });
 
 test("privacy en cookies vermelden Cloudflare Turnstile", () => {
   assert.match(read("src/pages/privacy.astro"), /Turnstile/);
   assert.match(read("src/pages/cookies.astro"), /Turnstile/);
+});
+
+test("Worker: verifieert Turnstile server-side en checkt success/hostname/action", () => {
+  const w = read("worker/src/index.js");
+  assert.match(w, /turnstile\/v0\/siteverify/);
+  assert.match(w, /verify\.success !== true/);
+  assert.match(w, /verify\.hostname/);
+  assert.match(w, /verify\.action/);
+  // Honeypot en veldvalidatie aanwezig.
+  assert.match(w, /_honey/);
+  assert.match(w, /isEmail/);
+  // Alleen POST en OPTIONS.
+  assert.match(w, /"OPTIONS"/);
+  assert.match(w, /"POST, OPTIONS"/);
+});
+
+test("Worker: secret key komt uitsluitend uit de omgeving (niet hardcoded)", () => {
+  const w = read("worker/src/index.js");
+  const toml = read("worker/wrangler.toml");
+  // De code gebruikt env.TURNSTILE_SECRET_KEY ...
+  assert.match(w, /env\.TURNSTILE_SECRET_KEY/);
+  // ... en de secret staat NIET als variabele in wrangler.toml.
+  assert.doesNotMatch(toml, /^\s*TURNSTILE_SECRET_KEY\s*=/m);
+});
+
+test("Worker: CORS beperkt tot de eigen domeinen", () => {
+  const w = read("worker/src/index.js");
+  assert.match(w, /desterksteboomvanrendestede\.be/);
+  assert.match(w, /Access-Control-Allow-Origin/);
 });
 
 // Kleine, afhankelijkheidsvrije bestandswandelaar.
