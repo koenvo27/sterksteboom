@@ -41,6 +41,13 @@ jobs:
       - name: Tests (parsing)
         run: npm test
 
+      # Echte browser voor de ophaalroute (Playwright/Chromium). Niet in
+      # package.json om de site-dependencies licht te houden; enkel hier nodig.
+      - name: Echte browser installeren (Playwright)
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+
       - name: Bedrag ophalen van Kom op tegen Kanker
         run: node scripts/sync-fundraising.mjs
         env:
