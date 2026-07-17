@@ -2,10 +2,8 @@ name: Sync fondsenwerving (KOTK)
 
 on:
   schedule:
-    # Elke 6 uur (sluit aan bij de cache-eis van minstens 6 uur).
-    # Pas de frequentie hier aan indien gewenst, bv. "0 * * * *" = elk uur,
-    # "0 6 * * *" = één keer per dag om 06:00 UTC.
-    - cron: "0 */6 * * *"
+    # Elk uur op het hele uur (UTC). GitHub kan geplande runs wat vertragen.
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 # contents: write  -> om het bijgewerkte bedrag terug te committen
