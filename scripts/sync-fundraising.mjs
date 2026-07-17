@@ -105,9 +105,40 @@ export async function fetchWithTimeout(url, ms = TIMEOUT_MS, fetchImpl = fetch, 
   }
 }
 
+/** Schrijft een handmatig opgegeven bedrag weg (reserveweg wanneer KOTK
+ *  geautomatiseerde toegang blokkeert). Geactiveerd via KOTK_MANUAL_AMOUNT. */
+function applyManualAmount(current, raw) {
+  const value = parseEuro(raw);
+  if (value == null || value < 0) {
+    console.warn(`WAARSCHUWING: handmatig bedrag "${raw}" is ongeldig — genegeerd.`);
+    return false;
+  }
+  if (value === current.raised) {
+    console.log("Handmatig bedrag gelijk aan huidige waarde — niets bijgewerkt.");
+    return true;
+  }
+  const now = new Date();
+  current.raised = value;
+  current.lastUpdated = now.toISOString().slice(0, 10);
+  current.fetchedAt = now.toISOString();
+  current.status = "manual";
+  current.sourceText = `€ ${value.toLocaleString("nl-BE")}`;
+  writeFileSync(FILE, JSON.stringify(current, null, 2) + "\n");
+  console.log(`fundraising.json handmatig bijgewerkt: opgehaald -> €${current.raised}`);
+  return true;
+}
+
 async function main() {
   const current = JSON.parse(readFileSync(FILE, "utf8"));
   console.log(`Huidig: opgehaald €${current.raised}, doel €${current.goal}`);
+
+  // Handmatige override (via de "Run workflow"-knop): zet het bedrag direct,
+  // zonder KOTK te bevragen. Nuttig wanneer KOTK bots blokkeert.
+  const manual = (process.env.KOTK_MANUAL_AMOUNT || "").trim();
+  if (manual) {
+    applyManualAmount(current, manual);
+    return;
+  }
 
   // Route 1: rechtstreeks. Route 2 (reserve): via de Jina Reader-proxy, die
   // de pagina met een echte browser ophaalt — nodig wanneer de KOTK-firewall
