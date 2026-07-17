@@ -85,7 +85,7 @@ export default {
     if (
       name.length < 2 || name.length > LIMITS.name ||
       !isEmail(email) || email.length > LIMITS.email ||
-      message.length < 5 || message.length > LIMITS.message ||
+      message.length < 2 || message.length > LIMITS.message ||
       category.length > LIMITS.category ||
       subject.length > LIMITS.subject ||
       !isChecked(privacy)
@@ -125,9 +125,14 @@ export default {
 
     // Alles in orde: pas nu bezorgen.
     const delivered = await forward(env, { name, email, subject, category, message });
-    if (!delivered) {
+    if (!delivered.ok) {
       return json(
-        { success: false, message: "Je bericht kon nu niet verzonden worden. Probeer het later opnieuw of mail ons rechtstreeks." },
+        {
+          success: false,
+          message: "Je bericht kon nu niet verzonden worden. Probeer het later opnieuw of mail ons rechtstreeks.",
+          // TIJDELIJK diagnostisch veld — verwijderen na de end-to-end test.
+          debug: { status: delivered.status, detail: delivered.detail },
+        },
         502,
         cors,
       );
@@ -157,14 +162,19 @@ async function verifyTurnstile(token, secret, ip) {
 }
 
 // Bezorging via de FormSubmit AJAX-endpoint (server-naar-server, geen redirect).
+// Geeft { ok, status, detail } terug zodat de aanroeper kan diagnosticeren.
 async function forward(env, data) {
   const url = (env.FORM_FORWARD_URL || "").trim();
-  if (!url) return false;
+  if (!url) return { ok: false, status: 0, detail: "no-forward-url" };
+  const site = list(env.ALLOWED_ORIGINS, DEFAULT_ORIGINS)[0] || "https://desterksteboomvanrendestede.be";
+  // FormSubmit verwacht de conventionele velden (name/email/message); 'email'
+  // wordt als reply-to gebruikt. We sturen ook een Referer mee, want FormSubmit
+  // weigert server-aanvragen zonder herkomst.
   const payload = {
-    Naam: data.name,
-    "E-mailadres": data.email,
-    ...(data.category ? { Onderwerp: data.category } : {}),
-    Bericht: data.message,
+    name: data.name,
+    email: data.email,
+    message: data.message,
+    ...(data.category ? { onderwerp: data.category } : {}),
     _subject: data.subject,
     _template: "table",
     _captcha: "false",
@@ -172,15 +182,24 @@ async function forward(env, data) {
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Referer: site,
+        Origin: site,
+      },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) return false;
-    const j = await res.json().catch(() => ({}));
-    // FormSubmit AJAX antwoordt met { success: "true", ... }.
-    return String(j.success) === "true";
-  } catch {
-    return false;
+    const text = await res.text().catch(() => "");
+    let ok = false;
+    try {
+      ok = String(JSON.parse(text).success) === "true";
+    } catch {
+      ok = false;
+    }
+    return { ok, status: res.status, detail: text.slice(0, 300) };
+  } catch (e) {
+    return { ok: false, status: 0, detail: "fetch-failed: " + ((e && e.message) || "onbekend") };
   }
 }
 
