@@ -35,6 +35,14 @@ export const siteConfig = {
     import.meta.env.PUBLIC_FORM_ENDPOINT ||
     "https://formsubmit.co/desterksteboomvanrendestede@outlook.com",
 
+  // Cloudflare Web Analytics — cookieloze, privacyvriendelijke statistieken.
+  // Plak hier de beacon-token uit het Cloudflare-dashboard
+  // (Analytics & Logs → Web Analytics → je site → JS-snippet, het "token").
+  // Leeg ("") = geen analytics (er wordt dan geen enkel script geladen).
+  // Kan ook via de omgevingsvariabele PUBLIC_CF_ANALYTICS_TOKEN.
+  cloudflareAnalyticsToken:
+    import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? "11069ee8ec90409691e1b5bb18ca4237",
+
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {
