@@ -35,7 +35,9 @@ const compact = variant === "highlights";
               ? "bg-goud-100 border-goud-500"
               : step.status === "current"
                 ? "bg-beige-50 border-goud-500 ring-4 ring-goud-100"
-                : "bg-beige-50 border-beige-200",
+                : step.status === "cancelled"
+                  ? "bg-beige-100 border-beige-200 opacity-60"
+                  : "bg-beige-50 border-beige-200",
           ]}
           aria-hidden="true"
         >
@@ -46,6 +48,9 @@ const compact = variant === "highlights";
           {step.label}
           {step.status === "current" && (
             <span class="ml-1 rounded-full bg-goud-100 px-2 py-0.5 text-bos-600">nu</span>
+          )}
+          {step.status === "cancelled" && (
+            <span class="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700">geannuleerd</span>
           )}
         </p>
         <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">{step.title}</h3>

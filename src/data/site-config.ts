@@ -46,7 +46,9 @@ export const siteConfig = {
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {
-    everesting: "2026-09-12" as string | null,
+    // De Everesting van 12 september 2026 is geannuleerd (blessure). Geen
+    // afteller meer naar dat event. Op null zetten verbergt de countdown overal.
+    everesting: null as string | null,
     duizendKm: "2027-05-06" as string | null,
   },
 };

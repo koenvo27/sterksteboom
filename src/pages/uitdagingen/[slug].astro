@@ -28,6 +28,7 @@ const formattedDate = challenge.data.date.toLocaleDateString("nl-BE", {
   month: "long",
   year: "numeric",
 });
+const isCancelled = (challenge.data.status ?? "").toLowerCase() === "geannuleerd";
 const isUpcoming = challenge.data.date.getTime() > Date.now();
 const isoDate = challenge.data.date.toISOString().slice(0, 10);
 ---
@@ -44,6 +45,7 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
     startDate={challenge.data.date.toISOString()}
     location={challenge.data.location}
     url={pageUrl}
+    eventStatus={isCancelled ? "cancelled" : undefined}
   />
 
   <article class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
@@ -52,7 +54,12 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
     />
 
     {challenge.data.status && (
-      <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-2">
+      <span
+        class:list={[
+          "inline-block rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wide mb-2",
+          isCancelled ? "bg-red-100 text-red-700" : "text-bos-600",
+        ]}
+      >
         {challenge.data.status}
       </span>
     )}
@@ -64,7 +71,7 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
     </p>
     <p class="mt-5 text-lg text-antraciet-700">{challenge.data.summary}</p>
 
-    {isUpcoming && (
+    {isUpcoming && !isCancelled && (
       <div class="mt-6">
         <Countdown date={isoDate} label={challenge.data.title} />
       </div>

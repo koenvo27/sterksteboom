@@ -13,6 +13,7 @@ interface EventProps {
   endDate?: string;
   location: string;
   url: string;
+  eventStatus?: "scheduled" | "cancelled";
 }
 
 interface ArticleProps {
@@ -71,6 +72,10 @@ if (props.kind === "Organization") {
     description: props.description,
     startDate: props.startDate,
     ...(props.endDate ? { endDate: props.endDate } : {}),
+    eventStatus:
+      props.eventStatus === "cancelled"
+        ? "https://schema.org/EventCancelled"
+        : "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
       name: props.location,
