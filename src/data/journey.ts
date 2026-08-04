@@ -17,7 +17,7 @@
 //    er dan nog steeds hoogstens één item "current" is.
 // ============================================================
 
-export type JourneyStatus = "done" | "current" | "upcoming";
+export type JourneyStatus = "done" | "current" | "upcoming" | "cancelled";
 
 export interface JourneyStep {
   label: string;
@@ -80,11 +80,12 @@ export const journey: JourneyStep[] = [
     label: "12 september 2026",
     date: "2026-09-12",
     icon: "⛰️",
-    title: "Everesting Congoberg",
-    tagline: "Mijn eerste grote sportieve uitdaging.",
+    title: "Everesting Congoberg — geannuleerd",
+    tagline: "Een zware val tijdens een trainingsrit gooit roet in het eten.",
     description:
-      "8.848 hoogtemeters op de Congoberg in het Pajottenland, ten voordele van Kom op tegen Kanker.",
+      "Na een operatie aan het sleutelbeen en een periode van revalidatie kan de Everesting van 12 september 2026 niet doorgaan. De planning gaat even on hold — het engagement voor Kom op tegen Kanker blijft.",
     homepage: true,
+    statusOverride: "cancelled",
   },
   {
     label: "Januari 2027",

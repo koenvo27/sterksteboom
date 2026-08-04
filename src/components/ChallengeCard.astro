@@ -40,7 +40,16 @@ const monthOnly = Boolean(dateLabel);
   </div>
   <div class="flex-1">
     {status && (
-      <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-1">{status}</span>
+      <span
+        class:list={[
+          "inline-block text-xs font-semibold uppercase tracking-wide mb-1",
+          status.toLowerCase() === "geannuleerd"
+            ? "rounded-full bg-red-100 px-2 py-0.5 text-red-700"
+            : "text-bos-600",
+        ]}
+      >
+        {status}
+      </span>
     )}
     <h3 class="font-display text-xl font-semibold text-antraciet-900 group-hover:text-goud-700">{title}</h3>
     <p class="mt-1 text-sm text-antraciet-500">{location}</p>

@@ -61,15 +61,13 @@ test("1000 km-uitdaging: veilige formulering, geen onbevestigde claims", () => {
   assert.doesNotMatch(md, /1000\s*km in (?:é|e)(?:é|e)n dag/i);
 });
 
-test("Everesting: geen onbevestigde praktische claims meer", () => {
+test("Everesting is als geannuleerd gemarkeerd", () => {
   const md = read("src/content/challenges/everesting-congoberg.md");
-  // Bevestigde feiten blijven staan.
-  assert.match(md, /8848|8\.848/);
-  assert.match(md, /12 september 2026/);
-  // Voorzichtige formulering over nog niet vastgelegde praktische afspraken.
-  assert.match(md, /volgen zodra alles definitief is|definitief/i);
-  // De eerder te stellige claims mogen niet terugkomen.
-  assert.doesNotMatch(md, /doorlopende bevoorrading/i);
+  assert.match(md, /status:\s*"Geannuleerd"/);
+  assert.match(md, /niet zal kunnen doorgaan|gaat niet door/i);
+  // De afteller naar de Everesting is verwijderd (geen datum meer in de config).
+  const cfg = read("src/data/site-config.ts");
+  assert.match(cfg, /everesting:\s*null/);
 });
 
 test("navigatie: compact hoofdmenu zonder los 'Steunen'-item", () => {

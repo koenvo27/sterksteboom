@@ -1,53 +1,36 @@
 ---
 title: "Everesting op de Congoberg"
 slug: "everesting-congoberg"
-summary: "Op zaterdag 12 september 2026 fiets ik op de Congoberg de hoogte van de Mount Everest bijeen: 8848 hoogtemeters. Eén klim, zo vaak als nodig. Voor Cyriel, en voor iedereen die blijft vechten."
+status: "Geannuleerd"
+summary: "Na een zware val tijdens een trainingsrit en een operatie aan het sleutelbeen kan de Everesting op de Congoberg van 12 september 2026 niet doorgaan. Het engagement voor Kom op tegen Kanker blijft even groot."
 date: 2026-09-12
 location: "Congoberg, Vollezele (Pajottenland)"
-poster: "/images/affiche-everesting.jpg"
-featured: true
+featured: false
 published: true
-seoTitle: "Everesting op de Congoberg - 12 september 2026"
-seoDescription: "Koen fietst een Everesting op de Congoberg in Vollezele voor Kom op tegen Kanker, ter nagedachtenis van zijn papa Cyriel."
+seoTitle: "Everesting op de Congoberg — geannuleerd"
+seoDescription: "De Everesting op de Congoberg van 12 september 2026 gaat niet door na een val en een operatie. Het engagement voor Kom op tegen Kanker en De Sterkste Boom van Rendestede blijft."
 ---
 
-## Eén klim. Zo vaak als nodig.
+## De Congoberg Challenge / Everesting gaat niet door
 
-Op **zaterdag 12 september 2026** ga ik de uitdaging aan om op de Congoberg de hoogte van de **Mount Everest** bijeen te fietsen: **8848 hoogtemeters**. Eén klim, telkens opnieuw, tot ik er ben.
+💛 Soms beslist het leven even anders…
 
-Voor Kom op tegen Kanker. Ter nagedachtenis van mijn papa, **Cyriel**. En voor iedereen die blijft vechten.
+Afgelopen zondag ging ik tijdens een trainingsrit zwaar ten val.
 
-## Waarom ik dit doe
+Van de val zelf weet ik niets meer. Het is één groot zwart gat. Intussen ben ik geopereerd aan mijn sleutelbeen en wacht me een periode van revalidatie.
 
-Dit is mijn eerste grote sportieve uitdaging voor De Sterkste Boom van Rendestede. Ze staat symbool voor doorzettingsvermogen: net als mijn papa blijf je bij een Everesting gewoon doorgaan, klim na klim, tot het einde. Opgeven is geen optie.
+Met pijn in het hart moet ik daarom ook melden dat de Congoberg Challenge / Everesting op 12 september niet zal kunnen doorgaan.
 
-## Datum en locatie
+Dat doet pijn. Niet alleen omdat ik er maanden naartoe heb geleefd, maar ook omdat zoveel mensen me de voorbije maanden hebben gesteund, aangemoedigd en meegeleefd.
 
-- **Datum:** zaterdag 12 september 2026
-- **Locatie:** Congoberg, Vollezele (Pajottenland)
-- **Doel:** 8848 hoogtemeters — de hoogte van de Mount Everest
+Maar één ding verandert niet.
 
-## Kom je langs?
+Mijn engagement voor Kom op tegen Kanker en "De Sterkste Boom van Rendestede" blijft even groot.
 
-Je hoeft geen fietser te zijn om erbij te zijn. Elke aanmoediging langs de klim geeft energie.
+Deze blessure zet mijn planning on hold, niet mijn doel. Eerst wil ik nu de tijd nemen om goed te herstellen. Daarna kijk ik opnieuw vooruit en ga ik op zoek naar een nieuwe uitdaging waarmee ik mijn steentje kan blijven bijdragen.
 
-- **Kom supporteren** — zorg jij mee voor de sfeer op de Congoberg?
-- **Steun van op afstand** — kan je er niet bij zijn? Een gift of een aanmoediging doet evenveel deugd.
+Ik wil iedereen bedanken voor de vele steun, berichtjes en warme reacties. Dat betekent op dit moment ontzettend veel voor mij en mijn familie.
 
-De precieze praktische afspraken — timing, veiligheid en hoe je eventueel kan meerijden — volgen zodra alles definitief is. Ik deel die informatie tijdig via [Facebook](https://www.facebook.com/profile.php?id=61592009188050).
+Dit is geen einde van het verhaal. Het is gewoon een onverwachte omweg.
 
-## Steunen
-
-Elke euro brengt ons dichter bij het doel. Doneren kan via de officiële actiepagina van Kom op tegen Kanker.
-
-## Op weg naar de 1000 km
-
-De Everesting is een tussenstap. Het einddoel is deelname aan **De 1000 km voor Kom op tegen Kanker in 2027**.
-
-## Sponsor worden
-
-Bedrijven en organisaties die dit project mee willen dragen, zijn van harte welkom. Meer info op de pagina [Bouw mee aan dit verhaal](/steunen).
-
-## Updates
-
-Volg de voorbereiding op [Facebook](https://www.facebook.com/profile.php?id=61592009188050).
+💛 Wordt vervolgd…
