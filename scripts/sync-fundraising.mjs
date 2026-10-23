@@ -120,6 +120,9 @@ export async function fetchViaBrowser(url, timeoutMs = 45_000) {
     console.log("Playwright niet geïnstalleerd — browserroute overgeslagen.");
     return null;
   }
+  // Cache-buster: een CDN cachet per volledige URL. Door een unieke query mee
+  // te geven forceren we een verse pagina i.p.v. een oud, gecachet bedrag.
+  const bustUrl = url + (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
   const browser = await chromium.launch({ headless: true });
   try {
     const context = await browser.newContext({
@@ -127,12 +130,17 @@ export async function fetchViaBrowser(url, timeoutMs = 45_000) {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
       locale: "nl-BE",
       viewport: { width: 1366, height: 900 },
+      // Vraag CDN/server expliciet om geen gecachete respons te serveren.
+      extraHTTPHeaders: { "Cache-Control": "no-cache", Pragma: "no-cache" },
     });
     const page = await context.newPage();
-    const resp = await page.goto(url, { waitUntil: "domcontentloaded", timeout: timeoutMs });
+    const resp = await page.goto(bustUrl, { waitUntil: "domcontentloaded", timeout: timeoutMs });
     console.log(`browser (Playwright) — HTTP ${resp ? resp.status() : "?"}`);
-    // Geef de pagina even tijd om het bedrag te renderen; val terug op de HTML.
     await page.waitForSelector(SELECTOR, { timeout: 10_000 }).catch(() => {});
+    // Wacht tot het netwerk rustig is en geef JavaScript tijd om het bedrag bij
+    // te werken (sommige sites tonen het actuele bedrag pas na het laden).
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
+    await page.waitForTimeout(2000);
     return await page.content();
   } finally {
     await browser.close();
