@@ -61,10 +61,13 @@ export const siteConfig = {
     betaalUrl:
       "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe",
     // Registratie-endpoint. Leeg = registraties gaan via FormSubmit (e-mail).
-    // Vul hier de Google Apps Script "web-app"-URL in (eindigt op /exec) om
-    // registraties rechtstreeks in een Google Sheet te bewaren.
-    // Kan ook via de omgevingsvariabele PUBLIC_WAFEL_ENDPOINT.
-    registratieEndpoint: import.meta.env.PUBLIC_WAFEL_ENDPOINT || "",
+    // Google Apps Script "web-app"-URL (eindigt op /exec) die registraties
+    // rechtstreeks in een Google Sheet bewaart. Deze URL is bewust publiek
+    // (de browser moet ernaartoe kunnen posten); hij bevat geen geheim.
+    // Kan overschreven worden via de omgevingsvariabele PUBLIC_WAFEL_ENDPOINT.
+    registratieEndpoint:
+      import.meta.env.PUBLIC_WAFEL_ENDPOINT ||
+      "https://script.google.com/macros/s/AKfycbyG2erDtFAfz_ozbNC_ezYLp5edkcdUcd7eV6iB18iYlpzNJ4_-7i-GsHLEIpBXpFmJlQ/exec",
     datum: "Zaterdag 23 januari 2027, van 14u00 tot 18u00",
     locatie: "Melkveebedrijf De Dyn – Heremans, Rijstraat 193, 9400 Denderwindeke (Ninove)",
     afhaalInfo: "Afhalen kan op zaterdag 23 januari, ook vanaf 17u30.",
