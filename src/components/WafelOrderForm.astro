@@ -184,14 +184,28 @@ const script = `
         }
       }
 
-      // 2) E-mail-back-up via FormSubmit. Dit antwoord is leesbaar, dus we
-      //    tonen de bevestiging ALLEEN als dit echt lukt — nooit een vals
-      //    registratiebewijs. Lukt noch dit noch iets anders, dan foutmelding.
+      // 2) E-mail-back-up via FormSubmit in JSON-modus. JSON levert een
+      //    CORS-leesbaar antwoord (anders dan een multipart-post, die de
+      //    browser niet laat uitlezen). Zo tonen we de bevestiging ALLEEN als
+      //    de registratie echt binnen is, en geven we geen valse foutmelding
+      //    wanneer ze net wél gelukt is.
       if (CFG.hasMail) {
+        const payload = {
+          _subject: "Nieuwe wafelenbak-registratie via de website",
+          naam: naam,
+          email: document.getElementById("email").value,
+          telefoon: document.getElementById("telefoon").value,
+          volwassenen: String(volw),
+          kinderen_onder_12: String(kind),
+          afhaalpakketten: String(pakketten),
+          dubbele_wafels_afhaal: String(pakketten * CFG.wafelsPerPakket),
+          te_betalen_afhaal: fmt(pakketten * CFG.prijsPerPakket),
+          opmerking: document.getElementById("opmerking").value,
+        };
         const res = await fetch(CFG.mailEndpoint, {
           method: "POST",
-          headers: { Accept: "application/json" },
-          body: data,
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(payload),
         });
         let gelukt = res.ok;
         try {
@@ -248,6 +262,7 @@ const script = `
           Telefoon <span class="font-normal text-antraciet-500">(zodat we je kunnen bereiken)</span>
         </label>
         <input id="telefoon" name="telefoon" type="tel" required maxlength="40"
+          value="+32 " placeholder="+32 470 12 34 56"
           class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
       </div>
 
@@ -292,7 +307,7 @@ const script = `
           <p class="mt-1 font-display text-2xl font-semibold text-antraciet-900">
             <span id="wafel-totaal">{euro(0)}</span>
           </p>
-          <p class="mt-2 text-xs text-antraciet-600">
+          <p class="mt-2 text-sm font-semibold text-red-700">
             Je bestelling is pas definitief zodra ze betaald is. Betalen is de volgende stap,
             meteen na het registreren.
           </p>
