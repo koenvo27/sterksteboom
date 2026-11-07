@@ -292,6 +292,10 @@ const script = `
           <p class="mt-1 font-display text-2xl font-semibold text-antraciet-900">
             <span id="wafel-totaal">{euro(0)}</span>
           </p>
+          <p class="mt-2 text-xs text-antraciet-600">
+            Je bestelling is pas definitief zodra ze betaald is. Betalen is de volgende stap,
+            meteen na het registreren.
+          </p>
         </div>
       </fieldset>
 
@@ -344,7 +348,14 @@ const script = `
 
         {/* Afhaalbetaling — enkel zichtbaar bij bestelde pakketten. */}
         <div id="betaal-afhaal" class="hidden mt-6">
-          <p class="text-antraciet-700">
+          <div class="rounded-lg border border-goud-300 bg-goud-50 p-4">
+            <p class="font-semibold text-antraciet-900">⚠️ Je reservatie is nog niet definitief</p>
+            <p class="mt-1 text-sm text-antraciet-700">
+              Je afhaalpakketten zijn pas gereserveerd zodra je betaald hebt. Betalen is de laatste
+              stap — doe het bij voorkeur meteen hieronder.
+            </p>
+          </div>
+          <p class="mt-5 text-antraciet-700">
             Je <span class="font-semibold">afhaalpakketten</span> betaal je vooraf via Kom op tegen
             Kanker. Volg deze stappen — zo kunnen we je betaling koppelen aan je bestelling:
           </p>
