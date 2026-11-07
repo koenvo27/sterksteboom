@@ -74,7 +74,7 @@ export const siteConfig = {
     // daarna vanzelf. Leeg = overal verborgen.
     datumISO: "2027-01-23",
     locatie: "Melkveebedrijf De Dyn – Heremans, Rijstraat 193, 9400 Denderwindeke (Ninove)",
-    afhaalInfo: "Afhalen kan op zaterdag 23 januari, ook vanaf 17u30.",
+    afhaalInfo: "Afhalen kan op zaterdag 23 januari van 17u30 tot 19u00.",
   },
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
