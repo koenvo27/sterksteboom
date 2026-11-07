@@ -7,6 +7,19 @@ import { siteConfig } from "../data/site-config";
 // Cloudflare Web Analytics laadt enkel wanneer er een token ingesteld is.
 const analyticsToken = siteConfig.cloudflareAnalyticsToken?.trim() ?? "";
 
+// Aankondigingsbalk voor de wafelenbak: sitebreed, tot en met de dag van het
+// event, en niet op de wafelenbakpagina zelf (daar is ze overbodig).
+const wafel = siteConfig.wafelenbak;
+const wafelISO = (wafel.datumISO || "").trim();
+const vandaagISO = new Date().toISOString().slice(0, 10);
+const toonWafelBalk =
+  wafelISO.length > 0 &&
+  wafelISO >= vandaagISO &&
+  !Astro.url.pathname.startsWith("/wafelenbak");
+const wafelDatumKort = wafelISO
+  ? new Date(wafelISO + "T12:00:00").toLocaleDateString("nl-BE", { day: "numeric", month: "long" })
+  : "";
+
 // Self-hosted lettertypes (variabel) — geen externe request naar Google Fonts.
 // Fraunces (titels), Inter (lopende tekst), Caveat (handgeschreven accent).
 import "@fontsource-variable/fraunces";
@@ -39,6 +52,14 @@ const { title, description, image, type, noindex } = Astro.props;
   </head>
   <body>
     <a href="#main" class="skip-link">Ga naar inhoud</a>
+    {toonWafelBalk && (
+      <a
+        href="/wafelenbak"
+        class="block bg-goud-500 px-4 py-2 text-center text-sm font-semibold text-antraciet-900 hover:bg-goud-600"
+      >
+        🧇 Wafelenbak op {wafelDatumKort} — registreer of bestel je wafels →
+      </a>
+    )}
     <Header />
     <main id="main">
       <slot />

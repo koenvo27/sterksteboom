@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import StoryIntro from "../components/StoryIntro.astro";
+import WafelenbakHighlight from "../components/WafelenbakHighlight.astro";
 import Timeline from "../components/Timeline.astro";
 import Countdown from "../components/Countdown.astro";
 import SectionHeader from "../components/SectionHeader.astro";
@@ -26,6 +27,8 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
   <Hero />
 
   <StoryIntro />
+
+  <WafelenbakHighlight />
 
   <section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20">
     <SectionHeader

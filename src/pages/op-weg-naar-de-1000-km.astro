@@ -15,6 +15,13 @@ const upcoming = allEvents
 const past = allEvents
   .filter((e) => e.data.status === "Afgelopen")
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Wafelenbak: een eigen actie met een interactieve pagina. We tonen hem als
+// kaart bij "Aankomend" zolang het event nog niet voorbij is.
+const wafel = siteConfig.wafelenbak;
+const wafelISO = (wafel.datumISO || "").trim();
+const vandaag = new Date().toISOString().slice(0, 10);
+const wafelAankomend = wafelISO.length > 0 && wafelISO >= vandaag;
 ---
 
 <Layout
@@ -51,10 +58,27 @@ const past = allEvents
       </p>
 
       <h3 class="mb-4 font-display text-lg font-semibold text-antraciet-900">Aankomend</h3>
-      {upcoming.length === 0 ? (
+      {!wafelAankomend && upcoming.length === 0 ? (
         <EmptyState message="Er zijn momenteel geen publieke acties gepland. Kom later zeker nog eens terug." />
       ) : (
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {wafelAankomend && (
+            <a
+              href="/wafelenbak"
+              class="group block rounded-card border border-goud-300 bg-goud-50 p-6 transition-colors hover:border-goud-500"
+            >
+              <span class="inline-block text-xs font-semibold uppercase tracking-wide text-bos-600 mb-1">Actie</span>
+              <h3 class="font-display text-lg font-semibold text-antraciet-900">Wafelenbak</h3>
+              <p class="mt-1 text-sm text-antraciet-500">{wafel.datum}</p>
+              <p class="mt-2 text-antraciet-700 text-sm">
+                Kom ter plaatse wafels eten of bestel afhaalpakketten, met grote tombola.
+                De volledige opbrengst gaat naar Kom op tegen Kanker.
+              </p>
+              <span class="mt-3 inline-block text-sm font-semibold text-goud-700 group-hover:underline">
+                Registreren en bestellen →
+              </span>
+            </a>
+          )}
           {upcoming.map((event) => (
             <EventCard
               title={event.data.title}

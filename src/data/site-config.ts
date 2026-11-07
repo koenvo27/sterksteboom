@@ -69,6 +69,10 @@ export const siteConfig = {
       import.meta.env.PUBLIC_WAFEL_ENDPOINT ||
       "https://script.google.com/macros/s/AKfycbyG2erDtFAfz_ozbNC_ezYLp5edkcdUcd7eV6iB18iYlpzNJ4_-7i-GsHLEIpBXpFmJlQ/exec",
     datum: "Zaterdag 23 januari 2027, van 14u00 tot 18u00",
+    // Machine-leesbare datum (JJJJ-MM-DD) voor de logica: de homepage-highlight
+    // en de aankondigingsbalk tonen zichzelf tot en met deze dag en verdwijnen
+    // daarna vanzelf. Leeg = overal verborgen.
+    datumISO: "2027-01-23",
     locatie: "Melkveebedrijf De Dyn – Heremans, Rijstraat 193, 9400 Denderwindeke (Ninove)",
     afhaalInfo: "Afhalen kan op zaterdag 23 januari, ook vanaf 17u30.",
   },
