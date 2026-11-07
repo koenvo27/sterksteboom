@@ -79,11 +79,11 @@ test("navigatie: compact hoofdmenu zonder los 'Steunen'-item", () => {
   assert.doesNotMatch(mainNavBlock, /label:\s*"Steunen"/);
 });
 
-test("tijdlijn: precies 4 momenten op de homepage", () => {
+test("tijdlijn: precies 5 momenten op de homepage", () => {
   const journey = read("src/data/journey.ts");
   // Alleen echte data-items tellen (met komma), niet de uitleg in commentaar.
   const count = (journey.match(/homepage:\s*true,/g) || []).length;
-  assert.equal(count, 4, "homepage-tijdlijn moet exact 4 momenten tonen");
+  assert.equal(count, 5, "homepage-tijdlijn moet exact 5 momenten tonen");
 });
 
 test("tijdlijn: status wordt datumgebaseerd berekend", () => {
