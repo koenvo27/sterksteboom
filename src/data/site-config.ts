@@ -52,14 +52,17 @@ export const siteConfig = {
     prijsPerPakket: 12.5,
     wafelsPerPakket: 5,
     prijsPerWafel: 2.5,
+    // Verkochte eenheid (zoals op de affiche): een dubbele wafel aan 2,5 euro.
+    eenheidEnkelvoud: "dubbele wafel",
+    eenheidMeervoud: "dubbele wafels",
     // Betaallink: de teampagina van Kom op tegen Kanker. Stel dit in op een
     // specifieke "Wafelenbak"-actiepagina zodra die bestaat, dan is de
     // afstemming van betalingen eenvoudiger.
     betaalUrl:
       "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe",
-    datum: "",
-    locatie: "",
-    afhaalInfo: "",
+    datum: "Zaterdag 23 januari 2027, van 14u00 tot 18u00",
+    locatie: "Melkveebedrijf De Dyn – Heremans, Rijstraat 193, 9400 Denderwindeke (Ninove)",
+    afhaalInfo: "Afhalen kan op zaterdag 23 januari, ook vanaf 17u30.",
   },
 
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data

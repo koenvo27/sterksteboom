@@ -28,6 +28,7 @@ const clientConfig = {
   hasEndpoint,
   prijsPerPakket: w.prijsPerPakket,
   wafelsPerPakket: w.wafelsPerPakket,
+  eenheidMeervoud: w.eenheidMeervoud,
   betaalUrl: w.betaalUrl,
   mailto: `mailto:${siteConfig.email}`,
 };
@@ -73,7 +74,7 @@ const script = `
     if (info) {
       info.textContent =
         aantal + " pakket" + (aantal === 1 ? "" : "ten") + " (" +
-        (aantal * CFG.wafelsPerPakket) + " wafels) — " + fmt(totaal);
+        (aantal * CFG.wafelsPerPakket) + " " + CFG.eenheidMeervoud + ") — " + fmt(totaal);
     }
     const kotkBtn = document.getElementById("betaal-kotk");
     if (kotkBtn) kotkBtn.setAttribute("href", CFG.betaalUrl);
@@ -191,7 +192,7 @@ const script = `
           Aantal pakketten
         </label>
         <p class="text-sm text-antraciet-600 mb-2">
-          Eén pakket = {w.wafelsPerPakket} wafels aan {euro(w.prijsPerPakket)}.
+          Eén pakket = {w.wafelsPerPakket} {w.eenheidMeervoud} aan {euro(w.prijsPerPakket)}.
         </p>
         <input id="aantal" name="aantal" type="number" inputmode="numeric" min="1" max="200" step="1"
           value="1" required
@@ -200,7 +201,7 @@ const script = `
 
       <div class="rounded-card border border-goud-200 bg-goud-50 p-5">
         <p class="text-sm text-antraciet-600">
-          <span id="wafel-aantal-wafels">{w.wafelsPerPakket}</span> wafels — te betalen aan Kom op tegen Kanker
+          <span id="wafel-aantal-wafels">{w.wafelsPerPakket}</span> {w.eenheidMeervoud} — te betalen aan Kom op tegen Kanker
         </p>
         <p class="mt-1 font-display text-3xl font-semibold text-antraciet-900">
           <span id="wafel-totaal">{euro(w.prijsPerPakket)}</span>

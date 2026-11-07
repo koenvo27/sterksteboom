@@ -27,14 +27,14 @@ const stappen = [
   {
     titel: "3. Smullen maar",
     tekst:
-      "Kom langs om ter plaatse te genieten, of haal je pakketten af. De praktische details bezorgen we je tijdig.",
+      "Kom langs om ter plaatse te genieten van je wafels, of haal je bestelde pakketten af. En wie zich inschrijft, maakt kans in de tombola.",
   },
 ];
 ---
 
 <Layout
   title="Wafelenbak"
-  description="Bestel of kom wafels eten ten voordele van Kom op tegen Kanker, voor de actie De Sterkste Boom van Rendestede. Pakketten van 5 wafels."
+  description="Wafelenbak op zaterdag 23 januari 2027 in Denderwindeke, ten voordele van Kom op tegen Kanker voor De Sterkste Boom van Rendestede. Registreer je en bestel dubbele wafels per pakket van 5."
 >
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
     <Breadcrumbs items={[{ label: "Wafelenbak" }]} />
@@ -44,8 +44,9 @@ const stappen = [
       Wafelenbak
     </h1>
     <p class="mt-4 max-w-2xl text-antraciet-700 text-lg">
-      Steun De Sterkste Boom van Rendestede met iets lekkers. De wafels kosten{" "}
-      {euro(w.prijsPerWafel)} per stuk en worden verkocht per pakket van {w.wafelsPerPakket}{" "}
+      Rond papa's verjaardag komen we samen: om herinneringen op te halen, zijn warmte te
+      voelen en te genieten van wat hij zo graag at — een lekkere wafel. Een {w.eenheidEnkelvoud}{" "}
+      kost {euro(w.prijsPerWafel)} en wordt verkocht per pakket van {w.wafelsPerPakket}{" "}
       ({euro(w.prijsPerPakket)} per pakket). Iedereen registreert vooraf — of je nu ter plaatse
       komt eten of wil afhalen. De volledige opbrengst gaat naar Kom op tegen Kanker.
     </p>
@@ -85,6 +86,24 @@ const stappen = [
         </p>
       </div>
     )}
+
+    {heeftPraktisch && (
+      <p class="mt-4 flex items-start gap-2 text-sm text-antraciet-600">
+        <span aria-hidden="true">🧣</span>
+        <span>Trek warme kledij aan: de locatie is niet verwarmd.</span>
+      </p>
+    )}
+
+    <div class="mt-8 rounded-card border border-goud-300 bg-goud-50 p-6 sm:p-8">
+      <p class="font-accent text-2xl text-bos-600">🎁 Grote tombola</p>
+      <h2 class="mt-1 font-display text-2xl font-semibold text-antraciet-900">
+        Maak kans op mooie prijzen
+      </h2>
+      <p class="mt-2 text-antraciet-700">
+        Iedereen die zich vooraf inschrijft of wafels bestelt om af te halen, doet
+        automatisch mee aan de tombola.
+      </p>
+    </div>
 
     <section class="mt-14">
       <h2 class="font-display text-2xl font-semibold text-antraciet-900 mb-6">Hoe werkt het?</h2>
