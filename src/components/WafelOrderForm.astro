@@ -42,6 +42,10 @@ const clientConfig = {
   betaalUrl: w.betaalUrl,
 };
 
+// Stijl voor de genummerde bolletjes in de betaalstappen.
+const badge =
+  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold";
+
 const script = `
 (() => {
   const CFG = ${JSON.stringify(clientConfig)};
@@ -294,7 +298,7 @@ const script = `
       </button>
 
       <p id="wafel-fout" class="hidden text-sm text-red-700">
-        Er ging iets mis bij het registreren. Probeer het opnieuw, of mail je bestelling rechtstreeks naar
+        Er ging iets mis bij het registreren. Probeer het opnieuw, of mail je bestelling rechtstreeks naar{" "}
         <a href={`mailto:${siteConfig.email}`} class="underline">{siteConfig.email}</a>.
       </p>
 
@@ -321,25 +325,39 @@ const script = `
             Je <span class="font-semibold">afhaalpakketten</span> betaal je vooraf via Kom op tegen
             Kanker. Volg deze stappen — zo kunnen we je betaling koppelen aan je bestelling:
           </p>
-          <ol class="mt-5 space-y-4">
+          <ul class="mt-5 space-y-4">
             <li class="flex gap-3">
-              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">1</span>
+              <span class={badge}>1</span>
               <span class="text-antraciet-800 pt-0.5">
                 Klik onderaan op <span class="font-semibold">“Betaal via Kom op tegen Kanker”</span>{" "}
-                (opent in een nieuw venster).
+                — je komt op de teampagina van De Sterkste Boom van Rendestede.
               </span>
             </li>
             <li class="flex gap-3">
-              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">2</span>
+              <span class={badge}>2</span>
+              <span class="text-antraciet-800 pt-0.5">
+                Klik op <span class="font-semibold">“Steun dit team”</span> en kies{" "}
+                <span class="font-semibold">“Ander bedrag”</span>.
+              </span>
+            </li>
+            <li class="flex gap-3">
+              <span class={badge}>3</span>
               <span class="text-antraciet-800 pt-0.5">
                 Vul exact dit bedrag in:{" "}
                 <span id="betaal-bedrag" class="font-display text-xl font-semibold text-antraciet-900"></span>
               </span>
             </li>
             <li class="flex gap-3">
-              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">3</span>
+              <span class={badge}>4</span>
               <span class="text-antraciet-800 pt-0.5">
-                Zet bij ‘mededeling’:{" "}
+                Kies onderaan: <span class="font-semibold">“Het geld is ingezameld via een actie,
+                inzameling of sponsoring door een bedrijf”</span>.
+              </span>
+            </li>
+            <li class="flex gap-3">
+              <span class={badge}>5</span>
+              <span class="text-antraciet-800 pt-0.5">
+                Bij de vraag hoe je het geld inzamelde, vul je in:{" "}
                 <span id="betaal-mededeling" class="font-mono font-semibold text-antraciet-900 break-words"></span>
                 <button type="button" id="copy-mededeling"
                   class="ml-1 align-baseline text-sm font-semibold text-goud-700 underline">
@@ -348,10 +366,10 @@ const script = `
               </span>
             </li>
             <li class="flex gap-3">
-              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">4</span>
+              <span class={badge}>6</span>
               <span class="text-antraciet-800 pt-0.5">Bevestig je betaling. Klaar! 💛</span>
             </li>
-          </ol>
+          </ul>
           <div class="mt-6 flex flex-wrap gap-4">
             <a id="betaal-kotk" href={w.betaalUrl} target="_blank" rel="noopener noreferrer"
               class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold min-h-11 bg-goud-500 text-antraciet-900 hover:bg-goud-600 shadow-sm">
@@ -367,7 +385,7 @@ const script = `
         </p>
 
         <p class="mt-6 text-sm text-antraciet-600">
-          Een vraag over je registratie? Mail gerust naar
+          Een vraag over je registratie? Mail gerust naar{" "}
           <a href={`mailto:${siteConfig.email}`} class="underline">{siteConfig.email}</a>.
         </p>
       </div>
