@@ -137,6 +137,36 @@ const script = `
     stap.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  // JSONP: stuurt de registratie via een <script>-GET naar Apps Script en
+  // leest het antwoord. JSONP omzeilt CORS volledig, dus dit is betrouwbaar
+  // leesbaar — in tegenstelling tot een gewone cross-origin fetch.
+  function jsonpVerzend(baseUrl, params, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      var cbName = "wafelCb_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+      var parts = ["callback=" + cbName];
+      for (var k in params) {
+        if (Object.prototype.hasOwnProperty.call(params, k)) {
+          parts.push(encodeURIComponent(k) + "=" + encodeURIComponent(params[k]));
+        }
+      }
+      var script = document.createElement("script");
+      var done = false;
+      var timer = setTimeout(function () {
+        if (!done) { cleanup(); reject(new Error("timeout")); }
+      }, timeoutMs);
+      function cleanup() {
+        done = true;
+        clearTimeout(timer);
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[cbName] = function (resp) { if (!done) { cleanup(); resolve(resp); } };
+      script.onerror = function () { if (!done) { cleanup(); reject(new Error("script error")); } };
+      script.src = baseUrl + (baseUrl.indexOf("?") >= 0 ? "&" : "?") + parts.join("&");
+      document.body.appendChild(script);
+    });
+  }
+
   form.addEventListener("submit", async (e) => {
     // Honeypot: als het verborgen veld ingevuld is, stilletjes negeren.
     const honey = form.querySelector('[name="_honey"]');
@@ -174,48 +204,31 @@ const script = `
       data.set("aantal_afhaalpakketten", String(pakketten));
       data.set("aantal_dubbele_wafels_afhaal", String(pakketten * CFG.wafelsPerPakket));
       data.set("te_betalen_afhaal", fmt(pakketten * CFG.prijsPerPakket));
-      // 1) Google Sheet (best effort). No-cors kan het resultaat niet lezen,
-      //    dus een fout hier mag de back-up/bevestiging niet blokkeren.
-      if (CFG.sheetEndpoint) {
-        try {
-          await fetch(CFG.sheetEndpoint, { method: "POST", mode: "no-cors", body: data });
-        } catch (sheetErr) {
-          /* Sheet onbereikbaar: de e-mail-back-up hieronder vangt het op. */
-        }
+
+      // 1) E-mail-back-up via FormSubmit (blind: no-cors, we lezen het antwoord
+      //    NIET). Zo kan de CORS-beveiliging nooit een valse foutmelding geven;
+      //    de mail wordt verstuurd, meer hoeven we er niet van te weten.
+      if (CFG.hasMail) {
+        try { await fetch(CFG.mailEndpoint, { method: "POST", mode: "no-cors", body: data }); }
+        catch (mailErr) { /* back-up onbereikbaar: de Sheet hieronder is leidend */ }
       }
 
-      // 2) E-mail-back-up via FormSubmit in JSON-modus. JSON levert een
-      //    CORS-leesbaar antwoord (anders dan een multipart-post, die de
-      //    browser niet laat uitlezen). Zo tonen we de bevestiging ALLEEN als
-      //    de registratie echt binnen is, en geven we geen valse foutmelding
-      //    wanneer ze net wél gelukt is.
-      if (CFG.hasMail) {
-        const payload = {
-          _subject: "Nieuwe wafelenbak-registratie via de website",
+      // 2) Google Sheet via JSONP. Dit antwoord KUNNEN we betrouwbaar lezen,
+      //    dus de bevestiging verschijnt alleen als de registratie echt in de
+      //    Sheet staat. Faalt dit (Google onbereikbaar), dan géén vals bewijs.
+      if (CFG.sheetEndpoint) {
+        const params = {
           naam: naam,
           email: document.getElementById("email").value,
           telefoon: document.getElementById("telefoon").value,
           volwassenen: String(volw),
-          kinderen_onder_12: String(kind),
-          afhaalpakketten: String(pakketten),
-          dubbele_wafels_afhaal: String(pakketten * CFG.wafelsPerPakket),
-          te_betalen_afhaal: fmt(pakketten * CFG.prijsPerPakket),
+          kinderen: String(kind),
+          pakketten: String(pakketten),
           opmerking: document.getElementById("opmerking").value,
         };
-        const res = await fetch(CFG.mailEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(payload),
-        });
-        let gelukt = res.ok;
-        try {
-          const json = await res.json();
-          if (json && String(json.success) === "false") gelukt = false;
-        } catch (parseErr) {
-          /* Geen JSON: dan vertrouwen we op res.ok. */
-        }
-        if (!gelukt) throw new Error("mail " + res.status);
-      } else if (!CFG.sheetEndpoint) {
+        const resp = await jsonpVerzend(CFG.sheetEndpoint, params, 15000);
+        if (!resp || !resp.ok) throw new Error("sheet");
+      } else if (!CFG.hasMail) {
         return; // geen enkel endpoint ingesteld: laat de gewone POST lopen
       }
 
@@ -322,7 +335,7 @@ const script = `
         <label for="opmerking" class="block text-sm font-semibold text-antraciet-900 mb-1">
           Opmerking <span class="font-normal text-antraciet-500">(optioneel)</span>
         </label>
-        <textarea id="opmerking" name="opmerking" rows="3" maxlength="2000"
+        <textarea id="opmerking" name="opmerking" rows="3" maxlength="1000"
           class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white"></textarea>
       </div>
 
