@@ -33,9 +33,12 @@ const euro = (n: number) =>
 // Configuratie die de inline-client nodig heeft. In een string gieten en via
 // set:html injecteren voorkomt dat Astro struikelt over accolades in JS.
 const clientConfig = {
-  postEndpoint,
-  useSheet,
-  hasEndpoint,
+  // Google Sheet (Apps Script): hoofdopslag/overzicht. No-cors = niet leesbaar.
+  sheetEndpoint: useSheet ? registratieEndpoint : "",
+  // FormSubmit (e-mail): onafhankelijke back-up. Dit antwoord is wél leesbaar,
+  // dus hierop baseren we of de bevestiging getoond wordt.
+  mailEndpoint: ajaxEndpoint,
+  hasMail: hasEndpoint,
   prijsPerPakket: w.prijsPerPakket,
   wafelsPerPakket: w.wafelsPerPakket,
   eenheidMeervoud: w.eenheidMeervoud,
@@ -152,7 +155,8 @@ const script = `
     }
     if (keuzeFout) keuzeFout.classList.add("hidden");
 
-    if (!CFG.hasEndpoint) return; // geen endpoint: laat gewone POST/mailto lopen
+    // Geen enkel endpoint ingesteld: laat de gewone (native) POST lopen.
+    if (!CFG.hasMail && !CFG.sheetEndpoint) return;
 
     e.preventDefault();
     if (!form.reportValidity()) return;
@@ -170,18 +174,37 @@ const script = `
       data.set("aantal_afhaalpakketten", String(pakketten));
       data.set("aantal_dubbele_wafels_afhaal", String(pakketten * CFG.wafelsPerPakket));
       data.set("te_betalen_afhaal", fmt(pakketten * CFG.prijsPerPakket));
-      if (CFG.useSheet) {
-        // Google Apps Script stuurt geen CORS-headers: no-cors post de data wel,
-        // maar levert een ondoorzichtig antwoord. Een afgeronde fetch = verzonden.
-        await fetch(CFG.postEndpoint, { method: "POST", mode: "no-cors", body: data });
-      } else {
-        const res = await fetch(CFG.postEndpoint, {
+      // 1) Google Sheet (best effort). No-cors kan het resultaat niet lezen,
+      //    dus een fout hier mag de back-up/bevestiging niet blokkeren.
+      if (CFG.sheetEndpoint) {
+        try {
+          await fetch(CFG.sheetEndpoint, { method: "POST", mode: "no-cors", body: data });
+        } catch (sheetErr) {
+          /* Sheet onbereikbaar: de e-mail-back-up hieronder vangt het op. */
+        }
+      }
+
+      // 2) E-mail-back-up via FormSubmit. Dit antwoord is leesbaar, dus we
+      //    tonen de bevestiging ALLEEN als dit echt lukt — nooit een vals
+      //    registratiebewijs. Lukt noch dit noch iets anders, dan foutmelding.
+      if (CFG.hasMail) {
+        const res = await fetch(CFG.mailEndpoint, {
           method: "POST",
           headers: { Accept: "application/json" },
           body: data,
         });
-        if (!res.ok) throw new Error("http " + res.status);
+        let gelukt = res.ok;
+        try {
+          const json = await res.json();
+          if (json && String(json.success) === "false") gelukt = false;
+        } catch (parseErr) {
+          /* Geen JSON: dan vertrouwen we op res.ok. */
+        }
+        if (!gelukt) throw new Error("mail " + res.status);
+      } else if (!CFG.sheetEndpoint) {
+        return; // geen enkel endpoint ingesteld: laat de gewone POST lopen
       }
+
       toonBetaalstap(naam, volw, kind, pakketten);
     } catch (err) {
       // Registratie mislukte: toon een duidelijke foutmelding met mailfallback.
