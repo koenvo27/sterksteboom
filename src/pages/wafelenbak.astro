@@ -17,17 +17,17 @@ const stappen = [
   {
     titel: "1. Registreer",
     tekst:
-      "Vul hieronder je gegevens in, kies of je ter plaatse komt eten of wil afhalen, en geef aan hoeveel pakketten je wil.",
+      "Vul je gegevens in en geef aan met hoeveel je ter plaatse komt (volwassenen en kinderen onder 12) en/of hoeveel afhaalpakketten je wil.",
   },
   {
-    titel: "2. Betaal via Kom op tegen Kanker",
+    titel: "2. Betalen",
     tekst:
-      "Na je registratie zie je het exacte bedrag en een mededeling. Je betaalt rechtstreeks via de actiepagina, zodat elke euro integraal naar het goede doel gaat.",
+      "Afhaalpakketten betaal je vooraf via de actiepagina van Kom op tegen Kanker — je ziet het exacte bedrag en de mededeling na registratie. Ter plaatse betaal je per wafel.",
   },
   {
     titel: "3. Smullen maar",
     tekst:
-      "Kom langs om ter plaatse te genieten van je wafels, of haal je bestelde pakketten af. En wie zich inschrijft, maakt kans in de tombola.",
+      "Kom op 23 januari langs om ter plaatse te genieten van je wafels, of haal je bestelde pakketten af. Smakelijk!",
   },
 ];
 ---
@@ -46,9 +46,9 @@ const stappen = [
     <p class="mt-4 max-w-2xl text-antraciet-700 text-lg">
       Rond papa's verjaardag komen we samen: om herinneringen op te halen, zijn warmte te
       voelen en te genieten van wat hij zo graag at — een lekkere wafel. Een {w.eenheidEnkelvoud}{" "}
-      kost {euro(w.prijsPerWafel)} en wordt verkocht per pakket van {w.wafelsPerPakket}{" "}
+      kost {euro(w.prijsPerWafel)}, afhalen kan per pakket van {w.wafelsPerPakket}{" "}
       ({euro(w.prijsPerPakket)} per pakket). Iedereen registreert vooraf — of je nu ter plaatse
-      komt eten of wil afhalen. De volledige opbrengst gaat naar Kom op tegen Kanker.
+      komt eten, wafels afhaalt, of allebei. De volledige opbrengst gaat naar Kom op tegen Kanker.
     </p>
 
     {heeftPraktisch && (
@@ -100,8 +100,7 @@ const stappen = [
         Maak kans op mooie prijzen
       </h2>
       <p class="mt-2 text-antraciet-700">
-        Iedereen die zich vooraf inschrijft of wafels bestelt om af te halen, doet
-        automatisch mee aan de tombola.
+        Koop ter plaatse een lotje: maak kans op mooie prijzen én steun tegelijk het goede doel.
       </p>
     </div>
 
@@ -121,5 +120,9 @@ const stappen = [
       <h2 class="font-display text-2xl font-semibold text-antraciet-900 mb-6">Registreren</h2>
       <WafelOrderForm />
     </section>
+
+    <p class="mt-16 text-center font-accent text-2xl text-bos-600">
+      Ter nagedachtenis van Cyriel Van Ongeval 🤍
+    </p>
   </div>
 </Layout>

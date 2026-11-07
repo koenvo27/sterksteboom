@@ -30,7 +30,6 @@ const clientConfig = {
   wafelsPerPakket: w.wafelsPerPakket,
   eenheidMeervoud: w.eenheidMeervoud,
   betaalUrl: w.betaalUrl,
-  mailto: `mailto:${siteConfig.email}`,
 };
 
 const script = `
@@ -42,51 +41,79 @@ const script = `
   const fmt = (n) =>
     new Intl.NumberFormat("nl-BE", { style: "currency", currency: "EUR" }).format(n);
 
-  const aantalEl = document.getElementById("aantal");
+  const getNum = (id, max) => {
+    const el = document.getElementById(id);
+    let n = parseInt(el ? el.value : "0", 10);
+    if (isNaN(n) || n < 0) n = 0;
+    if (n > max) n = max;
+    return n;
+  };
+
   const totaalEl = document.getElementById("wafel-totaal");
   const wafelsEl = document.getElementById("wafel-aantal-wafels");
   const naamEl = document.getElementById("naam");
 
-  const berekenAantal = () => {
-    let n = parseInt(aantalEl.value, 10);
-    if (isNaN(n) || n < 1) n = 1;
-    if (n > 200) n = 200;
-    return n;
-  };
-
   const updateTotaal = () => {
-    const n = berekenAantal();
-    const totaal = n * CFG.prijsPerPakket;
-    if (totaalEl) totaalEl.textContent = fmt(totaal);
-    if (wafelsEl) wafelsEl.textContent = String(n * CFG.wafelsPerPakket);
+    const pakketten = getNum("pakketten", 200);
+    if (totaalEl) totaalEl.textContent = fmt(pakketten * CFG.prijsPerPakket);
+    if (wafelsEl) wafelsEl.textContent = String(pakketten * CFG.wafelsPerPakket);
   };
 
-  aantalEl.addEventListener("input", updateTotaal);
-  aantalEl.addEventListener("change", updateTotaal);
+  ["volwassenen", "kinderen", "pakketten"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", updateTotaal);
+      el.addEventListener("change", updateTotaal);
+    }
+  });
   updateTotaal();
 
-  const toonBetaalstap = (naam, aantal) => {
-    const totaal = aantal * CFG.prijsPerPakket;
-    const mededeling = "Wafelenbak - " + (naam || "").trim();
-    document.getElementById("betaal-bedrag").textContent = fmt(totaal);
-    document.getElementById("betaal-mededeling").textContent = mededeling;
-    const info = document.getElementById("betaal-samenvatting");
-    if (info) {
-      info.textContent =
-        aantal + " pakket" + (aantal === 1 ? "" : "ten") + " (" +
-        (aantal * CFG.wafelsPerPakket) + " " + CFG.eenheidMeervoud + ") — " + fmt(totaal);
+  const beschrijf = (volw, kind, pakketten) => {
+    const delen = [];
+    const personen = [];
+    if (volw > 0) personen.push(volw + " volwassene" + (volw === 1 ? "" : "n"));
+    if (kind > 0) personen.push(kind + " kind" + (kind === 1 ? "" : "eren") + " (onder 12)");
+    if (personen.length) delen.push(personen.join(" en ") + " ter plaatse");
+    if (pakketten > 0) {
+      delen.push(
+        pakketten + " afhaalpakket" + (pakketten === 1 ? "" : "ten") +
+        " (" + (pakketten * CFG.wafelsPerPakket) + " " + CFG.eenheidMeervoud + ")"
+      );
     }
-    const kotkBtn = document.getElementById("betaal-kotk");
-    if (kotkBtn) kotkBtn.setAttribute("href", CFG.betaalUrl);
-    const copyBtn = document.getElementById("copy-mededeling");
-    if (copyBtn) {
-      copyBtn.addEventListener("click", () => {
-        navigator.clipboard && navigator.clipboard.writeText(mededeling).then(() => {
-          copyBtn.textContent = "Gekopieerd ✓";
-          setTimeout(() => (copyBtn.textContent = "Kopieer mededeling"), 2000);
+    return delen.join(" · ");
+  };
+
+  const toonBetaalstap = (naam, volw, kind, pakketten) => {
+    document.getElementById("betaal-samenvatting").textContent = beschrijf(volw, kind, pakketten);
+
+    // Afhaalbetaling: enkel tonen wanneer er pakketten besteld zijn.
+    const afhaal = document.getElementById("betaal-afhaal");
+    if (pakketten > 0) {
+      const totaal = pakketten * CFG.prijsPerPakket;
+      const mededeling = "Wafelenbak - " + (naam || "").trim();
+      document.getElementById("betaal-bedrag").textContent = fmt(totaal);
+      document.getElementById("betaal-mededeling").textContent = mededeling;
+      const kotkBtn = document.getElementById("betaal-kotk");
+      if (kotkBtn) kotkBtn.setAttribute("href", CFG.betaalUrl);
+      const copyBtn = document.getElementById("copy-mededeling");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard && navigator.clipboard.writeText(mededeling).then(() => {
+            copyBtn.textContent = "Gekopieerd ✓";
+            setTimeout(() => (copyBtn.textContent = "Kopieer mededeling"), 2000);
+          });
         });
-      });
+      }
+      afhaal.classList.remove("hidden");
+    } else {
+      afhaal.classList.add("hidden");
     }
+
+    // Ter-plaatse-nota: enkel tonen wanneer er mensen komen eten.
+    const terplaatse = document.getElementById("betaal-terplaatse");
+    if (volw + kind > 0) terplaatse.classList.remove("hidden");
+    else terplaatse.classList.add("hidden");
+
     form.classList.add("hidden");
     const stap = document.getElementById("wafel-betaalstap");
     stap.classList.remove("hidden");
@@ -98,13 +125,25 @@ const script = `
     const honey = form.querySelector('[name="_honey"]');
     if (honey && honey.value) { e.preventDefault(); return; }
 
+    const volw = getNum("volwassenen", 50);
+    const kind = getNum("kinderen", 50);
+    const pakketten = getNum("pakketten", 200);
+    const keuzeFout = document.getElementById("wafel-keuze-fout");
+
+    // Minstens iets registreren: ter plaatse komen of pakketten bestellen.
+    if (volw + kind + pakketten === 0) {
+      e.preventDefault();
+      if (keuzeFout) keuzeFout.classList.remove("hidden");
+      return;
+    }
+    if (keuzeFout) keuzeFout.classList.add("hidden");
+
     if (!CFG.hasEndpoint) return; // geen endpoint: laat gewone POST/mailto lopen
 
     e.preventDefault();
     if (!form.reportValidity()) return;
 
     const naam = naamEl.value;
-    const aantal = berekenAantal();
     const btn = document.getElementById("wafel-submit");
     const foutEl = document.getElementById("wafel-fout");
     if (foutEl) foutEl.classList.add("hidden");
@@ -112,16 +151,18 @@ const script = `
 
     try {
       const data = new FormData(form);
-      data.set("aantal_pakketten", String(aantal));
-      data.set("aantal_wafels", String(aantal * CFG.wafelsPerPakket));
-      data.set("totaalbedrag", fmt(aantal * CFG.prijsPerPakket));
+      data.set("aantal_volwassenen", String(volw));
+      data.set("aantal_kinderen_onder_12", String(kind));
+      data.set("aantal_afhaalpakketten", String(pakketten));
+      data.set("aantal_dubbele_wafels_afhaal", String(pakketten * CFG.wafelsPerPakket));
+      data.set("te_betalen_afhaal", fmt(pakketten * CFG.prijsPerPakket));
       const res = await fetch(CFG.ajaxEndpoint, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: data,
       });
       if (!res.ok) throw new Error("http " + res.status);
-      toonBetaalstap(naam, aantal);
+      toonBetaalstap(naam, volw, kind, pakketten);
     } catch (err) {
       // Registratie mislukte: toon een duidelijke foutmelding met mailfallback.
       if (btn) { btn.disabled = false; btn.textContent = "Registreren"; }
@@ -138,7 +179,7 @@ const script = `
       id="wafel-form"
       action={siteConfig.formEndpoint}
       method="POST"
-      class="grid gap-5 max-w-xl"
+      class="grid gap-6 max-w-xl"
     >
       {/* FormSubmit: nette mail, redirect (no-JS fallback), honeypot + blacklist. */}
       <input type="hidden" name="_subject" value="Nieuwe wafelenbak-registratie via de website" />
@@ -167,46 +208,53 @@ const script = `
           class="w-full rounded-lg border border-beige-200 px-4 py-3 bg-white" />
       </div>
 
-      <fieldset>
-        <legend class="block text-sm font-semibold text-antraciet-900 mb-2">Ik wil…</legend>
-        <div class="grid gap-3 sm:grid-cols-2">
-          <label class="flex items-start gap-3 rounded-lg border border-beige-200 bg-white px-4 py-3 cursor-pointer">
-            <input type="radio" name="keuze" value="Ter plaatse eten" required class="mt-1" />
-            <span>
-              <span class="block font-semibold text-antraciet-900">Deelnemen</span>
-              <span class="block text-sm text-antraciet-600">Ter plaatse eten</span>
-            </span>
-          </label>
-          <label class="flex items-start gap-3 rounded-lg border border-beige-200 bg-white px-4 py-3 cursor-pointer">
-            <input type="radio" name="keuze" value="Afhalen / bestellen" class="mt-1" />
-            <span>
-              <span class="block font-semibold text-antraciet-900">Bestellen</span>
-              <span class="block text-sm text-antraciet-600">Afhalen</span>
-            </span>
-          </label>
+      {/* Ter plaatse: aantal personen (volwassenen + kinderen onder 12). */}
+      <fieldset class="rounded-card border border-beige-200 bg-white p-5">
+        <legend class="px-1 text-sm font-semibold text-antraciet-900">Kom je ter plaatse eten?</legend>
+        <p class="text-sm text-antraciet-600 mb-3">
+          Geef aan met hoeveel je komt. Ter plaatse betaal je per {w.eenheidEnkelvoud} ({euro(w.prijsPerWafel)}).
+          Laat op 0 als je enkel wil afhalen.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="volwassenen" class="block text-sm font-medium text-antraciet-800 mb-1">Volwassenen</label>
+            <input id="volwassenen" name="volwassenen" type="number" inputmode="numeric" min="0" max="50" step="1"
+              value="0" class="w-28 rounded-lg border border-beige-200 px-4 py-3 bg-white" />
+          </div>
+          <div>
+            <label for="kinderen" class="block text-sm font-medium text-antraciet-800 mb-1">Kinderen (onder 12)</label>
+            <input id="kinderen" name="kinderen" type="number" inputmode="numeric" min="0" max="50" step="1"
+              value="0" class="w-28 rounded-lg border border-beige-200 px-4 py-3 bg-white" />
+          </div>
         </div>
       </fieldset>
 
-      <div>
-        <label for="aantal" class="block text-sm font-semibold text-antraciet-900 mb-1">
-          Aantal pakketten
-        </label>
-        <p class="text-sm text-antraciet-600 mb-2">
-          Eén pakket = {w.wafelsPerPakket} {w.eenheidMeervoud} aan {euro(w.prijsPerPakket)}.
+      {/* Afhalen: pakketten van 5 dubbele wafels. */}
+      <fieldset class="rounded-card border border-beige-200 bg-white p-5">
+        <legend class="px-1 text-sm font-semibold text-antraciet-900">Wil je wafels afhalen?</legend>
+        <p class="text-sm text-antraciet-600 mb-3">
+          Afhalen gebeurt per pakket van {w.wafelsPerPakket} {w.eenheidMeervoud} ({euro(w.prijsPerPakket)} per pakket).
+          Laat op 0 als je enkel ter plaatse komt.
         </p>
-        <input id="aantal" name="aantal" type="number" inputmode="numeric" min="1" max="200" step="1"
-          value="1" required
-          class="w-32 rounded-lg border border-beige-200 px-4 py-3 bg-white" />
-      </div>
+        <div>
+          <label for="pakketten" class="block text-sm font-medium text-antraciet-800 mb-1">Aantal afhaalpakketten</label>
+          <input id="pakketten" name="pakketten" type="number" inputmode="numeric" min="0" max="200" step="1"
+            value="0" class="w-28 rounded-lg border border-beige-200 px-4 py-3 bg-white" />
+        </div>
 
-      <div class="rounded-card border border-goud-200 bg-goud-50 p-5">
-        <p class="text-sm text-antraciet-600">
-          <span id="wafel-aantal-wafels">{w.wafelsPerPakket}</span> {w.eenheidMeervoud} — te betalen aan Kom op tegen Kanker
-        </p>
-        <p class="mt-1 font-display text-3xl font-semibold text-antraciet-900">
-          <span id="wafel-totaal">{euro(w.prijsPerPakket)}</span>
-        </p>
-      </div>
+        <div class="mt-4 rounded-lg border border-goud-200 bg-goud-50 p-4">
+          <p class="text-sm text-antraciet-600">
+            <span id="wafel-aantal-wafels">0</span> {w.eenheidMeervoud} afhalen — vooraf te betalen aan Kom op tegen Kanker
+          </p>
+          <p class="mt-1 font-display text-2xl font-semibold text-antraciet-900">
+            <span id="wafel-totaal">{euro(0)}</span>
+          </p>
+        </div>
+      </fieldset>
+
+      <p id="wafel-keuze-fout" class="hidden text-sm text-red-700">
+        Geef aan met hoeveel je ter plaatse komt, of hoeveel afhaalpakketten je wil (of allebei).
+      </p>
 
       <div>
         <label for="opmerking" class="block text-sm font-semibold text-antraciet-900 mb-1">
@@ -235,8 +283,8 @@ const script = `
       </p>
 
       <p class="text-xs text-antraciet-500">
-        Na registratie krijg je de betaalgegevens te zien. De betaling verloopt rechtstreeks via Kom op
-        tegen Kanker — zo komt elke euro integraal bij het goede doel terecht.
+        Afhaalpakketten betaal je vooraf via Kom op tegen Kanker (je ziet het bedrag na registratie).
+        Ter plaatse betaal je per {w.eenheidEnkelvoud}. Zo komt elke euro integraal bij het goede doel terecht.
       </p>
     </form>
 
@@ -245,39 +293,48 @@ const script = `
       <div class="rounded-card border border-bos-100 bg-bos-100/40 p-6 sm:p-8">
         <p class="font-accent text-2xl text-bos-600">Bedankt voor je registratie 💛</p>
         <h2 class="mt-1 font-display text-2xl font-semibold text-antraciet-900">
-          Nu nog even betalen
+          Je registratie is genoteerd
         </h2>
         <p class="mt-3 text-antraciet-700">
-          Je bestelling — <span id="betaal-samenvatting" class="font-semibold text-antraciet-900"></span> —
-          betaal je via de actiepagina van Kom op tegen Kanker. Twee dingen zijn belangrijk zodat we je
-          betaling kunnen koppelen aan je bestelling:
+          <span id="betaal-samenvatting" class="font-semibold text-antraciet-900"></span>
         </p>
 
-        <div class="mt-5 grid gap-4 sm:grid-cols-2">
-          <div class="rounded-lg border border-beige-200 bg-white p-4">
-            <p class="text-sm font-semibold text-antraciet-600">Bedrag</p>
-            <p id="betaal-bedrag" class="mt-1 font-display text-2xl font-semibold text-antraciet-900"></p>
+        {/* Afhaalbetaling — enkel zichtbaar bij bestelde pakketten. */}
+        <div id="betaal-afhaal" class="hidden mt-6">
+          <p class="text-antraciet-700">
+            Je afhaalpakketten betaal je vooraf via de actiepagina van Kom op tegen Kanker.
+            Twee dingen zijn belangrijk zodat we je betaling kunnen koppelen aan je bestelling:
+          </p>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-lg border border-beige-200 bg-white p-4">
+              <p class="text-sm font-semibold text-antraciet-600">Bedrag</p>
+              <p id="betaal-bedrag" class="mt-1 font-display text-2xl font-semibold text-antraciet-900"></p>
+            </div>
+            <div class="rounded-lg border border-beige-200 bg-white p-4">
+              <p class="text-sm font-semibold text-antraciet-600">Mededeling</p>
+              <p id="betaal-mededeling" class="mt-1 font-mono text-lg text-antraciet-900 break-words"></p>
+              <button type="button" id="copy-mededeling"
+                class="mt-2 text-sm font-semibold text-goud-700 underline">
+                Kopieer mededeling
+              </button>
+            </div>
           </div>
-          <div class="rounded-lg border border-beige-200 bg-white p-4">
-            <p class="text-sm font-semibold text-antraciet-600">Mededeling</p>
-            <p id="betaal-mededeling" class="mt-1 font-mono text-lg text-antraciet-900 break-words"></p>
-            <button type="button" id="copy-mededeling"
-              class="mt-2 text-sm font-semibold text-goud-700 underline">
-              Kopieer mededeling
-            </button>
+          <div class="mt-6 flex flex-wrap gap-4">
+            <a id="betaal-kotk" href={w.betaalUrl} target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold min-h-11 bg-goud-500 text-antraciet-900 hover:bg-goud-600 shadow-sm">
+              Betaal via Kom op tegen Kanker <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
 
-        <div class="mt-6 flex flex-wrap gap-4">
-          <a id="betaal-kotk" href={w.betaalUrl} target="_blank" rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold min-h-11 bg-goud-500 text-antraciet-900 hover:bg-goud-600 shadow-sm">
-            Betaal via Kom op tegen Kanker <span aria-hidden="true">↗</span>
-          </a>
-        </div>
+        {/* Ter-plaatse-nota — enkel zichtbaar wanneer er mensen komen eten. */}
+        <p id="betaal-terplaatse" class="hidden mt-6 text-sm text-antraciet-600">
+          Ter plaatse betaal je per {w.eenheidEnkelvoud} ({euro(w.prijsPerWafel)}). Vergeet de tombola niet:
+          koop ter plaatse een lotje en steun mee het goede doel.
+        </p>
 
-        <p class="mt-5 text-sm text-antraciet-600">
-          Vul op de actiepagina exact het bovenstaande bedrag in en zet de mededeling erbij.
-          Lukt het niet, of heb je een vraag? Mail gerust naar
+        <p class="mt-6 text-sm text-antraciet-600">
+          Een vraag over je registratie? Mail gerust naar
           <a href={`mailto:${siteConfig.email}`} class="underline">{siteConfig.email}</a>.
         </p>
       </div>
