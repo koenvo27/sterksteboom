@@ -14,6 +14,15 @@ const ajaxEndpoint = siteConfig.formEndpoint.replace(
 );
 const bedanktUrl = new URL("/bedankt", siteConfig.url).toString();
 
+// Registratie-endpoint: een Google Apps Script "web-app" (bewaart in een
+// Google Sheet) wanneer ingesteld, anders FormSubmit (e-mail). De JS-client
+// gebruikt no-cors voor de Apps Script-route; zonder JS post het formulier
+// rechtstreeks naar formAction.
+const registratieEndpoint = (w.registratieEndpoint || "").trim();
+const useSheet = registratieEndpoint.length > 0;
+const postEndpoint = useSheet ? registratieEndpoint : ajaxEndpoint;
+const formAction = useSheet ? registratieEndpoint : siteConfig.formEndpoint;
+
 // Prijs netjes als Belgisch euro-bedrag tonen (server-side voorbeeld).
 const euro = (n: number) =>
   new Intl.NumberFormat("nl-BE", {
@@ -24,7 +33,8 @@ const euro = (n: number) =>
 // Configuratie die de inline-client nodig heeft. In een string gieten en via
 // set:html injecteren voorkomt dat Astro struikelt over accolades in JS.
 const clientConfig = {
-  ajaxEndpoint,
+  postEndpoint,
+  useSheet,
   hasEndpoint,
   prijsPerPakket: w.prijsPerPakket,
   wafelsPerPakket: w.wafelsPerPakket,
@@ -156,12 +166,18 @@ const script = `
       data.set("aantal_afhaalpakketten", String(pakketten));
       data.set("aantal_dubbele_wafels_afhaal", String(pakketten * CFG.wafelsPerPakket));
       data.set("te_betalen_afhaal", fmt(pakketten * CFG.prijsPerPakket));
-      const res = await fetch(CFG.ajaxEndpoint, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      if (!res.ok) throw new Error("http " + res.status);
+      if (CFG.useSheet) {
+        // Google Apps Script stuurt geen CORS-headers: no-cors post de data wel,
+        // maar levert een ondoorzichtig antwoord. Een afgeronde fetch = verzonden.
+        await fetch(CFG.postEndpoint, { method: "POST", mode: "no-cors", body: data });
+      } else {
+        const res = await fetch(CFG.postEndpoint, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: data,
+        });
+        if (!res.ok) throw new Error("http " + res.status);
+      }
       toonBetaalstap(naam, volw, kind, pakketten);
     } catch (err) {
       // Registratie mislukte: toon een duidelijke foutmelding met mailfallback.
@@ -177,7 +193,7 @@ const script = `
   <div>
     <form
       id="wafel-form"
-      action={siteConfig.formEndpoint}
+      action={formAction}
       method="POST"
       class="grid gap-6 max-w-xl"
     >
@@ -302,23 +318,40 @@ const script = `
         {/* Afhaalbetaling — enkel zichtbaar bij bestelde pakketten. */}
         <div id="betaal-afhaal" class="hidden mt-6">
           <p class="text-antraciet-700">
-            Je afhaalpakketten betaal je vooraf via de actiepagina van Kom op tegen Kanker.
-            Twee dingen zijn belangrijk zodat we je betaling kunnen koppelen aan je bestelling:
+            Je <span class="font-semibold">afhaalpakketten</span> betaal je vooraf via Kom op tegen
+            Kanker. Volg deze stappen — zo kunnen we je betaling koppelen aan je bestelling:
           </p>
-          <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-lg border border-beige-200 bg-white p-4">
-              <p class="text-sm font-semibold text-antraciet-600">Bedrag</p>
-              <p id="betaal-bedrag" class="mt-1 font-display text-2xl font-semibold text-antraciet-900"></p>
-            </div>
-            <div class="rounded-lg border border-beige-200 bg-white p-4">
-              <p class="text-sm font-semibold text-antraciet-600">Mededeling</p>
-              <p id="betaal-mededeling" class="mt-1 font-mono text-lg text-antraciet-900 break-words"></p>
-              <button type="button" id="copy-mededeling"
-                class="mt-2 text-sm font-semibold text-goud-700 underline">
-                Kopieer mededeling
-              </button>
-            </div>
-          </div>
+          <ol class="mt-5 space-y-4">
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">1</span>
+              <span class="text-antraciet-800 pt-0.5">
+                Klik onderaan op <span class="font-semibold">“Betaal via Kom op tegen Kanker”</span>{" "}
+                (opent in een nieuw venster).
+              </span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">2</span>
+              <span class="text-antraciet-800 pt-0.5">
+                Vul exact dit bedrag in:{" "}
+                <span id="betaal-bedrag" class="font-display text-xl font-semibold text-antraciet-900"></span>
+              </span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">3</span>
+              <span class="text-antraciet-800 pt-0.5">
+                Zet bij ‘mededeling’:{" "}
+                <span id="betaal-mededeling" class="font-mono font-semibold text-antraciet-900 break-words"></span>
+                <button type="button" id="copy-mededeling"
+                  class="ml-1 align-baseline text-sm font-semibold text-goud-700 underline">
+                  Kopieer
+                </button>
+              </span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-goud-500 text-antraciet-900 text-sm font-semibold">4</span>
+              <span class="text-antraciet-800 pt-0.5">Bevestig je betaling. Klaar! 💛</span>
+            </li>
+          </ol>
           <div class="mt-6 flex flex-wrap gap-4">
             <a id="betaal-kotk" href={w.betaalUrl} target="_blank" rel="noopener noreferrer"
               class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold min-h-11 bg-goud-500 text-antraciet-900 hover:bg-goud-600 shadow-sm">
