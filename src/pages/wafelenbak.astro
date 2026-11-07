@@ -1,0 +1,106 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import WafelOrderForm from "../components/WafelOrderForm.astro";
+import { siteConfig } from "../data/site-config";
+
+const w = siteConfig.wafelenbak;
+const euro = (n: number) =>
+  new Intl.NumberFormat("nl-BE", { style: "currency", currency: "EUR" }).format(n);
+
+const heeftDatum = w.datum.trim().length > 0;
+const heeftLocatie = w.locatie.trim().length > 0;
+const heeftAfhaal = w.afhaalInfo.trim().length > 0;
+const heeftPraktisch = heeftDatum || heeftLocatie || heeftAfhaal;
+
+const stappen = [
+  {
+    titel: "1. Registreer",
+    tekst:
+      "Vul hieronder je gegevens in, kies of je ter plaatse komt eten of wil afhalen, en geef aan hoeveel pakketten je wil.",
+  },
+  {
+    titel: "2. Betaal via Kom op tegen Kanker",
+    tekst:
+      "Na je registratie zie je het exacte bedrag en een mededeling. Je betaalt rechtstreeks via de actiepagina, zodat elke euro integraal naar het goede doel gaat.",
+  },
+  {
+    titel: "3. Smullen maar",
+    tekst:
+      "Kom langs om ter plaatse te genieten, of haal je pakketten af. De praktische details bezorgen we je tijdig.",
+  },
+];
+---
+
+<Layout
+  title="Wafelenbak"
+  description="Bestel of kom wafels eten ten voordele van Kom op tegen Kanker, voor de actie De Sterkste Boom van Rendestede. Pakketten van 5 wafels."
+>
+  <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
+    <Breadcrumbs items={[{ label: "Wafelenbak" }]} />
+
+    <p class="font-accent text-2xl text-bos-600">Smullen voor het goede doel</p>
+    <h1 class="mt-1 font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">
+      Wafelenbak
+    </h1>
+    <p class="mt-4 max-w-2xl text-antraciet-700 text-lg">
+      Steun De Sterkste Boom van Rendestede met iets lekkers. De wafels kosten{" "}
+      {euro(w.prijsPerWafel)} per stuk en worden verkocht per pakket van {w.wafelsPerPakket}{" "}
+      ({euro(w.prijsPerPakket)} per pakket). Iedereen registreert vooraf — of je nu ter plaatse
+      komt eten of wil afhalen. De volledige opbrengst gaat naar Kom op tegen Kanker.
+    </p>
+
+    {heeftPraktisch && (
+      <div class="mt-8 rounded-card border border-beige-200 bg-beige-100/60 p-6">
+        <h2 class="font-display text-sm uppercase tracking-wide text-bos-600 mb-3">Praktisch</h2>
+        <dl class="grid gap-3 sm:grid-cols-3 text-sm">
+          {heeftDatum && (
+            <div>
+              <dt class="font-semibold text-antraciet-900">Wanneer</dt>
+              <dd class="text-antraciet-700">{w.datum}</dd>
+            </div>
+          )}
+          {heeftLocatie && (
+            <div>
+              <dt class="font-semibold text-antraciet-900">Waar</dt>
+              <dd class="text-antraciet-700">{w.locatie}</dd>
+            </div>
+          )}
+          {heeftAfhaal && (
+            <div>
+              <dt class="font-semibold text-antraciet-900">Afhalen</dt>
+              <dd class="text-antraciet-700">{w.afhaalInfo}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    )}
+
+    {!heeftPraktisch && (
+      <div class="mt-8 rounded-card border border-goud-300 bg-goud-50 p-6">
+        <p class="text-antraciet-700">
+          <span class="font-semibold text-antraciet-900">Datum en plaats volgen nog.</span>{" "}
+          Je kan je nu al registreren — we bezorgen je de praktische details (wanneer, waar en
+          hoe afhalen) tijdig per e-mail.
+        </p>
+      </div>
+    )}
+
+    <section class="mt-14">
+      <h2 class="font-display text-2xl font-semibold text-antraciet-900 mb-6">Hoe werkt het?</h2>
+      <div class="grid gap-6 sm:grid-cols-3">
+        {stappen.map((stap) => (
+          <div class="rounded-card border border-beige-200 bg-white p-6">
+            <h3 class="font-display text-lg font-semibold text-antraciet-900">{stap.titel}</h3>
+            <p class="mt-2 text-sm text-antraciet-700">{stap.tekst}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-2xl font-semibold text-antraciet-900 mb-6">Registreren</h2>
+      <WafelOrderForm />
+    </section>
+  </div>
+</Layout>

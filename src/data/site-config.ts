@@ -43,6 +43,25 @@ export const siteConfig = {
   cloudflareAnalyticsToken:
     import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN ?? "11069ee8ec90409691e1b5bb18ca4237",
 
+  // Wafelenbak — bestel-/registratieformulier. Betaling verloopt via de
+  // officiële actiepagina van Kom op tegen Kanker (geen betaling op de site
+  // zelf; de site kan geen geld innen). Prijs per pakket = aantal wafels ×
+  // prijs per wafel. Laat datum/locatie/afhaalInfo leeg tot ze vastliggen —
+  // lege velden worden netjes verborgen (geen verzonnen data op de site).
+  wafelenbak: {
+    prijsPerPakket: 12.5,
+    wafelsPerPakket: 5,
+    prijsPerWafel: 2.5,
+    // Betaallink: de teampagina van Kom op tegen Kanker. Stel dit in op een
+    // specifieke "Wafelenbak"-actiepagina zodra die bestaat, dan is de
+    // afstemming van betalingen eenvoudiger.
+    betaalUrl:
+      "https://www.komoptegenkanker.be/de-1000km/steun-een-team/15134507-d200-4e8b-b701-48deba8ba3fe",
+    datum: "",
+    locatie: "",
+    afhaalInfo: "",
+  },
+
   // Sleuteldata voor de afteltellers op de site. Pas aan zodra exacte data
   // bekend zijn. Laat op null wanneer een datum nog niet vastligt.
   keyDates: {
