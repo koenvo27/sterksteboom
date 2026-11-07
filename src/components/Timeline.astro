@@ -53,7 +53,13 @@ const compact = variant === "highlights";
             <span class="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700">geannuleerd</span>
           )}
         </p>
-        <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">{step.title}</h3>
+        <h3 class="mt-1 font-display text-xl font-semibold text-antraciet-900">
+          {step.href ? (
+            <a href={step.href} class="hover:text-goud-700">{step.title}</a>
+          ) : (
+            step.title
+          )}
+        </h3>
         {!compact && step.tagline && (
           <p class="mt-1.5 font-medium text-antraciet-900">{step.tagline}</p>
         )}

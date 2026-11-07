@@ -28,6 +28,8 @@ export interface JourneyStep {
   description?: string;
   homepage?: boolean;
   statusOverride?: JourneyStatus;
+  // Optioneel: maakt de titel in de tijdlijn klikbaar naar deze pagina.
+  href?: string;
 }
 
 export const journey: JourneyStep[] = [
@@ -88,13 +90,15 @@ export const journey: JourneyStep[] = [
     statusOverride: "cancelled",
   },
   {
-    label: "Januari 2027",
-    date: "2027-01-01",
+    label: "23 januari 2027",
+    date: "2027-01-23",
     icon: "🧇",
     title: "Wafelenbak voor Kom op tegen Kanker",
-    tagline: "Details worden nog bekendgemaakt.",
+    tagline: "Kom wafels eten of bestel afhaalpakketten, met grote tombola.",
     description:
-      "Samen met familie, vrienden en vrijwilligers organiseren we een wafelenbak om extra fondsen in te zamelen.",
+      "Bij Melkveebedrijf De Dyn in Denderwindeke. Registreer je vooraf — de volledige opbrengst gaat naar Kom op tegen Kanker.",
+    homepage: true,
+    href: "/wafelenbak",
   },
   {
     label: "Mei 2027",
