@@ -8,6 +8,26 @@ import Button from "../components/Button.astro";
   description="Deze pagina bestaat niet (meer). Keer terug naar de homepage of ontdek de reis naar De 1000 km voor Kom op tegen Kanker."
   noindex
 >
+  {/* Vangnet: soms plakt er een onzichtbaar teken (bv. uit een gekopieerde
+      link in een advertentie) aan de URL, waardoor een bestaande pagina een
+      404 geeft. We strippen zulke onzichtbare/niet-ASCII tekens en sturen door
+      naar de propere URL, met behoud van de ?utm-parameters. Verandert het
+      opschonen niets, dan tonen we gewoon deze 404 (geen eindeloze lus). */}
+  <script is:inline>
+    (function () {
+      try {
+        var path = location.pathname;
+        try { path = decodeURIComponent(path); } catch (e) {}
+        var cleaned = path
+          .replace(/[​-‍⁠﻿]/g, "")
+          .replace(/[^\x20-\x7E]/g, "");
+        if (cleaned && cleaned !== path) {
+          location.replace(cleaned + location.search + location.hash);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <div class="mx-auto max-w-2xl px-4 sm:px-6 py-20 sm:py-28 text-center">
     <p class="font-accent text-3xl text-goud-700">Oei…</p>
     <p class="mt-2 font-display text-6xl sm:text-7xl font-semibold text-goud-500">404</p>
