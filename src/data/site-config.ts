@@ -29,7 +29,7 @@ export const siteConfig = {
 
   // Google Search Console: plak hier de verificatiecode (enkel de waarde van
   // content="..." uit de "HTML-tag"-methode). Leeg = geen tag.
-  googleSiteVerification: "",
+  googleSiteVerification: "uK0wppuXD4B8GXUTOmEtn7uc06YDpIDNlPOWVSgwyDo",
 
   // Officiële actiepagina van Kom op tegen Kanker. Alle donaties lopen hierlangs.
   donationUrl:
