@@ -7,10 +7,16 @@
 // één plek aangepast moeten worden.
 // ============================================================
 import { siteConfig } from "./site-config";
+import fundraising from "./fundraising.json";
 
 const w = siteConfig.wafelenbak;
 const euro = (n: number) =>
   new Intl.NumberFormat("nl-BE", { style: "currency", currency: "EUR" }).format(n);
+// Ronde doelbedragen zonder centen (zelfde bron als de teller).
+const euroRond = (n: number) =>
+  new Intl.NumberFormat("nl-BE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
+const startdoel = euroRond(fundraising.goal);
+const ambitie = euroRond(fundraising.stretchGoal);
 
 export interface FaqItem {
   vraag: string;
@@ -21,7 +27,7 @@ export const faq: FaqItem[] = [
   {
     vraag: "Wat is De Sterkste Boom van Rendestede?",
     antwoord:
-      "De Sterkste Boom van Rendestede is een persoonlijk fietsproject van Koen Van Ongeval ten voordele van Kom op tegen Kanker. Met sportieve uitdagingen, acties en evenementen zamelt Koen geld in, ter nagedachtenis van zijn papa Cyriel.",
+      "De Sterkste Boom van Rendestede is het initiatief van Koen Van Ongeval, gegroeid uit het verlies van zijn papa Cyriel. Koen wil dat verdriet omzetten in iets positiefs: met sportieve uitdagingen, acties en evenementen zamelt hij geld in voor Kom op tegen Kanker, in de hoop dat veel andere mensen in de toekomst wél de kans krijgen om te vechten en er bovenop te komen. Een kans die zijn papa niet kreeg.",
   },
   {
     vraag: "Waar komt de naam vandaan?",
@@ -40,8 +46,7 @@ export const faq: FaqItem[] = [
   },
   {
     vraag: "Wat is De 1000 km voor Kom op tegen Kanker?",
-    antwoord:
-      "De 1000 km is het fietsevenement van Kom op tegen Kanker. In mei 2027 neemt Koen eraan deel; het is het grote doel waar het hele project naartoe werkt.",
+    antwoord: `De 1000 km is het fietsevenement van Kom op tegen Kanker en het grote doel waar alles naartoe werkt. In mei 2027 rijdt Koen mee in de officiële pelotons, als enige deelnemer van zijn team. Achter hem staan familie, vrienden en steunpilaren, maar er is geen ploeg van fietsers om het bedrag mee bijeen te brengen. Om te mogen starten is minstens ${startdoel} nodig; Koen mikt hoger en wil ${ambitie} inzamelen. Elke gift, groot of klein, maakt dus echt het verschil.`,
   },
   {
     vraag: "Wanneer en waar is de wafelenbak?",

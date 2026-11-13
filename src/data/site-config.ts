@@ -16,7 +16,7 @@ export const siteConfig = {
   // INHOUD: wijzigen na goedkeuring van Koen.
   homeTitle: "De Sterkste Boom van Rendestede · Fietsen voor Kom op tegen Kanker",
   homeDescription:
-    "Fietsproject van Koen Van Ongeval voor Kom op tegen Kanker, ter nagedachtenis van zijn papa Cyriel. Volg de weg naar De 1000 km in mei 2027 en steun mee.",
+    "Verdriet omzetten in iets positiefs: Koen zamelt geld in voor Kom op tegen Kanker, zodat anderen de kans krijgen die zijn papa Cyriel niet kreeg.",
 
   // Definitief domein. Pas dit aan zodra het domein gekoppeld is.
   url: "https://desterksteboomvanrendestede.be",
