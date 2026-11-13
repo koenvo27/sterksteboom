@@ -183,3 +183,28 @@ formulier) en de eigen **404-pagina** staan op `noindex`.
 - Dit is een **persoonlijk initiatief**, geen geregistreerde vzw/NGO. De
   structured data gebruikt daarom `Organization` (niet `NGO`) met een duidelijke
   omschrijving en de initiatiefnemer als `founder`.
+
+## SEO/GEO: opvolging
+
+**Fondsenwervingsteller.** Het bedrag wordt automatisch gesynchroniseerd vanaf
+de KOTK-actiepagina (workflow *Sync fondsenwerving*, meermaals per dag).
+Handmatig bijsturen kan op twee manieren:
+
+- GitHub → Actions → *Sync fondsenwerving (KOTK)* → *Run workflow* en vul bij
+  `amount` het bedrag in (bv. `3922.50`), of laat leeg om KOTK opnieuw uit te lezen.
+- Of pas `raised` aan in `src/data/fundraising.json`. Het startdoel (`goal`) en
+  de ambitie (`stretchGoal`) staan in hetzelfde bestand.
+
+**Na de wafelenbak (23/01/2027).** De aankondigingsbalk, de homepage-highlight
+en de kaart bij "Acties en evenementen" verdwijnen vanzelf na `datumISO`.
+Nog handmatig te doen in `src/data/site-config.ts` en `src/data/faq.ts`:
+
+- de FAQ-vraag over de wafelenbak verwijderen of herschrijven naar een terugblik;
+- de structured data van het event blijft kloppen (een afgelopen event met
+  datum); wil je het weg, maak dan `startISO` leeg.
+
+**Zoekmachines.** `googleSiteVerification` in `site-config.ts` bevat de
+verificatiecode van Google Search Console. De sitemap staat op
+`/sitemap-index.xml`; `public/robots.txt` laat ook AI-crawlers toe.
+Teksten in `homeTitle`, `homeDescription` en `src/data/faq.ts` zijn inhoud:
+wijzigen na goedkeuring.

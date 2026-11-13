@@ -1,0 +1,36 @@
+---
+// Veelgestelde vragen: zichtbaar als uitklapbare lijst én als FAQPage
+// structured data (zelfde teksten, één bron: src/data/faq.ts).
+import SectionHeader from "./SectionHeader.astro";
+import { faq } from "../data/faq";
+
+const faqJson = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.vraag,
+    acceptedAnswer: { "@type": "Answer", text: item.antwoord },
+  })),
+};
+---
+
+<section class="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-20" id="veelgestelde-vragen">
+  <script type="application/ld+json" set:html={JSON.stringify(faqJson)} />
+  <SectionHeader
+    eyebrow="Goed om te weten"
+    title="Veelgestelde vragen"
+    description="Kort en duidelijk: wat het project is, hoe je kan steunen en wat er op de planning staat."
+  />
+  <div class="mt-10 max-w-3xl divide-y divide-beige-200 rounded-card border border-beige-200 bg-white">
+    {faq.map((item) => (
+      <details class="group px-5 sm:px-6">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-display text-lg font-semibold text-antraciet-900 [&::-webkit-details-marker]:hidden">
+          <h3>{item.vraag}</h3>
+          <span class="shrink-0 text-2xl leading-none text-goud-600 transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+        </summary>
+        <p class="pb-5 leading-relaxed text-antraciet-700">{item.antwoord}</p>
+      </details>
+    ))}
+  </div>
+</section>

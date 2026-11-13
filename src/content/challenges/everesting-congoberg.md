@@ -8,7 +8,7 @@ location: "Congoberg, Vollezele (Pajottenland)"
 featured: false
 published: true
 seoTitle: "Everesting op de Congoberg — geannuleerd"
-seoDescription: "De Everesting op de Congoberg van 12 september 2026 gaat niet door na een val en een operatie. Het engagement voor Kom op tegen Kanker en De Sterkste Boom van Rendestede blijft."
+seoDescription: "De Everesting op de Congoberg van 12 september 2026 gaat niet door na een val en een operatie. Het engagement voor Kom op tegen Kanker blijft."
 ---
 
 ## De Congoberg Challenge / Everesting gaat niet door

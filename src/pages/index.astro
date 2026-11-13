@@ -10,6 +10,7 @@ import ChallengeCard from "../components/ChallengeCard.astro";
 import FundraisingProgress from "../components/FundraisingProgress.astro";
 import PartnerCallout from "../components/PartnerCallout.astro";
 import ContactCTA from "../components/ContactCTA.astro";
+import FaqSectie from "../components/FaqSectie.astro";
 import EmptyState from "../components/EmptyState.astro";
 import Button from "../components/Button.astro";
 import StructuredData from "../components/StructuredData.astro";
@@ -21,7 +22,7 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
 );
 ---
 
-<Layout title={siteConfig.projectName} description={siteConfig.tagline}>
+<Layout title={siteConfig.homeTitle} description={siteConfig.homeDescription}>
   <StructuredData kind="Organization" />
 
   <Hero />
@@ -95,6 +96,8 @@ const challenges = (await getCollection("challenges", ({ data }) => data.publish
   </div>
 
   <PartnerCallout />
+
+  <FaqSectie />
 
   <ContactCTA />
 </Layout>
