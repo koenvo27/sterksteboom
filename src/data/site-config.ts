@@ -18,6 +18,12 @@ export const siteConfig = {
   // Contact — bewust een apart projectadres.
   email: "desterksteboomvanrendestede@outlook.com",
   facebookUrl: "https://www.facebook.com/profile.php?id=61592009188050",
+  // Instagram-profiel (volledige URL). Leeg = nergens getoond.
+  instagramUrl: "",
+
+  // Google Search Console: plak hier de verificatiecode (enkel de waarde van
+  // content="..." uit de "HTML-tag"-methode). Leeg = geen tag.
+  googleSiteVerification: "",
 
   // Officiële actiepagina van Kom op tegen Kanker. Alle donaties lopen hierlangs.
   donationUrl:
@@ -73,6 +79,16 @@ export const siteConfig = {
     // en de aankondigingsbalk tonen zichzelf tot en met deze dag en verdwijnen
     // daarna vanzelf. Leeg = overal verborgen.
     datumISO: "2027-01-23",
+    // Voor zoekmachines (structured data): start/einde met tijdzone en adres.
+    startISO: "2027-01-23T14:00:00+01:00",
+    eindISO: "2027-01-23T19:00:00+01:00",
+    adres: {
+      naam: "Melkveebedrijf De Dyn – Heremans",
+      straat: "Rijstraat 193",
+      postcode: "9400",
+      gemeente: "Denderwindeke (Ninove)",
+      land: "BE",
+    },
     locatie: "Melkveebedrijf De Dyn – Heremans, Rijstraat 193, 9400 Denderwindeke (Ninove)",
     afhaalInfo: "Afhalen kan op zaterdag 23 januari van 17u30 tot 19u00.",
   },

@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import WafelOrderForm from "../components/WafelOrderForm.astro";
+import StructuredData from "../components/StructuredData.astro";
 import { siteConfig } from "../data/site-config";
 
 const w = siteConfig.wafelenbak;
@@ -12,6 +13,10 @@ const heeftDatum = w.datum.trim().length > 0;
 const heeftLocatie = w.locatie.trim().length > 0;
 const heeftAfhaal = w.afhaalInfo.trim().length > 0;
 const heeftPraktisch = heeftDatum || heeftLocatie || heeftAfhaal;
+
+// Eén bron voor de metabeschrijving én de structured data.
+const wafelBeschrijving =
+  "Wafelenbak op zaterdag 23 januari 2027 in Denderwindeke, ten voordele van Kom op tegen Kanker voor De Sterkste Boom van Rendestede. Registreer je en bestel dubbele wafels per pakket van 5.";
 
 const stappen = [
   {
@@ -34,8 +39,24 @@ const stappen = [
 
 <Layout
   title="Wafelenbak"
-  description="Wafelenbak op zaterdag 23 januari 2027 in Denderwindeke, ten voordele van Kom op tegen Kanker voor De Sterkste Boom van Rendestede. Registreer je en bestel dubbele wafels per pakket van 5."
+  description={wafelBeschrijving}
 >
+  {/* Event-gegevens voor zoekmachines en AI-assistenten (geen zichtbare tekst).
+      Na het event: zie README ("Na de wafelenbak"). */}
+  {w.startISO && (
+    <StructuredData
+      kind="Event"
+      eventType="Event"
+      name="Wafelenbak voor Kom op tegen Kanker"
+      description={wafelBeschrijving}
+      startDate={w.startISO}
+      endDate={w.eindISO}
+      location={w.adres.naam}
+      address={w.adres}
+      price={w.prijsPerWafel}
+      url={new URL("/wafelenbak/", siteConfig.url).toString()}
+    />
+  )}
   <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
     <Breadcrumbs items={[{ label: "Wafelenbak" }]} />
 

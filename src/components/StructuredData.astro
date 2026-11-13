@@ -14,6 +14,12 @@ interface EventProps {
   location: string;
   url: string;
   eventStatus?: "scheduled" | "cancelled";
+  // Standaard "SportsEvent" (de uitdagingen). Voor bv. de wafelenbak: "Event".
+  eventType?: "SportsEvent" | "Event" | "FoodEvent";
+  address?: { straat: string; postcode: string; gemeente: string; land: string };
+  // Prijs per stuk in euro (bv. 2.5) — toont een aanbod bij het event.
+  price?: number;
+  image?: string;
 }
 
 interface ArticleProps {
@@ -46,12 +52,33 @@ if (props.kind === "Organization") {
         name: siteConfig.projectName,
         url: siteConfig.url,
         email: siteConfig.email,
-        sameAs: [siteConfig.facebookUrl],
-        description: siteConfig.tagline,
-        founder: {
-          "@type": "Person",
-          name: siteConfig.initiatiefnemer,
+        logo: {
+          "@type": "ImageObject",
+          url: `${siteConfig.url}/logo.png`,
+          width: 512,
+          height: 512,
         },
+        image: `${siteConfig.url}/images/social-share.jpg`,
+        sameAs: [siteConfig.facebookUrl, siteConfig.instagramUrl].filter(Boolean),
+        description: siteConfig.tagline,
+        founder: { "@id": `${siteConfig.url}/#initiatiefnemer` },
+        // Giften lopen via de officiële actiepagina van Kom op tegen Kanker.
+        potentialAction: {
+          "@type": "DonateAction",
+          name: "Steun het project via Kom op tegen Kanker",
+          target: siteConfig.donationUrl,
+          recipient: {
+            "@type": "Organization",
+            name: "Kom op tegen Kanker",
+            url: "https://www.komoptegenkanker.be",
+          },
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": `${siteConfig.url}/#initiatiefnemer`,
+        name: siteConfig.initiatiefnemer,
+        url: `${siteConfig.url}/het-verhaal`,
       },
       {
         "@type": "WebSite",
@@ -67,7 +94,7 @@ if (props.kind === "Organization") {
 } else if (props.kind === "Event") {
   json = {
     "@context": "https://schema.org",
-    "@type": "SportsEvent",
+    "@type": props.eventType ?? "SportsEvent",
     name: props.name,
     description: props.description,
     startDate: props.startDate,
@@ -76,15 +103,46 @@ if (props.kind === "Organization") {
       props.eventStatus === "cancelled"
         ? "https://schema.org/EventCancelled"
         : "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: {
       "@type": "Place",
       name: props.location,
+      ...(props.address
+        ? {
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: props.address.straat,
+              postalCode: props.address.postcode,
+              addressLocality: props.address.gemeente,
+              addressCountry: props.address.land,
+            },
+          }
+        : {}),
     },
+    image: new URL(props.image ?? "/images/social-share.jpg", siteConfig.url).toString(),
     url: props.url,
+    inLanguage: "nl-BE",
+    ...(props.price != null
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: props.price.toFixed(2),
+            priceCurrency: "EUR",
+            availability: "https://schema.org/InStock",
+            url: props.url,
+          },
+        }
+      : {}),
     organizer: {
-      "@type": "Person",
-      name: siteConfig.initiatiefnemer,
+      "@type": "Organization",
+      "@id": `${siteConfig.url}/#organization`,
+      name: siteConfig.projectName,
+      url: siteConfig.url,
     },
+    // Bij de sportieve uitdagingen is de initiatiefnemer ook de deelnemer.
+    ...((props.eventType ?? "SportsEvent") === "SportsEvent"
+      ? { performer: { "@type": "Person", name: siteConfig.initiatiefnemer } }
+      : {}),
   };
 } else if (props.kind === "Article") {
   json = {

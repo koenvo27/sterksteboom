@@ -2,7 +2,10 @@
 // SOCIALE MEDIA LINKS
 // ============================================================
 
+import { siteConfig } from "./site-config";
+
 export const socialLinks = {
-  facebook: "https://www.facebook.com/profile.php?id=61592009188050",
-  // TODO: Instagram-link toevoegen indien gewenst.
+  facebook: siteConfig.facebookUrl,
+  // Wordt ingevuld via instagramUrl in site-config.ts; leeg = niet getoond.
+  instagram: siteConfig.instagramUrl,
 };
