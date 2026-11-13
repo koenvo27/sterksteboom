@@ -16,7 +16,7 @@ export const siteConfig = {
   // INHOUD: wijzigen na goedkeuring van Koen.
   homeTitle: "De Sterkste Boom van Rendestede · Fietsen voor Kom op tegen Kanker",
   homeDescription:
-    "Verdriet omzetten in iets positiefs: Koen zamelt geld in voor Kom op tegen Kanker, zodat anderen de kans krijgen die zijn papa Cyriel niet kreeg.",
+    "Verdriet omzetten in iets positiefs: Koen zamelt geld in voor Kom op tegen Kanker, ter nagedachtenis van zijn papa Cyriel. Steun mee en geef anderen een kans.",
 
   // Definitief domein. Pas dit aan zodra het domein gekoppeld is.
   url: "https://desterksteboomvanrendestede.be",
@@ -25,7 +25,7 @@ export const siteConfig = {
   email: "desterksteboomvanrendestede@outlook.com",
   facebookUrl: "https://www.facebook.com/profile.php?id=61592009188050",
   // Instagram-profiel (volledige URL). Leeg = nergens getoond.
-  instagramUrl: "",
+  instagramUrl: "https://www.instagram.com/desterksteboomvanrendestede",
 
   // Google Search Console: plak hier de verificatiecode (enkel de waarde van
   // content="..." uit de "HTML-tag"-methode). Leeg = geen tag.
