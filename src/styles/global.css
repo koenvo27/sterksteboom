@@ -16,7 +16,7 @@
   --color-goud-300: #eec46b;
   --color-goud-500: #e0a52e;
   --color-goud-600: #c68a1e;
-  --color-goud-700: #9c6c17;
+  --color-goud-700: #8f6214; /* iets donkerder voor voldoende leescontrast (WCAG AA) */
 
   /* Secundair: antraciet / bijna zwart */
   --color-antraciet-900: #1c211f;
