@@ -43,6 +43,7 @@ const isoDate = challenge.data.date.toISOString().slice(0, 10);
     name={challenge.data.title}
     description={challenge.data.summary}
     startDate={challenge.data.date.toISOString()}
+    endDate={challenge.data.endDate?.toISOString()}
     location={challenge.data.location}
     url={pageUrl}
     eventStatus={isCancelled ? "cancelled" : undefined}

@@ -102,7 +102,7 @@ export const journey: JourneyStep[] = [
   },
   {
     label: "Mei 2027",
-    date: "2027-05-01",
+    date: "2027-05-06",
     icon: "🏁",
     title: "De 1000 km voor Kom op tegen Kanker",
     tagline: "Het doel waar alles naartoe werkt.",

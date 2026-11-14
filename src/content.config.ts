@@ -47,6 +47,8 @@ const challenges = defineCollection({
     slug: z.string().optional(),
     summary: z.string(),
     date: z.coerce.date(),
+    // Optioneel: laatste dag bij een meerdaags evenement (voor zoekmachines).
+    endDate: z.coerce.date().optional(),
     location: z.string(),
     status: z.string().optional(),
     // Optioneel: menselijke datumtekst die de exacte datum vervangt in de
