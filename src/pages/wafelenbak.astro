@@ -54,6 +54,7 @@ const stappen = [
       location={w.adres.naam}
       address={w.adres}
       price={w.prijsPerWafel}
+      offerValidFrom={w.registratieOpenISO}
       url={new URL("/wafelenbak/", siteConfig.url).toString()}
     />
   )}

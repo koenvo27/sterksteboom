@@ -85,6 +85,8 @@ export const siteConfig = {
     // en de aankondigingsbalk tonen zichzelf tot en met deze dag en verdwijnen
     // daarna vanzelf. Leeg = overal verborgen.
     datumISO: "2027-01-23",
+    // Sinds wanneer je kan registreren/bestellen (voor de structured data).
+    registratieOpenISO: "2026-11-07",
     // Voor zoekmachines (structured data): start/einde met tijdzone en adres.
     startISO: "2027-01-23T14:00:00+01:00",
     eindISO: "2027-01-23T19:00:00+01:00",

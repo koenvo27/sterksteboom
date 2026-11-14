@@ -19,6 +19,8 @@ interface EventProps {
   address?: { straat: string; postcode: string; gemeente: string; land: string };
   // Prijs per stuk in euro (bv. 2.5) — toont een aanbod bij het event.
   price?: number;
+  // Vanaf wanneer het aanbod beschikbaar is (ISO-datum), vereist door Google.
+  offerValidFrom?: string;
   image?: string;
 }
 
@@ -129,6 +131,7 @@ if (props.kind === "Organization") {
             price: props.price.toFixed(2),
             priceCurrency: "EUR",
             availability: "https://schema.org/InStock",
+            ...(props.offerValidFrom ? { validFrom: props.offerValidFrom } : {}),
             url: props.url,
           },
         }
@@ -140,9 +143,11 @@ if (props.kind === "Organization") {
       url: siteConfig.url,
     },
     // Bij de sportieve uitdagingen is de initiatiefnemer ook de deelnemer.
-    ...((props.eventType ?? "SportsEvent") === "SportsEvent"
-      ? { performer: { "@type": "Person", name: siteConfig.initiatiefnemer } }
-      : {}),
+    // Bij een wafelenbak treedt niemand op: de organisatie zelf is de uitvoerder.
+    performer:
+      (props.eventType ?? "SportsEvent") === "SportsEvent"
+        ? { "@type": "Person", name: siteConfig.initiatiefnemer }
+        : { "@type": "Organization", "@id": `${siteConfig.url}/#organization`, name: siteConfig.projectName },
   };
 } else if (props.kind === "Article") {
   json = {
