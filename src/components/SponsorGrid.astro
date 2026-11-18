@@ -26,20 +26,20 @@ const tiers = [
   {
     level: "hoofdsponsor" as Level,
     title: "Hoofdsponsors",
-    tile: "w-44 sm:w-52 h-32 sm:h-36 p-6",
-    img: "max-h-20 max-w-full",
+    tile: "w-44 sm:w-64 h-32 sm:h-40 p-6",
+    img: "max-h-24 max-w-full",
   },
   {
     level: "projectsponsor" as Level,
     title: "Projectsponsors",
-    tile: "w-40 sm:w-44 h-28 p-5",
-    img: "max-h-14 max-w-full",
+    tile: "w-40 sm:w-56 h-28 p-5",
+    img: "max-h-16 max-w-full",
   },
   {
     level: "lokale-partner" as Level,
     title: "Lokale partners",
-    tile: "w-32 sm:w-36 h-24 p-4",
-    img: "max-h-10 max-w-full",
+    tile: "w-40 sm:w-52 h-24 p-4",
+    img: "max-h-12 max-w-full",
   },
 ].map((t) => ({ ...t, items: list.filter((s) => s.level === t.level) }))
   .filter((t) => t.items.length > 0);

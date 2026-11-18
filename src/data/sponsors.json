@@ -1,2 +1,9 @@
 [
+  {
+    "name": "Electro Bouvaert",
+    "logo": "/images/sponsors/electro-bouvaert.webp",
+    "website": "https://electrobouvaert.be",
+    "level": "lokale-partner",
+    "order": 1
+  }
 ]
