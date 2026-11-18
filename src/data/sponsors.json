@@ -12,5 +12,12 @@
     "website": "https://juweliervanimpe.be",
     "level": "projectsponsor",
     "order": 1
+  },
+  {
+    "name": "Koffies Maeskes Roem",
+    "logo": "/images/sponsors/koffies-maeskes-roem.webp",
+    "website": "https://www.maeskesroem.be",
+    "level": "lokale-partner",
+    "order": 2
   }
 ]
