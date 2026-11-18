@@ -11,7 +11,6 @@ interface Sponsor {
   logo: string;
   website?: string;
   level?: Level;
-  order?: number;
   // Enkel hoofdsponsors: korte uitleg over het bedrijf en hun bijdrage. Is een
   // van beide ingevuld, dan is het logo klikbaar en opent er een infovenster.
   description?: string;
@@ -20,7 +19,9 @@ interface Sponsor {
 
 const list = (sponsors as Sponsor[])
   .map((s, i) => ({ ...s, level: (s.level ?? "lokale-partner") as Level, key: `sponsor-${i}` }))
-  .sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || a.name.localeCompare(b.name, "nl"));
+  // Binnen een niveau altijd alfabetisch (hoofdletters en accenten tellen niet mee),
+  // zodat er geen discussie kan zijn over wie bovenaan staat.
+  .sort((a, b) => a.name.localeCompare(b.name, "nl", { sensitivity: "base" }));
 
 const tiers = [
   {

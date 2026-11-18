@@ -219,12 +219,13 @@ Sponsors staan in `src/data/sponsors.json`. Per sponsor:
   "logo": "/images/sponsors/bakkerij-voorbeeld.webp",
   "website": "https://www.voorbeeld.be",
   "level": "hoofdsponsor",
-  "order": 1,
   "description": "Korte uitleg over het bedrijf (enkel hoofdsponsors).",
   "contribution": "Wat het bedrijf bijdraagt (enkel hoofdsponsors)."
 }
 ```
 
+- Binnen een niveau staan sponsors altijd in alfabetische volgorde (op naam); een
+  volgorde-veld bestaat bewust niet, zodat niemand voorrang kan krijgen.
 - `level` is `hoofdsponsor`, `projectsponsor` of `lokale-partner`. Een niveau zonder
   sponsors wordt niet getoond; een hoger niveau verschijnt vanzelf bovenaan.
 - Het logo komt in `public/images/sponsors/` (liefst een webp of png met transparante

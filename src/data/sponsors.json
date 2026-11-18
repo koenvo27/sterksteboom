@@ -3,21 +3,18 @@
     "name": "Electro Bouvaert",
     "logo": "/images/sponsors/electro-bouvaert.webp",
     "website": "https://electrobouvaert.be",
-    "level": "lokale-partner",
-    "order": 1
+    "level": "lokale-partner"
   },
   {
     "name": "Juwelier Van Impe",
     "logo": "/images/sponsors/juwelier-van-impe.webp",
     "website": "https://juweliervanimpe.be",
-    "level": "projectsponsor",
-    "order": 1
+    "level": "projectsponsor"
   },
   {
     "name": "Koffies Maeskes Roem",
     "logo": "/images/sponsors/koffies-maeskes-roem.webp",
     "website": "https://www.maeskesroem.be",
-    "level": "lokale-partner",
-    "order": 2
+    "level": "lokale-partner"
   }
 ]
