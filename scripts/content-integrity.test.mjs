@@ -10,7 +10,7 @@
 // ============================================================
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -205,3 +205,19 @@ function walk(dir) {
   }
   return out;
 }
+
+test("sponsors: geldig niveau, https-link, bestaand logo en max. 5 hoofdsponsors", () => {
+  const list = JSON.parse(read("src/data/sponsors.json"));
+  const niveaus = ["hoofdsponsor", "projectsponsor", "lokale-partner"];
+  for (const s of list) {
+    assert.ok(s.name, "elke sponsor heeft een naam");
+    assert.ok(niveaus.includes(s.level), `ongeldig niveau bij ${s.name}: ${s.level}`);
+    if (s.website) assert.match(s.website, /^https:\/\//, `website van ${s.name} moet met https:// beginnen`);
+    assert.ok(existsSync(join(root, "public", s.logo)), `logo ontbreekt voor ${s.name}: public${s.logo}`);
+    if (s.level !== "hoofdsponsor") {
+      assert.ok(!s.description && !s.contribution, `${s.name}: uitleg en bijdrage zijn enkel voor hoofdsponsors`);
+    }
+  }
+  const aantal = list.filter((s) => s.level === "hoofdsponsor").length;
+  assert.ok(aantal <= 5, `maximaal 5 hoofdsponsors, nu ${aantal}`);
+});

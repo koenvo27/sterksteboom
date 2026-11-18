@@ -1,18 +1,52 @@
 ---
+// Sponsors in drie niveaus (zoals in het sponsordossier). Gegevens komen uit
+// src/data/sponsors.json. Een niveau zonder sponsors wordt niet getoond, en
+// een hoger niveau verschijnt vanzelf bovenaan zodra er een sponsor in zit.
 import sponsors from "../data/sponsors.json";
+
+type Level = "hoofdsponsor" | "projectsponsor" | "lokale-partner";
 
 interface Sponsor {
   name: string;
   logo: string;
   website?: string;
-  description?: string;
-  supportType: string;
-  level?: string;
-  featured?: boolean;
+  level?: Level;
   order?: number;
+  // Enkel hoofdsponsors: korte uitleg over het bedrijf en hun bijdrage. Is een
+  // van beide ingevuld, dan is het logo klikbaar en opent er een infovenster.
+  description?: string;
+  contribution?: string;
 }
 
-const list = (sponsors as Sponsor[]).slice().sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+const list = (sponsors as Sponsor[])
+  .map((s, i) => ({ ...s, level: (s.level ?? "lokale-partner") as Level, key: `sponsor-${i}` }))
+  .sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || a.name.localeCompare(b.name, "nl"));
+
+const tiers = [
+  {
+    level: "hoofdsponsor" as Level,
+    title: "Hoofdsponsors",
+    tile: "w-44 sm:w-52 h-32 sm:h-36 p-6",
+    img: "max-h-20 max-w-full",
+  },
+  {
+    level: "projectsponsor" as Level,
+    title: "Projectsponsors",
+    tile: "w-40 sm:w-44 h-28 p-5",
+    img: "max-h-14 max-w-full",
+  },
+  {
+    level: "lokale-partner" as Level,
+    title: "Lokale partners",
+    tile: "w-32 sm:w-36 h-24 p-4",
+    img: "max-h-10 max-w-full",
+  },
+].map((t) => ({ ...t, items: list.filter((s) => s.level === t.level) }))
+  .filter((t) => t.items.length > 0);
+
+const tileBase =
+  "flex items-center justify-center rounded-card border border-beige-200 bg-white transition-colors";
+const tileLink = `${tileBase} hover:border-goud-500`;
 ---
 
 {list.length === 0 ? (
@@ -45,37 +79,91 @@ const list = (sponsors as Sponsor[]).slice().sort((a, b) => (a.order ?? 99) - (b
     </a>
   </div>
 ) : (
-  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-    {list.map((sponsor) =>
-      sponsor.website ? (
-        <a
-          href={sponsor.website}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex items-center justify-center rounded-card border border-beige-200 bg-white p-6 h-28 hover:border-goud-500 transition-colors"
-          aria-label={`${sponsor.name} (opent in een nieuw tabblad)`}
+  <div class="space-y-14">
+    {tiers.map((tier) => (
+      <section aria-labelledby={`niveau-${tier.level}`}>
+        <h2
+          id={`niveau-${tier.level}`}
+          class="text-center font-display text-2xl font-semibold text-antraciet-900"
         >
-          <img
-            src={sponsor.logo}
-            alt={sponsor.name}
-            class="max-h-14 max-w-full object-contain"
-            loading="lazy"
-            width="160"
-            height="56"
-          />
-        </a>
-      ) : (
-        <div class="flex items-center justify-center rounded-card border border-beige-200 bg-white p-6 h-28">
-          <img
-            src={sponsor.logo}
-            alt={sponsor.name}
-            class="max-h-14 max-w-full object-contain"
-            loading="lazy"
-            width="160"
-            height="56"
-          />
-        </div>
-      ),
-    )}
+          {tier.title}
+        </h2>
+        <ul class="mt-6 flex flex-wrap justify-center gap-4 sm:gap-6">
+          {tier.items.map((s) => {
+            const heeftInfo = tier.level === "hoofdsponsor" && Boolean(s.description || s.contribution);
+            return (
+              <li>
+                {heeftInfo ? (
+                  <button
+                    type="button"
+                    popovertarget={s.key}
+                    class:list={[tileLink, tier.tile, "cursor-pointer"]}
+                    aria-label={`${s.name}: meer informatie`}
+                  >
+                    <img src={s.logo} alt={s.name} class:list={[tier.img, "object-contain"]} loading="lazy" />
+                  </button>
+                ) : s.website ? (
+                  <a
+                    href={s.website}
+                    target="_blank"
+                    rel="sponsored noopener noreferrer"
+                    class:list={[tileLink, tier.tile]}
+                    aria-label={`${s.name} (opent in een nieuw tabblad)`}
+                  >
+                    <img src={s.logo} alt={s.name} class:list={[tier.img, "object-contain"]} loading="lazy" />
+                  </a>
+                ) : (
+                  <div class:list={[tileBase, tier.tile]}>
+                    <img src={s.logo} alt={s.name} class:list={[tier.img, "object-contain"]} loading="lazy" />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
   </div>
 )}
+
+{/* Infovensters voor hoofdsponsors: native HTML-popover, werkt zonder JavaScript. */}
+{list
+  .filter((s) => s.level === "hoofdsponsor" && (s.description || s.contribution))
+  .map((s) => (
+    <div
+      id={s.key}
+      popover
+      class="m-auto w-[min(92vw,32rem)] rounded-card border border-beige-200 bg-white p-6 text-antraciet-800 shadow-xl backdrop:bg-antraciet-900/50 sm:p-8"
+    >
+      <div class="flex items-start justify-between gap-4">
+        <img src={s.logo} alt="" aria-hidden="true" class="max-h-14 max-w-[10rem] object-contain" />
+        <button
+          type="button"
+          popovertarget={s.key}
+          popovertargetaction="hide"
+          class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-beige-200 text-xl leading-none hover:border-goud-500"
+          aria-label="Sluiten"
+        >
+          ×
+        </button>
+      </div>
+      <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-bos-600">Hoofdsponsor</p>
+      <h3 class="mt-1 font-display text-2xl font-semibold text-antraciet-900">{s.name}</h3>
+      {s.description && <p class="mt-3 leading-relaxed">{s.description}</p>}
+      {s.contribution && (
+        <p class="mt-3 leading-relaxed">
+          <span class="font-semibold text-antraciet-900">Bijdrage:</span> {s.contribution}
+        </p>
+      )}
+      {s.website && (
+        <a
+          href={s.website}
+          target="_blank"
+          rel="sponsored noopener noreferrer"
+          class="mt-5 inline-block font-semibold text-goud-700 underline"
+        >
+          Bezoek de website ↗
+        </a>
+      )}
+    </div>
+  ))}

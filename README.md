@@ -208,3 +208,28 @@ verificatiecode van Google Search Console. De sitemap staat op
 `/sitemap-index.xml`; `public/robots.txt` laat ook AI-crawlers toe.
 Teksten in `homeTitle`, `homeDescription` en `src/data/faq.ts` zijn inhoud:
 wijzigen na goedkeuring.
+
+## Sponsors toevoegen
+
+Sponsors staan in `src/data/sponsors.json`. Per sponsor:
+
+```json
+{
+  "name": "Bakkerij Voorbeeld",
+  "logo": "/images/sponsors/bakkerij-voorbeeld.webp",
+  "website": "https://www.voorbeeld.be",
+  "level": "hoofdsponsor",
+  "order": 1,
+  "description": "Korte uitleg over het bedrijf (enkel hoofdsponsors).",
+  "contribution": "Wat het bedrijf bijdraagt (enkel hoofdsponsors)."
+}
+```
+
+- `level` is `hoofdsponsor`, `projectsponsor` of `lokale-partner`. Een niveau zonder
+  sponsors wordt niet getoond; een hoger niveau verschijnt vanzelf bovenaan.
+- Het logo komt in `public/images/sponsors/` (liefst een webp of png met transparante
+  achtergrond, ongeveer 400 px breed). Maximaal 5 hoofdsponsors; de test bewaakt dat.
+- Bij hoofdsponsors met `description` of `contribution` is het logo klikbaar en opent er
+  een infovenster. De andere niveaus tonen enkel het logo met een link naar hun website.
+- Publiceer een sponsor pas nadat die akkoord is met de vermelding.
+- Het sponsordossier staat in `public/sponsordossier-de-sterkste-boom-2027.pdf`.

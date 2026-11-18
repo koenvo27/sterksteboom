@@ -1,71 +1,118 @@
 ---
+import { statSync } from "node:fs";
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import ContactForm from "../components/ContactForm.astro";
 import DonationButton from "../components/DonationButton.astro";
 
-const manieren = [
+// De drie formules uit het sponsordossier. Bewust zonder bedragen.
+const formules = [
   {
-    titel: "Financiële steun",
-    tekst:
-      "Een bijdrage die integraal richting het goede doel gaat. Elke euro helpt om het streefbedrag voor Kom op tegen Kanker te bereiken.",
+    naam: "Lokale partner",
+    voordelen: [
+      "Logo en link op de website",
+      "Vermelding bij de geschonken prijs of bijdrage",
+      "Gezamenlijke bedanking in de communicatie",
+    ],
   },
   {
-    titel: "Materiële of logistieke steun",
-    tekst:
-      "Denk aan bevoorrading, materiaal, drukwerk of hulp bij de organisatie van een actie of evenement.",
+    naam: "Projectsponsor",
+    intro: "Alle voordelen van Lokale partner, plus:",
+    voordelen: [
+      "Vermelding op de sponsoronderleggers tijdens de wafelenbak",
+      "Extra aandacht via social media of het sponsoroverzicht",
+    ],
   },
   {
-    titel: "Zichtbaarheid en netwerk",
-    tekst:
-      "Help het project bekend maken via je eigen kanalen en netwerk, zodat meer mensen mee in beweging komen.",
+    naam: "Hoofdsponsor",
+    nota: "Maximaal 5 hoofdsponsors",
+    voordelen: [
+      "Prominente vermelding op de website en de sponsoronderleggers",
+      "Gelijkwaardige plaats op het projecttruitje",
+      "Extra zichtbaarheid in de sponsorcommunicatie en acties",
+    ],
   },
 ];
+
+// Grootte van het sponsordossier, automatisch uit het bestand.
+const dossierPad = "/sponsordossier-de-sterkste-boom-2027.pdf";
+let dossierMb = "";
+try {
+  const bytes = statSync(`public${dossierPad}`).size;
+  dossierMb = (bytes / 1024 / 1024).toLocaleString("nl-BE", { maximumFractionDigits: 1 });
+} catch {
+  dossierMb = "";
+}
 ---
 
 <Layout
   title="Steunen"
   description="Steun De Sterkste Boom van Rendestede: doe een gift via Kom op tegen Kanker of bouw als steunpilaar mee aan dit verhaal."
 >
-  <div class="mx-auto max-w-3xl px-4 sm:px-6 py-14 sm:py-20">
-    <Breadcrumbs items={[{ label: "Steunen" }]} />
-    <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Steunen</h1>
-    <p class="mt-4 text-antraciet-700">
-      Elke euro brengt ons dichter bij het doel voor Kom op tegen Kanker. Je kan dit verhaal
-      op twee manieren steunen: met een gift, of door als steunpilaar mee te bouwen.
-    </p>
-
-    <!-- Doneren -->
-    <div class="mt-10 rounded-card bg-goud-50 border border-goud-300 p-8 text-center">
-      <h2 class="font-display text-2xl font-semibold text-antraciet-900">Doe een gift</h2>
-      <p class="mt-2 mx-auto max-w-xl text-antraciet-700">
-        Alle giften verlopen veilig via de officiële actiepagina van Kom op tegen Kanker.
-        Deze website verwerkt zelf geen betalingen.
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 py-14 sm:py-20">
+    <div class="max-w-3xl">
+      <Breadcrumbs items={[{ label: "Steunen" }]} />
+      <h1 class="font-display text-4xl sm:text-5xl font-semibold text-antraciet-900">Steunen</h1>
+      <p class="mt-4 text-antraciet-700">
+        Elke euro brengt ons dichter bij het doel voor Kom op tegen Kanker. Je kan dit verhaal
+        op twee manieren steunen: met een gift, of door als steunpilaar mee te bouwen.
       </p>
-      <div class="mt-6 flex justify-center">
-        <DonationButton label="Doneer via Kom op tegen Kanker" />
+
+      <!-- Doneren -->
+      <div class="mt-10 rounded-card bg-goud-50 border border-goud-300 p-8 text-center">
+        <h2 class="font-display text-2xl font-semibold text-antraciet-900">Doe een gift</h2>
+        <p class="mt-2 mx-auto max-w-xl text-antraciet-700">
+          Alle giften verlopen veilig via de officiële actiepagina van Kom op tegen Kanker.
+          Deze website verwerkt zelf geen betalingen.
+        </p>
+        <div class="mt-6 flex justify-center">
+          <DonationButton label="Doneer via Kom op tegen Kanker" />
+        </div>
       </div>
     </div>
 
-    <!-- Bouw mee -->
+    <!-- Bouw mee: de drie formules -->
     <div class="mt-16">
       <SectionHeader
         eyebrow="Voor bedrijven en organisaties"
         title="Bouw mee aan dit verhaal"
-        description="Word steunpilaar van De Sterkste Boom van Rendestede. Dat kan op verschillende manieren."
+        description="Word steunpilaar van De Sterkste Boom van Rendestede. Kies de formule die bij jouw zaak past."
       />
-      <div class="mt-8 grid gap-6 sm:grid-cols-3">
-        {manieren.map((manier) => (
-          <div class="rounded-card border border-beige-200 bg-white p-6">
-            <h3 class="font-display text-lg font-semibold text-antraciet-900">{manier.titel}</h3>
-            <p class="mt-2 text-sm text-antraciet-700">{manier.tekst}</p>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {formules.map((formule) => (
+          <div class="flex flex-col rounded-card border border-beige-200 bg-white p-6">
+            <h3 class="font-display text-xl font-semibold text-antraciet-900">{formule.naam}</h3>
+            {formule.nota && (
+              <p class="mt-1 text-xs font-semibold uppercase tracking-wide text-bos-600">{formule.nota}</p>
+            )}
+            {formule.intro && <p class="mt-3 text-sm font-medium text-antraciet-900">{formule.intro}</p>}
+            <ul class="mt-3 flex-1 list-disc space-y-2 pl-5 text-sm text-antraciet-700 marker:text-goud-500">
+              {formule.voordelen.map((voordeel) => <li>{voordeel}</li>)}
+            </ul>
+            <a
+              href="#laat-het-ons-weten"
+              data-pakket={formule.naam}
+              class="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-antraciet-900 px-5 py-2.5 text-sm font-semibold text-beige-50 hover:bg-antraciet-700"
+            >
+              Kies deze formule
+            </a>
           </div>
         ))}
       </div>
+      <p class="mt-6 max-w-3xl text-sm text-antraciet-700">
+        Liever op een andere manier helpen, bijvoorbeeld met materiaal, logistiek of je netwerk?
+        Laat het ons weten via het formulier hieronder.
+      </p>
+      <p class="mt-3 max-w-3xl text-sm text-antraciet-700">
+        Meer details nodig?
+        <a href={dossierPad} download class="font-semibold text-goud-700 underline">
+          Download het sponsordossier (PDF{dossierMb ? `, ${dossierMb} MB` : ""})
+        </a>.
+      </p>
     </div>
 
-    <div class="mt-16">
+    <div class="mt-16 max-w-3xl" id="laat-het-ons-weten">
       <SectionHeader
         eyebrow="Interesse?"
         title="Laat het ons weten"
@@ -74,9 +121,19 @@ const manieren = [
       <div class="mt-8">
         <ContactForm
           subject="Ik wil steunpilaar worden van De Sterkste Boom van Rendestede"
-          categories={["Financiële steun", "Materiële of logistieke steun", "Zichtbaarheid en netwerk", "Iets anders"]}
+          categories={["Lokale partner", "Projectsponsor", "Hoofdsponsor", "Iets anders"]}
         />
       </div>
     </div>
   </div>
 </Layout>
+
+<script>
+  // Kies je een formule, dan staat die meteen voorgeselecteerd in het formulier.
+  document.querySelectorAll<HTMLAnchorElement>("[data-pakket]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const select = document.getElementById("category") as HTMLSelectElement | null;
+      if (select && link.dataset.pakket) select.value = link.dataset.pakket;
+    });
+  });
+</script>
