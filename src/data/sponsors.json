@@ -5,5 +5,12 @@
     "website": "https://electrobouvaert.be",
     "level": "lokale-partner",
     "order": 1
+  },
+  {
+    "name": "Juwelier Van Impe",
+    "logo": "/images/sponsors/juwelier-van-impe.webp",
+    "website": "https://juweliervanimpe.be",
+    "level": "projectsponsor",
+    "order": 1
   }
 ]
