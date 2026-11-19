@@ -16,5 +16,11 @@
     "logo": "/images/sponsors/koffies-maeskes-roem.webp",
     "website": "https://www.maeskesroem.be",
     "level": "lokale-partner"
+  },
+  {
+    "name": "Wielercoach Wim De Wolf",
+    "logo": "/images/sponsors/wielercoach-wim-de-wolf.webp",
+    "website": "http://www.wielercoach.be",
+    "level": "projectsponsor"
   }
 ]

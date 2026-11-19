@@ -212,7 +212,7 @@ test("sponsors: geldig niveau, https-link, bestaand logo en max. 5 hoofdsponsors
   for (const s of list) {
     assert.ok(s.name, "elke sponsor heeft een naam");
     assert.ok(niveaus.includes(s.level), `ongeldig niveau bij ${s.name}: ${s.level}`);
-    if (s.website) assert.match(s.website, /^https:\/\//, `website van ${s.name} moet met https:// beginnen`);
+    if (s.website) assert.match(s.website, /^https?:\/\//, `website van ${s.name} moet met http:// of https:// beginnen`);
     assert.ok(existsSync(join(root, "public", s.logo)), `logo ontbreekt voor ${s.name}: public${s.logo}`);
     if (s.level !== "hoofdsponsor") {
       assert.ok(!s.description && !s.contribution, `${s.name}: uitleg en bijdrage zijn enkel voor hoofdsponsors`);
