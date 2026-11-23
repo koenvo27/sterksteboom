@@ -26,11 +26,13 @@
   {
     "name": "Slagerij Mertens Noël",
     "logo": "/images/sponsors/slagerij-mertens-noel.webp",
-    "level": "projectsponsor"
+    "level": "projectsponsor",
+    "website": "https://www.slagerijmertensnoel.be"
   },
   {
     "name": "Pieter Van Der Poorten",
     "logo": "/images/sponsors/pieter-van-der-poorten.webp",
-    "level": "projectsponsor"
+    "level": "projectsponsor",
+    "website": "https://www.facebook.com/share/1KqxULvEj3/"
   }
 ]
