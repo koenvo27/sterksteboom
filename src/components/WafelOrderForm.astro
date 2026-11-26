@@ -205,17 +205,11 @@ const script = `
       data.set("aantal_dubbele_wafels_afhaal", String(pakketten * CFG.wafelsPerPakket));
       data.set("te_betalen_afhaal", fmt(pakketten * CFG.prijsPerPakket));
 
-      // 1) E-mail-back-up via FormSubmit (blind: no-cors, we lezen het antwoord
-      //    NIET). Zo kan de CORS-beveiliging nooit een valse foutmelding geven;
-      //    de mail wordt verstuurd, meer hoeven we er niet van te weten.
-      if (CFG.hasMail) {
-        try { await fetch(CFG.mailEndpoint, { method: "POST", mode: "no-cors", body: data }); }
-        catch (mailErr) { /* back-up onbereikbaar: de Sheet hieronder is leidend */ }
-      }
-
-      // 2) Google Sheet via JSONP. Dit antwoord KUNNEN we betrouwbaar lezen,
-      //    dus de bevestiging verschijnt alleen als de registratie echt in de
-      //    Sheet staat. Faalt dit (Google onbereikbaar), dan géén vals bewijs.
+      // 1) Google Sheet via JSONP. Dit antwoord KUNNEN we betrouwbaar lezen, dus
+      //    de bevestiging verschijnt alleen als de registratie echt in de Sheet
+      //    staat. Faalt dit (Google onbereikbaar), dan géén vals bewijs.
+      let sheetOk = false;
+      let sheetFout = "";
       if (CFG.sheetEndpoint) {
         const params = {
           naam: naam,
@@ -226,12 +220,39 @@ const script = `
           pakketten: String(pakketten),
           opmerking: document.getElementById("opmerking").value,
         };
-        const resp = await jsonpVerzend(CFG.sheetEndpoint, params, 15000);
-        if (!resp || !resp.ok) throw new Error("sheet");
-      } else if (!CFG.hasMail) {
+        try {
+          const resp = await jsonpVerzend(CFG.sheetEndpoint, params, 10000);
+          sheetOk = !!(resp && resp.ok);
+          if (!sheetOk) sheetFout = "Google meldde een fout" + (resp && resp.error ? ": " + resp.error : "");
+        } catch (e) {
+          sheetFout = e && e.message === "timeout"
+            ? "geen antwoord van Google binnen 10 seconden"
+            : "verzoek naar Google geblokkeerd of mislukt (adblocker, privacyinstelling of netwerk)";
+        }
+      } else {
+        sheetOk = true; // geen Sheet ingesteld: enkel de mail telt
+      }
+
+      // 2) E-mail via FormSubmit (blind: no-cors, we lezen het antwoord NIET).
+      //    Gaat ALTIJD weg, ook als de Sheet faalde, zodat geen registratie
+      //    verloren gaat. De status staat in het onderwerp en in de mail, zodat
+      //    je meteen ziet welke registraties je handmatig in de Sheet moet zetten.
+      if (CFG.hasMail) {
+        data.set("_subject", sheetOk
+          ? "Nieuwe wafelenbak-registratie (Sheet: OK)"
+          : "⚠️ SHEET MISLUKT - wafelenbak-registratie moet handmatig in de Sheet");
+        data.set("sheet_status", sheetOk ? "OK, staat in de Sheet" : "MISLUKT, NIET in de Sheet: voeg deze registratie handmatig toe");
+        if (!sheetOk) {
+          data.set("sheet_fout", sheetFout);
+          data.set("browser", String(navigator.userAgent || "").slice(0, 220));
+        }
+        try { await fetch(CFG.mailEndpoint, { method: "POST", mode: "no-cors", body: data, keepalive: true }); }
+        catch (mailErr) { /* mail onbereikbaar: de Sheet is dan leidend */ }
+      } else if (!CFG.sheetEndpoint) {
         return; // geen enkel endpoint ingesteld: laat de gewone POST lopen
       }
 
+      if (!sheetOk) throw new Error("sheet");
       toonBetaalstap(naam, volw, kind, pakketten);
     } catch (err) {
       // Registratie mislukte: toon een duidelijke foutmelding met mailfallback.
