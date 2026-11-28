@@ -40,5 +40,11 @@
     "logo": "/images/sponsors/heremans-printing.webp",
     "level": "projectsponsor",
     "website": "https://www.heremansprinting.be"
+  },
+  {
+    "name": "L'Amour des Jumelles",
+    "logo": "/images/sponsors/lamour-des-jumelles.webp",
+    "website": "https://www.lamour-des-jumelles.be",
+    "level": "projectsponsor"
   }
 ]
